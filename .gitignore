@@ -81,4 +81,4 @@ Derived/
 Tuist/Dependencies
 
 ### xcconfig ###
-constants.xcconfig
+Environment.xcconfig
