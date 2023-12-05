@@ -31,3 +31,7 @@ $ tuist fetch
 ![image](https://github.com/EveryTip/app-iOS-test/assets/73145656/557863f2-7eb1-4990-96f6-93490b6ed0ec)
 
 <br>
+
+## 참고
+- [git 작업 컨벤션](GIT_CONVENTION.md)
+- [코딩 컨벤션](CODING_CONVENTION.md)
