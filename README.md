@@ -22,7 +22,7 @@ $ tuist fetch
 
 
 
-#### app-iOS-test 앱 의존성 그래프
+#### 앱 의존성 그래프
 ![image](graph.png)
 
 앱 타겟이 Data, Presentation, Domain, Core Layer에 의존하고 있음.
