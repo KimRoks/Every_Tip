@@ -1,0 +1,46 @@
+//
+//  MainCoordinator.swift
+//  EveryTip
+//
+//  Created by 손대홍 on 1/21/24.
+//  Copyright © 2024 EveryTip. All rights reserved.
+//
+
+import UIKit
+
+import Swinject
+
+public protocol MainCoordinator: Coordinator {
+    
+}
+
+public final class DefaultMainCoordinator: MainCoordinator {
+    public var parentCoordinator: Coordinator?
+    public var childCoordinators: [Coordinator] = []
+    public var navigationController: UINavigationController
+    
+    private let container: Container = .shared
+    
+    
+    public init(navigationController: UINavigationController) {
+        self.navigationController = navigationController
+    }
+    
+    public func start() {
+        // TODO: 로그인, 메인 페이지 등 분기 처리
+        startMainTab()
+    }
+    
+    public func didFinish() {}
+    
+    private func startMainTab() {
+        // TODO: 메인 탭 구현 & 연결
+        guard let mainTabCoordinator = container.resolve(Coordinator.self) else {
+            return
+        }
+        mainTabCoordinator.parentCoordinator = self
+        append(child: mainTabCoordinator)
+        
+        mainTabCoordinator.start()
+    }
+}
