@@ -9,6 +9,12 @@
 import UIKit
 
 public final class InteractivePoppableNavigationController: UINavigationController {
+    public init() {
+        super.init(nibName: nil, bundle: nil)
+        
+        interactivePopGestureRecognizer?.delegate = self
+    }
+    
     override init(rootViewController: UIViewController) {
          super.init(rootViewController: rootViewController)
          
