@@ -6,6 +6,8 @@
 //  Copyright © 2024 EveryTip. All rights reserved.
 //
 
+import EveryTipCore
+
 import UIKit
 
 import Swinject
@@ -35,7 +37,7 @@ public final class DefaultMainCoordinator: MainCoordinator {
     
     private func startMainTab() {
         // TODO: 메인 탭 구현 & 연결
-        guard let mainTabCoordinator = container.resolve(Coordinator.self) else {
+        guard let mainTabCoordinator = container.resolve(MainTabCoordinator.self) else {
             return
         }
         mainTabCoordinator.parentCoordinator = self
