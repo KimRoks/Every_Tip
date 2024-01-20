@@ -1,6 +1,7 @@
+import EveryTipPresentation
+
 import UIKit
 
-import EveryTipPresentation
 import Swinject
 
 @main
@@ -8,6 +9,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     private let assembler = Assembler(container: .shared)
+    private var navigationController : UINavigationController?
+    private var mainCoordinator: MainCoordinator?
 
     func application(
         _ application: UIApplication,
@@ -16,19 +19,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
         
-        assemble()
+        let navigationController = InteractivePoppableNavigationController()
+        self.navigationController = navigationController
+        window?.rootViewController = navigationController
         
-        let viewController = UIViewController()
-        viewController.view.backgroundColor = .white
-        window?.rootViewController = viewController
+        assemble(navigationController: navigationController)
         
-        AppIOSTestUI.hello()
+        self.mainCoordinator = DefaultMainCoordinator(navigationController: navigationController)
+        mainCoordinator?.start()
         return true
     }
 
-    private func assemble() {
+    private func assemble(navigationController: UINavigationController) {
         assembler.apply(assemblies: [
             // TODO: 레이어 assembly 등 등록
+            PresentationAssembly(navigationController: navigationController)
         ])
     }
 }
