@@ -154,6 +154,7 @@ let project = Project(
             platform: .iOS,
             dependencies: [
                 // core dependencies, rx swift etc ...
+                .external(name: "Swinject")
             ]
         ),
     ].flatMap { $0 }
