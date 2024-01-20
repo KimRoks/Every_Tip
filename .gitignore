@@ -79,6 +79,7 @@ Derived/
 
 ### Tuist managed dependencies ###
 Tuist/Dependencies
+EveryTip/Tuist/Dependencies
 
 ### xcconfig ###
 Environment.xcconfig
