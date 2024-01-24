@@ -1,22 +1,39 @@
-import UIKit
 import EveryTipPresentation
+
+import UIKit
+
+import Swinject
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    private let assembler = Assembler(container: .shared)
+    private var navigationController : UINavigationController?
+    private var mainCoordinator: MainCoordinator?
 
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
     ) -> Bool {
         window = UIWindow(frame: UIScreen.main.bounds)
-        let viewController = UIViewController()
-        viewController.view.backgroundColor = .white
-        window?.rootViewController = viewController
         window?.makeKeyAndVisible()
-        AppIOSTestUI.hello()
+        
+        let navigationController = InteractivePoppableNavigationController()
+        self.navigationController = navigationController
+        window?.rootViewController = navigationController
+        
+        assemble(navigationController: navigationController)
+        
+        self.mainCoordinator = DefaultMainCoordinator(navigationController: navigationController)
+        mainCoordinator?.start()
         return true
     }
 
+    private func assemble(navigationController: UINavigationController) {
+        assembler.apply(assemblies: [
+            // TODO: 레이어 assembly 등 등록
+            PresentationAssembly(navigationController: navigationController)
+        ])
+    }
 }

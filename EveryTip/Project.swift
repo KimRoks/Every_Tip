@@ -126,7 +126,8 @@ let project = Project(
             name: Layer.presentation.layerName,
             platform: .iOS,
             dependencies: [
-                .target(name: Layer.domain.layerName)
+                .target(name: Layer.domain.layerName),
+                .external(name: "SnapKit")
                 // snapkit, then, etc...
             ]
         ),
@@ -153,6 +154,7 @@ let project = Project(
             platform: .iOS,
             dependencies: [
                 // core dependencies, rx swift etc ...
+                .external(name: "Swinject")
             ]
         ),
     ].flatMap { $0 }
