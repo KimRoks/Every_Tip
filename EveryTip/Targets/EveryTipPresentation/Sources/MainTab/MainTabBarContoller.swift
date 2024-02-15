@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MainTabBarContoller: UITabBarController {
+final class MainTabBarContoller: UITabBarController {
     
     let buttonShadowSize: CGSize = CGSize(width: 0, height: 0)
     let tabBarShadowSize: CGSize = CGSize(width: 0, height: 0)
