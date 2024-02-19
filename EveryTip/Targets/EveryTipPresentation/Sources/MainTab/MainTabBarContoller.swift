@@ -10,19 +10,23 @@ import UIKit
 
 final class MainTabBarContoller: UITabBarController {
     
-    let buttonShadowSize: CGSize = CGSize(width: 0, height: 0)
-    let tabBarShadowSize: CGSize = CGSize(width: 0, height: 0)
+    private let buttonShadowSize: CGSize = CGSize(width: 1, height: 3)
+    private let tabBarShadowSize: CGSize = CGSize(width: 0, height: -2)
     
     private lazy var middleButton: UIButton = {
         let button = UIButton(type: .system)
         // TODO: 이미지 에셋 받으면 변경
-
+        
         button.setBackgroundImage(UIImage(systemName: "plus"), for: .normal)
         button.backgroundColor = .signatureGreen
         button.tintColor = .white
         button.layer.cornerRadius = 25
-        button.clipsToBounds = false
-        button.configureShadow(offset: buttonShadowSize, opacity: 0.3, radius: 5)
+        
+        button.addShadow(
+            offset: buttonShadowSize,
+            opacity: 0.2,
+            radius: 4
+        )
         
         return button
     }()
@@ -34,8 +38,13 @@ final class MainTabBarContoller: UITabBarController {
     
     private func configureMainTabBarController() {
         tabBar.addSubview(middleButton)
-        middleButton.frame = CGRect(x: tabBar.frame.width / 2 - 25 , y: -10 , width: 50, height: 50)
-
+        middleButton.frame = CGRect(
+            x: tabBar.frame.width / 2 - 25,
+            y: -10,
+            width: 50,
+            height: 50
+        )
+        
         let firstViewController = BaseViewController()
         let secondViewController = UIViewController()
         //중앙 공백 아이템 추가 및 비활성화
@@ -50,16 +59,22 @@ final class MainTabBarContoller: UITabBarController {
         thirdViewContoller.view.backgroundColor = .green.withAlphaComponent(0.8)
         fouthViewController.view.backgroundColor = .white.withAlphaComponent(0.8)
         
-        setViewControllers([firstViewController,
-                            secondViewController,
-                            emptyVC,
-                            thirdViewContoller,
-                            fouthViewController],
-                           animated: true
+        setViewControllers(
+            [firstViewController,
+             secondViewController,
+             emptyVC,
+             thirdViewContoller,
+             fouthViewController],
+            animated: true
         )
         
         tabBar.tintColor = .black.withAlphaComponent(0.8)
-        tabBar.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.00)
+        tabBar.backgroundColor = UIColor(
+            red: 0.95,
+            green: 0.95,
+            blue: 0.95,
+            alpha: 1.00
+        )
         
         // TODO: 이미지 에셋 받으면 변경
         tabBar.items?[0].image = UIImage(systemName: "house.fill")
@@ -73,11 +88,13 @@ final class MainTabBarContoller: UITabBarController {
         
         tabBar.items?[4].image = UIImage(systemName: "person.fill")
         tabBar.items?[4].title = "내정보"
-
+        
         tabBar.layer.masksToBounds = false
-
-        tabBar.configureShadow(offset: tabBarShadowSize,
-                               opacity: 0.3,
-                               radius: 5)
+        
+        tabBar.addShadow(
+            offset: tabBarShadowSize,
+            opacity: 0.12,
+            radius: 5
+        )
     }
 }

@@ -1,21 +1,12 @@
 //
-//  UIKitExtension++.swift
+//  UIColor+.swift
 //  EveryTipPresentation
 //
-//  Created by 김경록 on 2/14/24.
+//  Created by 김경록 on 2/19/24.
 //  Copyright © 2024 EveryTip. All rights reserved.
 //
 
 import UIKit
-
-extension UIView {
-    func configureShadow(offset: CGSize, opacity: Float, radius: CGFloat) {
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOffset = offset
-        layer.shadowOpacity = opacity
-        layer.shadowRadius = radius
-    }
-}
 
 extension UIColor {
     //색상 코드: #43AC75
