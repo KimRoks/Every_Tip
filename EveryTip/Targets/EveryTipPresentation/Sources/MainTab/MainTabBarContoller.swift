@@ -28,6 +28,8 @@ final class MainTabBarContoller: UITabBarController {
             radius: 4
         )
         
+        button.addTarget(nil, action: #selector(presentPost), for: .touchUpInside)
+        
         return button
     }()
     
@@ -96,5 +98,12 @@ final class MainTabBarContoller: UITabBarController {
             opacity: 0.12,
             radius: 5
         )
+    }
+    
+    @objc
+    func presentPost() {
+        let postViewContoller = PostViewController()
+        postViewContoller.modalPresentationStyle = .fullScreen
+        self.present(postViewContoller, animated: true)
     }
 }
