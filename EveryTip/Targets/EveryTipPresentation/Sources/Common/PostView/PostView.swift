@@ -63,6 +63,66 @@ final class PostView: UIView {
         return stack
     }()
     
+    private lazy var categoryStackView: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [categoryLabel,
+                                                   categorydetailButton
+                                                  ])
+
+        return stack
+    }()
+    
+    private let categoryLabel: UILabel = {
+        let label = UILabel()
+        label.text = "취미/생활"
+        
+        return label
+    }()
+    
+    private let categorydetailButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setBackgroundImage(UIImage(systemName: "greaterthan"), for: .normal)
+        
+        return button
+    }()
+    
+    private lazy var hashTagStackView: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [hashTagLabel,
+                                                   hashTagDetailButton
+                                                  ])
+    
+        return stack
+    }()
+    
+    private let hashTagLabel: UILabel = {
+        let label = UILabel()
+        label.text = "#김장잘하는법"
+        
+        return label
+    }()
+    
+    private let hashTagDetailButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setBackgroundImage(UIImage(systemName: "greaterthan"), for: .normal)
+
+        return button
+    }()
+    
+    private let titleTextField: UITextField = {
+        let field = UITextField()
+        field.placeholder = "제목을 입력하세요"
+        field.font = UIFont.preferredFont(forTextStyle: .title1)
+        
+        return field
+    }()
+    
+    private let bodyTextView: UITextView = {
+        let textView = UITextView()
+        textView.font = UIFont.preferredFont(forTextStyle: .body)
+        textView.isScrollEnabled = true
+        
+        return textView
+    }()
+    
     private let addImageButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "plus.square"), for: .normal)
@@ -118,6 +178,10 @@ final class PostView: UIView {
         self.backgroundColor = .white
         
         addSubview(topStackView)
+        addSubview(categoryStackView)
+        addSubview(hashTagStackView)
+        addSubview(titleTextField)
+        addSubview(bodyTextView)
         addSubview(attachmentStackView)
         addSubview(temporaryStorageButton)
         
@@ -126,6 +190,34 @@ final class PostView: UIView {
             make.leading.equalTo(safeAreaLayoutGuide).offset(20)
             make.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
             make.height.equalTo(30)
+        }
+        
+        categoryStackView.snp.makeConstraints { make in
+            make.top.equalTo(topStackView.snp.bottom).offset(10)
+            make.leading.equalTo(safeAreaLayoutGuide).offset(20)
+            make.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
+            make.height.equalTo(30)
+        }
+        
+        hashTagStackView.snp.makeConstraints { make in
+            make.top.equalTo(categoryStackView.snp.bottom).offset(10)
+            make.leading.equalTo(safeAreaLayoutGuide).offset(20)
+            make.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
+            make.height.equalTo(30)
+        }
+        
+        titleTextField.snp.makeConstraints { make in
+            make.top.equalTo(hashTagStackView.snp.bottom).offset(20)
+            make.leading.equalTo(safeAreaLayoutGuide).offset(20)
+            make.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
+            make.height.equalTo(30)
+        }
+        
+        bodyTextView.snp.makeConstraints { make in
+            make.top.equalTo(titleTextField.snp.bottom).offset(10)
+            make.leading.equalTo(safeAreaLayoutGuide).offset(20)
+            make.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
+            make.bottom.equalTo(attachmentStackView.snp.top).offset(-30)
         }
         
         attachmentStackView.snp.makeConstraints { make in
