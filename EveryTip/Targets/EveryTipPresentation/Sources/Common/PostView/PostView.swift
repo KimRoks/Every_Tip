@@ -81,8 +81,13 @@ final class PostView: UIView {
     private let categorydetailButton: UIButton = {
         let button = UIButton(type: .system)
         button.setBackgroundImage(UIImage(systemName: "greaterthan"), for: .normal)
-        
+        button.tintColor = UIColor(red: 0.75, green: 0.76, blue: 0.78, alpha: 1.00)
+
         return button
+    }()
+    
+    private lazy var categoryUnderLine: UIView = {
+        return createLine()
     }()
     
     private lazy var hashTagStackView: UIStackView = {
@@ -103,24 +108,43 @@ final class PostView: UIView {
     private let hashTagDetailButton: UIButton = {
         let button = UIButton(type: .system)
         button.setBackgroundImage(UIImage(systemName: "greaterthan"), for: .normal)
-
+        button.tintColor = UIColor(red: 0.75, green: 0.76, blue: 0.78, alpha: 1.00)
         return button
+    }()
+    
+    private lazy var hashTagUnderLine: UIView = {
+        return createLine()
     }()
     
     private let titleTextField: UITextField = {
         let field = UITextField()
         field.placeholder = "제목을 입력하세요"
-        field.font = UIFont.preferredFont(forTextStyle: .title1)
+        field.font = .systemFont(ofSize: 20, weight: UIFont.Weight(rawValue: 700))
         
         return field
     }()
     
     private let bodyTextView: UITextView = {
         let textView = UITextView()
-        textView.font = UIFont.preferredFont(forTextStyle: .body)
+        textView.text = "내용 입력"
+        textView.textColor = UIColor.placeholderText
+        textView.font = .systemFont(ofSize: 16, weight: UIFont.Weight(rawValue: 500))
+
         textView.isScrollEnabled = true
-        
+        textView.textContainerInset = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 0)
         return textView
+    }()
+
+    private let addedImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.layer.cornerRadius = 10
+        imageView.backgroundColor = .black
+        
+        return imageView
+    }()
+    
+    private lazy var bodyUnderLine: UIView = {
+        return createLine()
     }()
     
     private let addImageButton: UIButton = {
@@ -179,9 +203,13 @@ final class PostView: UIView {
         
         addSubview(topStackView)
         addSubview(categoryStackView)
+        addSubview(categoryUnderLine)
         addSubview(hashTagStackView)
+        addSubview(hashTagUnderLine)
         addSubview(titleTextField)
         addSubview(bodyTextView)
+        addSubview(addedImageView)
+        addSubview(bodyUnderLine)
         addSubview(attachmentStackView)
         addSubview(temporaryStorageButton)
         
@@ -199,31 +227,57 @@ final class PostView: UIView {
             make.height.equalTo(30)
         }
         
-        hashTagStackView.snp.makeConstraints { make in
+        categoryUnderLine.snp.makeConstraints { make in
             make.top.equalTo(categoryStackView.snp.bottom).offset(10)
+            make.leading.equalTo(safeAreaLayoutGuide).offset(20)
+            make.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
+        }
+        
+        hashTagStackView.snp.makeConstraints { make in
+            make.top.equalTo(categoryUnderLine.snp.bottom).offset(10)
             make.leading.equalTo(safeAreaLayoutGuide).offset(20)
             make.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
             make.height.equalTo(30)
         }
         
-        titleTextField.snp.makeConstraints { make in
-            make.top.equalTo(hashTagStackView.snp.bottom).offset(20)
+        hashTagUnderLine.snp.makeConstraints { make in
+            make.top.equalTo(hashTagStackView.snp.bottom).offset(10)
             make.leading.equalTo(safeAreaLayoutGuide).offset(20)
             make.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
-            make.height.equalTo(30)
+        }
+        
+        titleTextField.snp.makeConstraints { make in
+            make.top.equalTo(hashTagUnderLine.snp.bottom).offset(20)
+            make.leading.equalTo(safeAreaLayoutGuide).offset(20)
+            make.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
+            make.height.equalTo(24)
         }
         
         bodyTextView.snp.makeConstraints { make in
             make.top.equalTo(titleTextField.snp.bottom).offset(10)
-            make.leading.equalTo(safeAreaLayoutGuide).offset(20)
+            make.leading.equalTo(safeAreaLayoutGuide).offset(10)
             make.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
-            make.bottom.equalTo(attachmentStackView.snp.top).offset(-30)
+        }
+        
+        addedImageView.snp.makeConstraints { make in
+            make.top.equalTo(bodyTextView.snp.bottom).offset(30)
+            make.leading.equalTo(safeAreaLayoutGuide).offset(20)
+            
+            make.height.equalTo(70)
+            make.width.equalTo(70)
+            make.bottom.equalTo(bodyUnderLine.snp.top).offset(-30)
+        }
+        
+        bodyUnderLine.snp.makeConstraints { make in
+            make.bottom.equalTo(attachmentStackView.snp.top).offset(-10)
+            make.leading.equalTo(safeAreaLayoutGuide)
+            make.trailing.equalTo(safeAreaLayoutGuide)
         }
         
         attachmentStackView.snp.makeConstraints { make in
             make.leading.equalTo(safeAreaLayoutGuide).offset(20)
             make.bottom.equalTo(safeAreaLayoutGuide)
-            make.height.equalTo(30)
+            make.height.equalTo(34)
         }
         
         temporaryStorageButton.snp.makeConstraints { make in
@@ -236,5 +290,15 @@ final class PostView: UIView {
     @objc
     private func didRequestDismiss() {
         delegate?.didRequestDismiss(self)
+    }
+    
+    private func createLine() -> UIView {
+        let line = UIView()
+        line.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.00)
+        line.snp.makeConstraints { make in
+            make.height.equalTo(1)
+        }
+        
+        return line
     }
 }
