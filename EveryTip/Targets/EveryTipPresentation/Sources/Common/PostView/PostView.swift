@@ -47,8 +47,7 @@ final class PostView: UIView {
     private lazy var topStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [closeButton,
                                                    topTitleLabel,
-                                                   registerButton
-                                                  ])
+                                                   registerButton])
         stack.axis = .horizontal
         stack.distribution = .equalSpacing
         stack.alignment = .fill
@@ -65,15 +64,20 @@ final class PostView: UIView {
     
     private lazy var categoryStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [categoryLabel,
-                                                   categorydetailButton
-                                                  ])
+                                                   categorydetailButton])
+        stack.axis = .horizontal
+        stack.distribution = .fillProportionally
 
+        categorydetailButton.snp.makeConstraints { make in
+            make.width.equalTo(15)
+        }
+    
         return stack
     }()
     
     private let categoryLabel: UILabel = {
         let label = UILabel()
-        label.text = "취미/생활"
+        label.text = "카테고리 선택"
         
         return label
     }()
@@ -81,7 +85,8 @@ final class PostView: UIView {
     private let categorydetailButton: UIButton = {
         let button = UIButton(type: .system)
         button.setBackgroundImage(UIImage(systemName: "greaterthan"), for: .normal)
-        button.tintColor = UIColor(red: 0.75, green: 0.76, blue: 0.78, alpha: 1.00)
+        button.tintColor = UIColor.EveryTip.textColor5
+        button.contentMode = .center
 
         return button
     }()
@@ -92,15 +97,20 @@ final class PostView: UIView {
     
     private lazy var hashTagStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [hashTagLabel,
-                                                   hashTagDetailButton
-                                                  ])
-    
+                                                   hashTagDetailButton])
+        stack.axis = .horizontal
+        stack.distribution = .fillProportionally
+
+        hashTagDetailButton.snp.makeConstraints { make in
+            make.width.equalTo(15)
+        }
+        
         return stack
     }()
     
     private let hashTagLabel: UILabel = {
         let label = UILabel()
-        label.text = "#김장잘하는법"
+        label.text = "#태그 입력(최대 00개)"
         
         return label
     }()
@@ -108,7 +118,8 @@ final class PostView: UIView {
     private let hashTagDetailButton: UIButton = {
         let button = UIButton(type: .system)
         button.setBackgroundImage(UIImage(systemName: "greaterthan"), for: .normal)
-        button.tintColor = UIColor(red: 0.75, green: 0.76, blue: 0.78, alpha: 1.00)
+        button.tintColor = UIColor.EveryTip.textColor5
+        
         return button
     }()
     
@@ -129,12 +140,13 @@ final class PostView: UIView {
         textView.text = "내용 입력"
         textView.textColor = UIColor.placeholderText
         textView.font = .systemFont(ofSize: 16, weight: UIFont.Weight(rawValue: 500))
-
+        
         textView.isScrollEnabled = true
         textView.textContainerInset = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 0)
+        
         return textView
     }()
-
+    
     private let addedImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 10
@@ -151,7 +163,7 @@ final class PostView: UIView {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "plus.square"), for: .normal)
         button.setTitle("이미지", for: .normal)
-        button.tintColor = UIColor(red: 0.75, green: 0.76, blue: 0.78, alpha: 1.00)
+        button.tintColor = UIColor.EveryTip.textColor5
         
         return button
     }()
@@ -160,7 +172,7 @@ final class PostView: UIView {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "link.circle"), for: .normal)
         button.setTitle("링크", for: .normal)
-        button.tintColor = UIColor(red: 0.75, green: 0.76, blue: 0.78, alpha: 1.00)
+        button.tintColor = UIColor.EveryTip.textColor5
         
         return button
     }()
@@ -180,7 +192,7 @@ final class PostView: UIView {
         let button = UIButton(type: .system)
         
         button.setTitle("임시 저장 0", for: .normal)
-        button.tintColor = UIColor(red: 0.75, green: 0.76, blue: 0.78, alpha: 1.00)
+        button.tintColor = UIColor.EveryTip.textColor5
         
         return button
     }()
