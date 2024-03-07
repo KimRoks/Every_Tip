@@ -1,5 +1,5 @@
 //
-//  PostViewController.swift
+//  PostTipViewController.swift
 //  EveryTip
 //
 //  Created by 김경록 on 2/22/24.
@@ -8,8 +8,8 @@
 
 import UIKit
 
-final class PostViewController: UIViewController {
-    private let postView = PostView()
+final class PostTipViewController: UIViewController {
+    private let postView = PostTip()
     
     public override func loadView() {
         self.view = postView
@@ -21,8 +21,8 @@ final class PostViewController: UIViewController {
     }
 }
 
-extension PostViewController: PostViewDelegate {
-    func didRequestDismiss(_ Sender: PostView) {
+extension PostTipViewController: PostViewDelegate {
+    func didRequestDismiss(_ Sender: PostTip) {
         self.dismiss(animated: true, completion: nil)
     }
 }

@@ -1,5 +1,5 @@
 //
-//  PostView.swift
+//  PostTip.swift
 //  EveryTip
 //
 //  Created by 김경록 on 2/22/24.
@@ -11,10 +11,10 @@ import UIKit
 import SnapKit
 
 protocol PostViewDelegate: AnyObject {
-    func didRequestDismiss(_ Sender: PostView)
+    func didRequestDismiss(_ sender: PostTip)
 }
 
-final class PostView: UIView {
+final class PostTip: UIView {
     
     //MARK: Property
     
@@ -225,77 +225,70 @@ final class PostView: UIView {
         addSubview(attachmentStackView)
         addSubview(temporaryStorageButton)
         
-        topStackView.snp.makeConstraints { make in
-            make.top.equalTo(safeAreaLayoutGuide)
-            make.leading.equalTo(safeAreaLayoutGuide).offset(20)
-            make.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
-            make.height.equalTo(30)
+        topStackView.snp.makeConstraints {
+            $0.top.equalTo(safeAreaLayoutGuide)
+            $0.leading.trailing.equalTo(safeAreaLayoutGuide).inset(20)
+            $0.height.equalTo(30)
         }
         
-        categoryStackView.snp.makeConstraints { make in
-            make.top.equalTo(topStackView.snp.bottom).offset(10)
-            make.leading.equalTo(safeAreaLayoutGuide).offset(20)
-            make.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
-            make.height.equalTo(30)
+        categoryStackView.snp.makeConstraints {
+            $0.top.equalTo(topStackView.snp.bottom).offset(10)
+            $0.leading.trailing.equalTo(safeAreaLayoutGuide).inset(20)
+            $0.height.equalTo(30)
         }
         
-        categoryUnderLine.snp.makeConstraints { make in
-            make.top.equalTo(categoryStackView.snp.bottom).offset(10)
-            make.leading.equalTo(safeAreaLayoutGuide).offset(20)
-            make.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
+        categoryUnderLine.snp.makeConstraints {
+            $0.top.equalTo(categoryStackView.snp.bottom).offset(10)
+            $0.leading.trailing.equalTo(safeAreaLayoutGuide).inset(20)
         }
         
-        hashTagStackView.snp.makeConstraints { make in
-            make.top.equalTo(categoryUnderLine.snp.bottom).offset(10)
-            make.leading.equalTo(safeAreaLayoutGuide).offset(20)
-            make.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
-            make.height.equalTo(30)
+        hashTagStackView.snp.makeConstraints {
+            $0.top.equalTo(categoryUnderLine.snp.bottom).offset(10)
+            $0.leading.trailing.equalTo(safeAreaLayoutGuide).inset(20)
+            $0.height.equalTo(30)
         }
         
-        hashTagUnderLine.snp.makeConstraints { make in
-            make.top.equalTo(hashTagStackView.snp.bottom).offset(10)
-            make.leading.equalTo(safeAreaLayoutGuide).offset(20)
-            make.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
+        hashTagUnderLine.snp.makeConstraints {
+            $0.top.equalTo(hashTagStackView.snp.bottom).offset(10)
+            $0.leading.trailing.equalTo(safeAreaLayoutGuide).inset(20)
         }
         
-        titleTextField.snp.makeConstraints { make in
-            make.top.equalTo(hashTagUnderLine.snp.bottom).offset(20)
-            make.leading.equalTo(safeAreaLayoutGuide).offset(20)
-            make.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
-            make.height.equalTo(24)
+        titleTextField.snp.makeConstraints {
+            $0.top.equalTo(hashTagUnderLine.snp.bottom).offset(20)
+            $0.leading.trailing.equalTo(safeAreaLayoutGuide).inset(20)
+            $0.height.equalTo(24)
         }
         
-        bodyTextView.snp.makeConstraints { make in
-            make.top.equalTo(titleTextField.snp.bottom).offset(10)
-            make.leading.equalTo(safeAreaLayoutGuide).offset(10)
-            make.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
+        bodyTextView.snp.makeConstraints {
+            $0.top.equalTo(titleTextField.snp.bottom).offset(10)
+            $0.leading.trailing.equalTo(safeAreaLayoutGuide).inset(20)
         }
         
-        addedImageView.snp.makeConstraints { make in
-            make.top.equalTo(bodyTextView.snp.bottom).offset(30)
-            make.leading.equalTo(safeAreaLayoutGuide).offset(20)
+        addedImageView.snp.makeConstraints {
+            $0.top.equalTo(bodyTextView.snp.bottom).offset(30)
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(20)
             
-            make.height.equalTo(70)
-            make.width.equalTo(70)
-            make.bottom.equalTo(bodyUnderLine.snp.top).offset(-30)
+            $0.height.equalTo(70)
+            $0.width.equalTo(70)
+            $0.bottom.equalTo(bodyUnderLine.snp.top).offset(-30)
         }
         
-        bodyUnderLine.snp.makeConstraints { make in
-            make.bottom.equalTo(attachmentStackView.snp.top).offset(-10)
-            make.leading.equalTo(safeAreaLayoutGuide)
-            make.trailing.equalTo(safeAreaLayoutGuide)
+        bodyUnderLine.snp.makeConstraints {
+            $0.bottom.equalTo(attachmentStackView.snp.top).offset(-10)
+            $0.leading.equalTo(safeAreaLayoutGuide)
+            $0.trailing.equalTo(safeAreaLayoutGuide)
         }
         
-        attachmentStackView.snp.makeConstraints { make in
-            make.leading.equalTo(safeAreaLayoutGuide).offset(20)
-            make.bottom.equalTo(safeAreaLayoutGuide)
-            make.height.equalTo(34)
+        attachmentStackView.snp.makeConstraints {
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(20)
+            $0.bottom.equalTo(safeAreaLayoutGuide)
+            $0.height.equalTo(34)
         }
         
-        temporaryStorageButton.snp.makeConstraints { make in
-            make.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
-            make.bottom.equalTo(safeAreaLayoutGuide)
-            make.height.equalTo(30)
+        temporaryStorageButton.snp.makeConstraints {
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
+            $0.bottom.equalTo(safeAreaLayoutGuide)
+            $0.height.equalTo(30)
         }
     }
     

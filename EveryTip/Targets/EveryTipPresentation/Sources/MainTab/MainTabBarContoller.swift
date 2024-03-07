@@ -102,7 +102,7 @@ final class MainTabBarContoller: UITabBarController {
     
     @objc
     func presentPost() {
-        let postViewContoller = PostViewController()
+        let postViewContoller = PostTipViewController()
         postViewContoller.modalPresentationStyle = .fullScreen
         self.present(postViewContoller, animated: true)
     }
