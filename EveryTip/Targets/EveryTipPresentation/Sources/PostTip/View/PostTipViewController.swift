@@ -51,15 +51,15 @@ final class PostTipViewController: UIViewController {
     }()
   
     private lazy var categoryUnderLine: UIView = {
-        return UIView.createLine()
+        return StraightLine(color: .et_brandColor4)
     }()
     
     private lazy var hashTagStackView: DetailDisclosureView = {
         return DetailDisclosureView(title: "#태그 입력(최대 00개)")
     }()
     
-    private lazy var hashTagUnderLine: UIView = {
-        return UIView.createLine()
+    private lazy var hashTagUnderLine: StraightLine = {
+        return StraightLine(color: .et_brandColor4)
     }()
     
     private let titleTextField: UITextField = {
@@ -91,14 +91,14 @@ final class PostTipViewController: UIViewController {
     }()
     
     private lazy var bodyUnderLine: UIView = {
-        UIView.createLine()
+        return StraightLine(color: .et_brandColor4)
     }()
     
     private let addImageButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "plus.square"), for: .normal)
         button.setTitle("이미지", for: .normal)
-        button.tintColor = UIColor.EveryTip.textColor5
+        button.tintColor = .et_textColor5
         
         return button
     }()
@@ -107,7 +107,7 @@ final class PostTipViewController: UIViewController {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "link.circle"), for: .normal)
         button.setTitle("링크", for: .normal)
-        button.tintColor = UIColor.EveryTip.textColor5
+        button.tintColor = .et_textColor5
         
         return button
     }()
@@ -125,7 +125,7 @@ final class PostTipViewController: UIViewController {
     private let temporaryStorageButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("임시 저장 0", for: .normal)
-        button.tintColor = UIColor.EveryTip.textColor5
+        button.tintColor = .et_textColor5
         
         return button
     }()

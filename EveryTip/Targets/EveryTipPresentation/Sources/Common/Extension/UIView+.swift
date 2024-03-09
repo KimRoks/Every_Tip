@@ -15,14 +15,4 @@ extension UIView {
         layer.shadowOpacity = opacity
         layer.shadowRadius = radius
     }
-    
-    static func createLine() -> UIView {
-        let line = UIView()
-        line.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.00)
-        line.snp.makeConstraints { make in
-            make.height.equalTo(1)
-        }
-        
-        return line
-    }
 }
