@@ -46,55 +46,16 @@ final class PostTipViewController: UIViewController {
         return stack
     }()
     
-    private lazy var categoryStackView: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.distribution = .fillProportionally
-        
-        return stack
+    private lazy var categoryStackView: DetailDisclosureView = {
+        return DetailDisclosureView(title: "카테고리 선택")
     }()
-    
-    private let categoryLabel: UILabel = {
-        let label = UILabel()
-        label.text = "카테고리 선택"
-        
-        return label
-    }()
-    
-    private let categorydetailButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setBackgroundImage(UIImage(systemName: "greaterthan"), for: .normal)
-        button.tintColor = UIColor.EveryTip.textColor5
-        button.contentMode = .center
-        
-        return button
-    }()
-    
+  
     private lazy var categoryUnderLine: UIView = {
         return UIView.createLine()
     }()
     
-    private lazy var hashTagStackView: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.distribution = .fillProportionally
-        
-        return stack
-    }()
-    
-    private let hashTagLabel: UILabel = {
-        let label = UILabel()
-        label.text = "#태그 입력(최대 00개)"
-        
-        return label
-    }()
-    
-    private let hashTagDetailButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setBackgroundImage(UIImage(systemName: "greaterthan"), for: .normal)
-        button.tintColor = UIColor.EveryTip.textColor5
-        
-        return button
+    private lazy var hashTagStackView: DetailDisclosureView = {
+        return DetailDisclosureView(title: "#태그 입력(최대 00개)")
     }()
     
     private lazy var hashTagUnderLine: UIView = {
@@ -194,13 +155,7 @@ final class PostTipViewController: UIViewController {
         topStackView.addArrangedSubview(closeButton)
         topStackView.addArrangedSubview(topTitleLabel)
         topStackView.addArrangedSubview(registerButton)
-        
-        categoryStackView.addArrangedSubview(categoryLabel)
-        categoryStackView.addArrangedSubview(categorydetailButton)
-        
-        hashTagStackView.addArrangedSubview(hashTagLabel)
-        hashTagStackView.addArrangedSubview(hashTagDetailButton)
-        
+
         attachmentStackView.addArrangedSubview(addImageButton)
         attachmentStackView.addArrangedSubview(addLinkButton)
         
@@ -225,15 +180,7 @@ final class PostTipViewController: UIViewController {
         topTitleLabel.snp.makeConstraints {
             $0.width.greaterThanOrEqualTo(closeButton.snp.width)
         }
-        
-        categorydetailButton.snp.makeConstraints {
-            $0.width.equalTo(15)
-        }
-        
-        hashTagDetailButton.snp.makeConstraints {
-            $0.width.equalTo(15)
-        }
-        
+
         topStackView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
