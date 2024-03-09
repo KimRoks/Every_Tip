@@ -46,7 +46,7 @@ final class PostTipViewController: UIViewController {
         return stack
     }()
     
-    private lazy var categoryStackView: DetailDisclosureView = {
+    private lazy var choiceCategoryView: DetailDisclosureView = {
         return DetailDisclosureView(title: "카테고리 선택")
     }()
   
@@ -54,7 +54,7 @@ final class PostTipViewController: UIViewController {
         return StraightLine(color: .et_brandColor4)
     }()
     
-    private lazy var hashTagStackView: DetailDisclosureView = {
+    private lazy var hashtagView: DetailDisclosureView = {
         return DetailDisclosureView(title: "#태그 입력(최대 00개)")
     }()
     
@@ -82,12 +82,8 @@ final class PostTipViewController: UIViewController {
         return textView
     }()
     
-    private let addedImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.layer.cornerRadius = 10
-        imageView.backgroundColor = .black
-        
-        return imageView
+    private let addedImageView: RoundedButton = {
+        return RoundedButton(cornerRadius: 10, backgroundColor: .black, image: nil)
     }()
     
     private lazy var bodyUnderLine: UIView = {
@@ -160,9 +156,9 @@ final class PostTipViewController: UIViewController {
         attachmentStackView.addArrangedSubview(addLinkButton)
         
         view.addSubview(topStackView)
-        view.addSubview(categoryStackView)
+        view.addSubview(choiceCategoryView)
         view.addSubview(categoryUnderLine)
-        view.addSubview(hashTagStackView)
+        view.addSubview(hashtagView)
         view.addSubview(hashTagUnderLine)
         view.addSubview(titleTextField)
         view.addSubview(bodyTextView)
@@ -187,25 +183,25 @@ final class PostTipViewController: UIViewController {
             $0.height.equalTo(30)
         }
         
-        categoryStackView.snp.makeConstraints {
+        choiceCategoryView.snp.makeConstraints {
             $0.top.equalTo(topStackView.snp.bottom).offset(10)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
             $0.height.equalTo(30)
         }
         
         categoryUnderLine.snp.makeConstraints {
-            $0.top.equalTo(categoryStackView.snp.bottom).offset(10)
+            $0.top.equalTo(choiceCategoryView.snp.bottom).offset(10)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
         
-        hashTagStackView.snp.makeConstraints {
+        hashtagView.snp.makeConstraints {
             $0.top.equalTo(categoryUnderLine.snp.bottom).offset(10)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
             $0.height.equalTo(30)
         }
         
         hashTagUnderLine.snp.makeConstraints {
-            $0.top.equalTo(hashTagStackView.snp.bottom).offset(10)
+            $0.top.equalTo(hashtagView.snp.bottom).offset(10)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
         
