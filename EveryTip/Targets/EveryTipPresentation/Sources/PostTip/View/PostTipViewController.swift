@@ -115,6 +115,8 @@ final class PostTipViewController: UIViewController {
         textView.textColor = UIColor.placeholderText
         textView.font = .systemFont(ofSize: 16, weight: UIFont.Weight(rawValue: 500))
         textView.isScrollEnabled = true
+        textView.textContainer.lineFragmentPadding = 0
+        textView.textContainerInset = .zero
         
         return textView
     }()
