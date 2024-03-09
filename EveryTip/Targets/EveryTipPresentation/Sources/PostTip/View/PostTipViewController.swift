@@ -38,23 +38,18 @@ final class PostTipViewController: UIViewController {
     }()
     
     private lazy var topStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [closeButton, topTitleLabel, registerButton])
+        let stack = UIStackView()
         stack.axis = .horizontal
         stack.distribution = .equalSpacing
         stack.alignment = .fill
-        
-        closeButton.snp.makeConstraints { $0.width.equalTo(registerButton.snp.width) }
-        topTitleLabel.snp.makeConstraints { $0.width.greaterThanOrEqualTo(closeButton.snp.width) }
         
         return stack
     }()
     
     private lazy var categoryStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [categoryLabel,
-                                                   categorydetailButton])
+        let stack = UIStackView()
         stack.axis = .horizontal
         stack.distribution = .fillProportionally
-        categorydetailButton.snp.makeConstraints { $0.width.equalTo(15) }
         
         return stack
     }()
@@ -80,11 +75,9 @@ final class PostTipViewController: UIViewController {
     }()
     
     private lazy var hashTagStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [hashTagLabel,
-                                                   hashTagDetailButton])
+        let stack = UIStackView()
         stack.axis = .horizontal
         stack.distribution = .fillProportionally
-        hashTagDetailButton.snp.makeConstraints { $0.width.equalTo(15) }
         
         return stack
     }()
@@ -157,8 +150,7 @@ final class PostTipViewController: UIViewController {
     }()
     
     private lazy var attachmentStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [addImageButton,
-                                                   addLinkButton])
+        let stack = UIStackView()
         stack.axis = .horizontal
         stack.distribution = .fillEqually
         stack.spacing = 10
@@ -175,42 +167,71 @@ final class PostTipViewController: UIViewController {
         return button
     }()
     
-    //MARK: Life Cycle
+    //MARK: View Life Cycle
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        setupBackgroundView()
         configureLayout()
+        setupConstraints()
         
         closeButton.addTarget(
             nil,
             action: #selector(dismissView),
-            for: .touchUpInside)
+            for: .touchUpInside
+        )
     }
     
     //MARK: Private Methods
     
-    private func configureLayout() {
-        setupViewHierarchies()
-        setupConstraints()
+    private func setupBackgroundView() {
+        view.backgroundColor = .white
     }
     
-    private func setupViewHierarchies() {
-        let subviews = [topStackView,
-                        categoryStackView,
-                        categoryUnderLine,
-                        hashTagStackView,
-                        hashTagUnderLine,
-                        titleTextField,
-                        bodyTextView,
-                        addedImageView,
-                        bodyUnderLine,
-                        attachmentStackView,
-                        temporaryStorageButton]
-        subviews.forEach { view.addSubview($0) }
+    private func configureLayout() {
+        topStackView.addArrangedSubview(closeButton)
+        topStackView.addArrangedSubview(topTitleLabel)
+        topStackView.addArrangedSubview(registerButton)
+        
+        categoryStackView.addArrangedSubview(categoryLabel)
+        categoryStackView.addArrangedSubview(categorydetailButton)
+        
+        hashTagStackView.addArrangedSubview(hashTagLabel)
+        hashTagStackView.addArrangedSubview(hashTagDetailButton)
+        
+        attachmentStackView.addArrangedSubview(addImageButton)
+        attachmentStackView.addArrangedSubview(addLinkButton)
+        
+        view.addSubview(topStackView)
+        view.addSubview(categoryStackView)
+        view.addSubview(categoryUnderLine)
+        view.addSubview(hashTagStackView)
+        view.addSubview(hashTagUnderLine)
+        view.addSubview(titleTextField)
+        view.addSubview(bodyTextView)
+        view.addSubview(addedImageView)
+        view.addSubview(bodyUnderLine)
+        view.addSubview(attachmentStackView)
+        view.addSubview(temporaryStorageButton)
     }
     
     private func setupConstraints() {
+        closeButton.snp.makeConstraints {
+            $0.width.equalTo(registerButton.snp.width)
+        }
+        
+        topTitleLabel.snp.makeConstraints {
+            $0.width.greaterThanOrEqualTo(closeButton.snp.width)
+        }
+        
+        categorydetailButton.snp.makeConstraints {
+            $0.width.equalTo(15)
+        }
+        
+        hashTagDetailButton.snp.makeConstraints {
+            $0.width.equalTo(15)
+        }
+        
         topStackView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
@@ -277,8 +298,6 @@ final class PostTipViewController: UIViewController {
             $0.height.equalTo(30)
         }
     }
-    
-    
     
     @objc
     private func dismissView() {
