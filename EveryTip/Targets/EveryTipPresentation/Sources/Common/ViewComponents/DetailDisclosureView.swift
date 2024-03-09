@@ -17,7 +17,10 @@ final class DetailDisclosureView: UIStackView {
     
     private let detailDisclosureButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setBackgroundImage(UIImage(systemName: "greaterthan"), for: .normal)
+        button.setBackgroundImage(
+            UIImage(systemName: "greaterthan"),
+            for: .normal
+        )
         button.tintColor = .et_textColor5
         button.contentMode = .center
         

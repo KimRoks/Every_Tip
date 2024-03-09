@@ -16,7 +16,10 @@ final class PostTipViewController: UIViewController {
     
     private let closeButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "x.square"), for: .normal)
+        button.setImage(
+            UIImage(systemName: "x.square"),
+            for: .normal
+        )
         button.tintColor = .black
         
         return button
@@ -31,7 +34,10 @@ final class PostTipViewController: UIViewController {
     
     private let registerButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("등록", for: .normal)
+        button.setTitle(
+            "등록",
+            for: .normal
+        )
         button.tintColor = .black
         
         return button
@@ -46,26 +52,29 @@ final class PostTipViewController: UIViewController {
         return stack
     }()
     
-    private lazy var choiceCategoryView: DetailDisclosureView = {
+    private let choiceCategoryView: DetailDisclosureView = {
         return DetailDisclosureView(title: "카테고리 선택")
     }()
-  
-    private lazy var categoryUnderLine: UIView = {
+    
+    private let categoryUnderLine: UIView = {
         return StraightLine(color: .et_brandColor4)
     }()
     
-    private lazy var hashtagView: DetailDisclosureView = {
+    private let hashtagView: DetailDisclosureView = {
         return DetailDisclosureView(title: "#태그 입력(최대 00개)")
     }()
     
-    private lazy var hashTagUnderLine: StraightLine = {
+    private let hashTagUnderLine: StraightLine = {
         return StraightLine(color: .et_brandColor4)
     }()
     
     private let titleTextField: UITextField = {
         let field = UITextField()
         field.placeholder = "제목을 입력하세요"
-        field.font = .systemFont(ofSize: 20, weight: UIFont.Weight(rawValue: 700))
+        field.font = .systemFont(
+            ofSize: 20,
+            weight: UIFont.Weight(rawValue: 700)
+        )
         
         return field
     }()
@@ -74,7 +83,10 @@ final class PostTipViewController: UIViewController {
         let textView = UITextView()
         textView.text = "내용 입력"
         textView.textColor = UIColor.placeholderText
-        textView.font = .systemFont(ofSize: 16, weight: UIFont.Weight(rawValue: 500))
+        textView.font = .systemFont(
+            ofSize: 16,
+            weight: UIFont.Weight(rawValue: 500)
+        )
         textView.isScrollEnabled = true
         textView.textContainer.lineFragmentPadding = 0
         textView.textContainerInset = .zero
@@ -83,17 +95,27 @@ final class PostTipViewController: UIViewController {
     }()
     
     private let addedImageView: RoundedButton = {
-        return RoundedButton(cornerRadius: 10, backgroundColor: .black, image: nil)
+        return RoundedButton(
+            cornerRadius: 10,
+            backgroundColor: .black,
+            image: nil
+        )
     }()
     
-    private lazy var bodyUnderLine: UIView = {
+    private let bodyUnderLine: UIView = {
         return StraightLine(color: .et_brandColor4)
     }()
     
     private let addImageButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "plus.square"), for: .normal)
-        button.setTitle("이미지", for: .normal)
+        button.setImage(
+            UIImage(systemName: "plus.square"),
+            for: .normal
+        )
+        button.setTitle(
+            "이미지",
+            for: .normal
+        )
         button.tintColor = .et_textColor5
         
         return button
@@ -101,8 +123,14 @@ final class PostTipViewController: UIViewController {
     
     private let addLinkButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "link.circle"), for: .normal)
-        button.setTitle("링크", for: .normal)
+        button.setImage(
+            UIImage(systemName: "link.circle"),
+            for: .normal
+        )
+        button.setTitle(
+            "링크",
+            for: .normal
+        )
         button.tintColor = .et_textColor5
         
         return button
@@ -120,7 +148,10 @@ final class PostTipViewController: UIViewController {
     // TODO: 저장 숫자 카운팅 설정
     private let temporaryStorageButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("임시 저장 0", for: .normal)
+        button.setTitle(
+            "임시 저장 0",
+            for: .normal
+        )
         button.tintColor = .et_textColor5
         
         return button
@@ -151,7 +182,7 @@ final class PostTipViewController: UIViewController {
         topStackView.addArrangedSubview(closeButton)
         topStackView.addArrangedSubview(topTitleLabel)
         topStackView.addArrangedSubview(registerButton)
-
+        
         attachmentStackView.addArrangedSubview(addImageButton)
         attachmentStackView.addArrangedSubview(addLinkButton)
         
@@ -176,7 +207,7 @@ final class PostTipViewController: UIViewController {
         topTitleLabel.snp.makeConstraints {
             $0.width.greaterThanOrEqualTo(closeButton.snp.width)
         }
-
+        
         topStackView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
