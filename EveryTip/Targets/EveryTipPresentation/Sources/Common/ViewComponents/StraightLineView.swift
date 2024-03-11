@@ -1,5 +1,5 @@
 //
-//  StraightLine.swift
+//  StraightLineView.swift
 //  EveryTipPresentation
 //
 //  Created by 김경록 on 3/9/24.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class StraightLine: UIView {
+final class StraightLineView: UIView {
     init(color: UIColor) {
         super.init(frame: .zero)
         self.backgroundColor = color

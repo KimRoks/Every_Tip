@@ -1,5 +1,5 @@
 //
-//  ViewComponents.swift
+//  DetailDisclosureView.swift
 //  EveryTipPresentation
 //
 //  Created by 김경록 on 3/9/24.

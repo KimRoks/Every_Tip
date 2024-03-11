@@ -10,7 +10,7 @@ import UIKit
 
 import SnapKit
 
-final class PostTipViewController: UIViewController {
+final class PostTipViewController: BaseViewController {
     
     //MARK: Properties
     
@@ -57,15 +57,15 @@ final class PostTipViewController: UIViewController {
     }()
     
     private let categoryUnderLine: UIView = {
-        return StraightLine(color: .et_brandColor4)
+        return StraightLineView(color: .et_brandColor4)
     }()
     
     private let hashtagView: DetailDisclosureView = {
         return DetailDisclosureView(title: "#태그 입력(최대 00개)")
     }()
     
-    private let hashTagUnderLine: StraightLine = {
-        return StraightLine(color: .et_brandColor4)
+    private let hashTagUnderLine: StraightLineView = {
+        return StraightLineView(color: .et_brandColor4)
     }()
     
     private let titleTextField: UITextField = {
@@ -103,7 +103,7 @@ final class PostTipViewController: UIViewController {
     }()
     
     private let bodyUnderLine: UIView = {
-        return StraightLine(color: .et_brandColor4)
+        return StraightLineView(color: .et_brandColor4)
     }()
     
     private let addImageButton: UIButton = {
@@ -161,8 +161,7 @@ final class PostTipViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        setupBackgroundView()
-        configureLayout()
+        setupLayout()
         setupConstraints()
         
         closeButton.addTarget(
@@ -174,11 +173,7 @@ final class PostTipViewController: UIViewController {
     
     //MARK: Private Methods
     
-    private func setupBackgroundView() {
-        view.backgroundColor = .white
-    }
-    
-    private func configureLayout() {
+    private func setupLayout() {
         topStackView.addArrangedSubview(closeButton)
         topStackView.addArrangedSubview(topTitleLabel)
         topStackView.addArrangedSubview(registerButton)
