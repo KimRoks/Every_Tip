@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class BaseViewController: UIViewController {
+class BaseViewController: UIViewController {
     /// 스와이프로 뒤로가기 활성화 여부
     var isInteractivePopGestureEnabled = false
     
@@ -35,6 +35,6 @@ final class BaseViewController: UIViewController {
     // MARK: - Methods
     
     func setupViews() {
-        // 공통 기본 사항 추가 ex) background color 세팅
+        view.backgroundColor = .white
     }
 }

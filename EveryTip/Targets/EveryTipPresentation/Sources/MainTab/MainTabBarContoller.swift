@@ -18,7 +18,7 @@ final class MainTabBarContoller: UITabBarController {
         // TODO: 이미지 에셋 받으면 변경
         
         button.setBackgroundImage(UIImage(systemName: "plus"), for: .normal)
-        button.backgroundColor = .signatureGreen
+        button.backgroundColor = .et_brandColor1
         button.tintColor = .white
         button.layer.cornerRadius = 25
         
@@ -27,6 +27,8 @@ final class MainTabBarContoller: UITabBarController {
             opacity: 0.2,
             radius: 4
         )
+        
+        button.addTarget(nil, action: #selector(presentPost), for: .touchUpInside)
         
         return button
     }()
@@ -96,5 +98,12 @@ final class MainTabBarContoller: UITabBarController {
             opacity: 0.12,
             radius: 5
         )
+    }
+    
+    @objc
+    func presentPost() {
+        let postViewContoller = PostTipViewController()
+        postViewContoller.modalPresentationStyle = .fullScreen
+        self.present(postViewContoller, animated: true)
     }
 }
