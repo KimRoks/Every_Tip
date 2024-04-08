@@ -101,9 +101,9 @@ final class MainTabBarContoller: UITabBarController {
     }
     
     @objc
-    func presentPost() {
-        let postViewContoller = PostTipViewController()
-        postViewContoller.modalPresentationStyle = .fullScreen
-        self.present(postViewContoller, animated: true)
+    private func presentPost() {
+        guard let navigationController = self.navigationController else { return }
+        let postTipCoordinator = DefaultPostTipViewCoordinator(navigationController: navigationController)
+        postTipCoordinator.start()
     }
 }
