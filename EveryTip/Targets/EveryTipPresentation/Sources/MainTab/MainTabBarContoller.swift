@@ -9,6 +9,7 @@
 import UIKit
 
 final class MainTabBarContoller: UITabBarController {
+    weak var coordinator: DefaultMainTabCoordinator?
     
     private let buttonShadowSize: CGSize = CGSize(width: 1, height: 3)
     private let tabBarShadowSize: CGSize = CGSize(width: 0, height: -2)
@@ -28,7 +29,11 @@ final class MainTabBarContoller: UITabBarController {
             radius: 4
         )
         
-        button.addTarget(nil, action: #selector(presentPost), for: .touchUpInside)
+        button.addTarget(
+            nil,
+            action: #selector(presentPostView),
+            for: .touchUpInside
+        )
         
         return button
     }()
@@ -101,9 +106,7 @@ final class MainTabBarContoller: UITabBarController {
     }
     
     @objc
-    private func presentPost() {
-        guard let navigationController = self.navigationController else { return }
-        let postTipCoordinator = DefaultPostTipViewCoordinator(navigationController: navigationController)
-        postTipCoordinator.start()
+    private func presentPostView() {
+        coordinator?.presentPostView()
     }
 }

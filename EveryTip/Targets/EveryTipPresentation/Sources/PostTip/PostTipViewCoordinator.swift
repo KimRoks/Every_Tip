@@ -11,27 +11,33 @@ import UIKit
 protocol PostTipViewCoordinator: Coordinator { }
 
 final class DefaultPostTipViewCoordinator: PostTipViewCoordinator {
-    var parentCoordinator: (any Coordinator)?
+    weak var parentCoordinator: Coordinator?
+    let postTipViewController = PostTipViewController()
     
-    var childCoordinators: [any Coordinator] = []
+    var childCoordinators: [Coordinator] = []
     
     var navigationController: UINavigationController
     
-    var postTipViewController: PostTipViewController
-    
-    
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
-        postTipViewController = PostTipViewController()
     }
     
     func start() {
-        startPostView()
+        postTipViewController.coordinator = self
+        presentPostView()
     }
     
-    private func startPostView() {
+    func presentPostView() {
         postTipViewController.modalPresentationStyle = .fullScreen
-        navigationController.present(postTipViewController, animated: true, completion: nil)
+        navigationController.present(
+            postTipViewController,
+            animated: true,
+            completion: nil
+        )
+    }
+    
+    func dismissPostView() {
+        navigationController.dismiss(animated: true)
     }
     
     func didFinish() { }
