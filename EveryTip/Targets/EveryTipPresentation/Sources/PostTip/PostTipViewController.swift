@@ -13,7 +13,8 @@ import SnapKit
 final class PostTipViewController: BaseViewController {
     
     //MARK: Properties
-    weak var coordinator: DefaultPostTipViewCoordinator?
+    
+    weak var coordinator: PostTipViewCoordinator?
     
     private let closeButton: UIButton = {
         let button = UIButton(type: .system)
@@ -272,6 +273,6 @@ final class PostTipViewController: BaseViewController {
     
     @objc
     private func dismissView() {
-        coordinator?.dismissPostView()
+        coordinator?.didFinish()
     }
 }

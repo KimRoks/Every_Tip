@@ -9,7 +9,10 @@
 import UIKit
 
 final class MainTabBarContoller: UITabBarController {
-    weak var coordinator: DefaultMainTabCoordinator?
+    
+    //MARK: Properties
+    
+    weak var coordinator: MainTabCoordinator?
     
     private let buttonShadowSize: CGSize = CGSize(width: 1, height: 3)
     private let tabBarShadowSize: CGSize = CGSize(width: 0, height: -2)
@@ -38,11 +41,15 @@ final class MainTabBarContoller: UITabBarController {
         return button
     }()
     
+    //MARK: View Life Cycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
         configureMainTabBarController()
     }
     
+    //MARK: Private Methods
+
     private func configureMainTabBarController() {
         tabBar.addSubview(middleButton)
         middleButton.frame = CGRect(

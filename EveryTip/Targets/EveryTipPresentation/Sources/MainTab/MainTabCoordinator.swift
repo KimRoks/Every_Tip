@@ -7,9 +7,12 @@
 //
 
 import UIKit
+
 import SnapKit
 
-protocol MainTabCoordinator: Coordinator { }
+protocol MainTabCoordinator: Coordinator { 
+    func presentPostView()
+}
 
 final class DefaultMainTabCoordinator: MainTabCoordinator {
     weak var parentCoordinator: Coordinator?
