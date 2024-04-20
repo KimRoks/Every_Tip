@@ -37,12 +37,12 @@ final class DefaultMainTabCoordinator: MainTabCoordinator {
     }
     
     func presentPostView() {
-        guard let mainTab = mainTabBarController else {
+        guard let mainTabBarController = mainTabBarController else {
             return
         }
         let postCoordinator = DefaultPostTipViewCoordinator(
             navigationController: navigationController,
-            presentingViewController: mainTab
+            presentingViewController: mainTabBarController
         )
         postCoordinator.parentCoordinator = self
         childCoordinators.append(postCoordinator)
