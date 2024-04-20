@@ -14,14 +14,24 @@ final class MainTabBarContoller: UITabBarController {
     
     weak var coordinator: MainTabCoordinator?
     
-    private let buttonShadowSize: CGSize = CGSize(width: 1, height: 3)
-    private let tabBarShadowSize: CGSize = CGSize(width: 0, height: -2)
+    private let buttonShadowSize: CGSize = CGSize(
+        width: 1,
+        height: 3
+    )
+    
+    private let tabBarShadowSize: CGSize = CGSize(
+        width: 0,
+        height: -2
+    )
     
     private lazy var middleButton: UIButton = {
         let button = UIButton(type: .system)
         // TODO: 이미지 에셋 받으면 변경
         
-        button.setBackgroundImage(UIImage(systemName: "plus"), for: .normal)
+        button.setBackgroundImage(
+            UIImage(systemName: "plus"),
+            for: .normal
+        )
         button.backgroundColor = .et_brandColor1
         button.tintColor = .white
         button.layer.cornerRadius = 25

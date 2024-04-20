@@ -8,9 +8,7 @@
 
 import UIKit
 
-import SnapKit
-
-protocol MainTabCoordinator: Coordinator { 
+protocol MainTabCoordinator: Coordinator {
     func presentPostView()
 }
 
@@ -19,19 +17,33 @@ final class DefaultMainTabCoordinator: MainTabCoordinator {
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
     
+    var mainTabBarController: MainTabBarContoller?
+    
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
     
     func start() {
         // TODO: MainTabBarController 추가
-        let mainTab = MainTabBarContoller()
+        mainTabBarController = MainTabBarContoller()
+        guard let mainTab = mainTabBarController else {
+            return
+        }
         mainTab.coordinator = self
-        navigationController.setViewControllers([mainTab], animated: true)
+        navigationController.setViewControllers(
+            [mainTab],
+            animated: true
+        )
     }
     
     func presentPostView() {
-        let postCoordinator = DefaultPostTipViewCoordinator(navigationController: navigationController)
+        guard let mainTab = mainTabBarController else {
+            return
+        }
+        let postCoordinator = DefaultPostTipViewCoordinator(
+            navigationController: navigationController,
+            presentingViewController: mainTab
+        )
         postCoordinator.parentCoordinator = self
         childCoordinators.append(postCoordinator)
         postCoordinator.start()

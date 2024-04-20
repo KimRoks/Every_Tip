@@ -12,14 +12,16 @@ protocol PostTipViewCoordinator: Coordinator { }
 
 final class DefaultPostTipViewCoordinator: PostTipViewCoordinator {
     weak var parentCoordinator: Coordinator?
-    var postTipViewController: PostTipViewController?
-    
     var childCoordinators: [Coordinator] = []
-    
     var navigationController: UINavigationController
     
-    init(navigationController: UINavigationController) {
+    var postTipViewController: PostTipViewController?
+    var presentingViewController: UIViewController?
+    
+    init(navigationController: UINavigationController,
+         presentingViewController: UIViewController) {
         self.navigationController = navigationController
+        self.presentingViewController = presentingViewController
     }
     
     func start() {
@@ -33,7 +35,10 @@ final class DefaultPostTipViewCoordinator: PostTipViewCoordinator {
             return
         }
         postTipViewController.modalPresentationStyle = .fullScreen
-        navigationController.present(
+        guard let presentingViewController = presentingViewController else {
+            return
+        }
+        presentingViewController.present(
             postTipViewController,
             animated: true,
             completion: nil
@@ -41,7 +46,10 @@ final class DefaultPostTipViewCoordinator: PostTipViewCoordinator {
     }
     
     func dismissPostView() {
-        navigationController.dismiss(animated: true)
+        guard let presentingViewController = presentingViewController else {
+            return
+        }
+        presentingViewController.dismiss(animated: true)
     }
     
     func didFinish() {
