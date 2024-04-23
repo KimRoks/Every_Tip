@@ -11,12 +11,17 @@ import UIKit
 protocol PostTipViewCoordinator: Coordinator { }
 
 final class DefaultPostTipViewCoordinator: PostTipViewCoordinator {
+    
+    //MARK: Internal Properties
+    
     weak var parentCoordinator: Coordinator?
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
     
-    var postTipViewController: PostTipViewController?
-    var presentingViewController: UIViewController?
+    //MARK: Private Properties
+    
+    private var postTipViewController: PostTipViewController?
+    private weak var presentingViewController: UIViewController?
     
     init(navigationController: UINavigationController,
          presentingViewController: UIViewController) {
@@ -24,13 +29,31 @@ final class DefaultPostTipViewCoordinator: PostTipViewCoordinator {
         self.presentingViewController = presentingViewController
     }
     
+    //MARK: Internal Methods
+    
     func start() {
         postTipViewController = PostTipViewController()
         postTipViewController?.coordinator = self
         presentPostView()
     }
     
-    func presentPostView() {
+    func didFinish() {
+        guard let presentingViewController = presentingViewController else {
+            return
+        }
+        presentingViewController.dismiss(
+            animated: true,
+            completion: removeSelfFromParentCoordinator
+        )
+    }
+    
+    //MARK: Private Methods
+    
+    private func removeSelfFromParentCoordinator() {
+        parentCoordinator?.remove(child: self)
+    }
+    
+    private func presentPostView() {
         guard let postTipViewController = postTipViewController else {
             return
         }
@@ -43,16 +66,5 @@ final class DefaultPostTipViewCoordinator: PostTipViewCoordinator {
             animated: true,
             completion: nil
         )
-    }
-    
-    func dismissPostView() {
-        guard let presentingViewController = presentingViewController else {
-            return
-        }
-        presentingViewController.dismiss(animated: true)
-    }
-    
-    func didFinish() {
-        dismissPostView()
     }
 }

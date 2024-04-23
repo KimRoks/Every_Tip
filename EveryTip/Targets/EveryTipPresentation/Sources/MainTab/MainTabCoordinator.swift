@@ -13,18 +13,24 @@ protocol MainTabCoordinator: Coordinator {
 }
 
 final class DefaultMainTabCoordinator: MainTabCoordinator {
+    
+    //MARK: Internal Properties
+
     weak var parentCoordinator: Coordinator?
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
     
-    var mainTabBarController: MainTabBarContoller?
+    //MARK: Private Properties
+
+    private var mainTabBarController: MainTabBarContoller?
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
     
+    //MARK: Internal Methods
+    
     func start() {
-        // TODO: MainTabBarController 추가
         mainTabBarController = MainTabBarContoller()
         guard let mainTab = mainTabBarController else {
             return
