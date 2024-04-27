@@ -14,6 +14,8 @@ final class PostTipViewController: BaseViewController {
     
     //MARK: Properties
     
+    weak var coordinator: PostTipViewCoordinator?
+    
     private let closeButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(
@@ -163,7 +165,6 @@ final class PostTipViewController: BaseViewController {
         super.viewDidLoad()
         setupLayout()
         setupConstraints()
-        
         closeButton.addTarget(
             nil,
             action: #selector(dismissView),
@@ -272,6 +273,6 @@ final class PostTipViewController: BaseViewController {
     
     @objc
     private func dismissView() {
-        dismiss(animated: true)
+        coordinator?.didFinish()
     }
 }

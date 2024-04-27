@@ -7,23 +7,52 @@
 //
 
 import UIKit
-import SnapKit
 
-protocol MainTabCoordinator: Coordinator { }
+protocol MainTabCoordinator: Coordinator {
+    func presentPostView()
+}
 
 final class DefaultMainTabCoordinator: MainTabCoordinator {
-    var parentCoordinator: Coordinator?
+    
+    //MARK: Internal Properties
+
+    weak var parentCoordinator: Coordinator?
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
+    
+    //MARK: Private Properties
+
+    private var mainTabBarController: MainTabBarContoller?
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
     
+    //MARK: Internal Methods
+    
     func start() {
-        // TODO: MainTabBarController 추가
-        let mainTab = MainTabBarContoller()
-        navigationController.setViewControllers([mainTab], animated: true)
+        mainTabBarController = MainTabBarContoller()
+        guard let mainTab = mainTabBarController else {
+            return
+        }
+        mainTab.coordinator = self
+        navigationController.setViewControllers(
+            [mainTab],
+            animated: true
+        )
+    }
+    
+    func presentPostView() {
+        guard let mainTabBarController = mainTabBarController else {
+            return
+        }
+        let postCoordinator = DefaultPostTipViewCoordinator(
+            navigationController: navigationController,
+            presentingViewController: mainTabBarController
+        )
+        postCoordinator.parentCoordinator = self
+        childCoordinators.append(postCoordinator)
+        postCoordinator.start()
     }
     
     func didFinish() {}

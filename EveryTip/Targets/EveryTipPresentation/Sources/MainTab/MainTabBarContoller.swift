@@ -10,14 +10,28 @@ import UIKit
 
 final class MainTabBarContoller: UITabBarController {
     
-    private let buttonShadowSize: CGSize = CGSize(width: 1, height: 3)
-    private let tabBarShadowSize: CGSize = CGSize(width: 0, height: -2)
+    //MARK: Properties
+    
+    weak var coordinator: MainTabCoordinator?
+    
+    private let buttonShadowSize: CGSize = CGSize(
+        width: 1,
+        height: 3
+    )
+    
+    private let tabBarShadowSize: CGSize = CGSize(
+        width: 0,
+        height: -2
+    )
     
     private lazy var middleButton: UIButton = {
         let button = UIButton(type: .system)
         // TODO: 이미지 에셋 받으면 변경
         
-        button.setBackgroundImage(UIImage(systemName: "plus"), for: .normal)
+        button.setBackgroundImage(
+            UIImage(systemName: "plus"),
+            for: .normal
+        )
         button.backgroundColor = .et_brandColor1
         button.tintColor = .white
         button.layer.cornerRadius = 25
@@ -28,16 +42,24 @@ final class MainTabBarContoller: UITabBarController {
             radius: 4
         )
         
-        button.addTarget(nil, action: #selector(presentPost), for: .touchUpInside)
+        button.addTarget(
+            nil,
+            action: #selector(presentPostView),
+            for: .touchUpInside
+        )
         
         return button
     }()
     
+    //MARK: View Life Cycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
         configureMainTabBarController()
     }
     
+    //MARK: Private Methods
+
     private func configureMainTabBarController() {
         tabBar.addSubview(middleButton)
         middleButton.frame = CGRect(
@@ -101,9 +123,7 @@ final class MainTabBarContoller: UITabBarController {
     }
     
     @objc
-    func presentPost() {
-        let postViewContoller = PostTipViewController()
-        postViewContoller.modalPresentationStyle = .fullScreen
-        self.present(postViewContoller, animated: true)
+    private func presentPostView() {
+        coordinator?.presentPostView()
     }
 }
