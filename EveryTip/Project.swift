@@ -127,7 +127,8 @@ let project = Project(
             platform: .iOS,
             dependencies: [
                 .target(name: Layer.domain.layerName),
-                .external(name: "SnapKit")
+                .external(name: "SnapKit"),
+                .external(name: "RxCocoa")
                 // snapkit, then, etc...
             ]
         ),
