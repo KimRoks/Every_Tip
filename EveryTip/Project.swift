@@ -128,7 +128,8 @@ let project = Project(
             dependencies: [
                 .target(name: Layer.domain.layerName),
                 .external(name: "SnapKit"),
-                .external(name: "RxCocoa")
+                .external(name: "RxCocoa"),
+                .external(name: "ReactorKit")
                 // snapkit, then, etc...
             ]
         ),
@@ -156,8 +157,7 @@ let project = Project(
             dependencies: [
                 // core dependencies, rx swift etc ...
                 .external(name: "Swinject"),
-                .external(name: "RxSwift"),
-                .external(name: "ReactorKit")
+                .external(name: "RxSwift")
             ]
         ),
     ].flatMap { $0 }
