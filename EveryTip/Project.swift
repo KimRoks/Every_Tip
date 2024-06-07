@@ -130,7 +130,6 @@ let project = Project(
                 .external(name: "SnapKit"),
                 .external(name: "RxCocoa"),
                 .external(name: "ReactorKit")
-                // snapkit, then, etc...
             ]
         ),
         // data layer
@@ -138,8 +137,9 @@ let project = Project(
             name: Layer.data.layerName,
             platform: .iOS,
             dependencies: [
-                .target(name: Layer.domain.layerName)
-                // alamofire or moya ...
+                .target(name: Layer.domain.layerName),
+                .external(name: "Moya"),
+                .external(name: "ReactiveMoya")
             ]
         ),
         // domain layer
