@@ -6,7 +6,11 @@
 //  Copyright © 2024 EveryTip. All rights reserved.
 //
 
+import EveryTipDomain
+
 import UIKit
+
+import Swinject
 
 protocol PostTipViewCoordinator: Coordinator { }
 
@@ -66,5 +70,16 @@ final class DefaultPostTipViewCoordinator: PostTipViewCoordinator {
             animated: true,
             completion: nil
         )
+        
+        // TEST: 예시 테스트용
+        let exUseCase = Container.shared.resolve(ExUseCase.self)
+        exUseCase?.fetchUppercased(string: "ex usecase test") {
+            switch $0 {
+            case .success(let exModel):
+                print(exModel.text)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
 }
