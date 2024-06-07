@@ -1,6 +1,6 @@
 //
 //  ExRepository.swift
-//  EveryTipData
+//  EveryTipDomain
 //
 //  Created by 손대홍 on 6/7/24.
 //  Copyright © 2024 EveryTip. All rights reserved.
