@@ -1,4 +1,6 @@
 import EveryTipPresentation
+import EveryTipData
+import EveryTipDomain
 
 import UIKit
 
@@ -32,7 +34,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func assemble(navigationController: UINavigationController) {
         assembler.apply(assemblies: [
-            // TODO: 레이어 assembly 등 등록
+            DataAssembly(),
+            DomainAssembly(),
             PresentationAssembly(navigationController: navigationController)
         ])
     }
