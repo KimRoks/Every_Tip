@@ -52,44 +52,18 @@ final class MainTabBarContoller: UITabBarController {
     }()
     
     //MARK: View Life Cycle
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureMainTabBarController()
     }
     
-    //MARK: Private Methods
-
-    private func configureMainTabBarController() {
+    func configureMainTabBarController() {
         tabBar.addSubview(middleButton)
         middleButton.frame = CGRect(
             x: tabBar.frame.width / 2 - 25,
             y: -10,
             width: 50,
             height: 50
-        )
-        
-        let firstViewController = BaseViewController()
-        let secondViewController = UIViewController()
-        //중앙 공백 아이템 추가 및 비활성화
-        let emptyVC = UIViewController()
-        emptyVC.tabBarItem.isEnabled = false
-        
-        let thirdViewContoller = UIViewController()
-        let fouthViewController = UIViewController()
-        
-        firstViewController.view.backgroundColor = .red.withAlphaComponent(0.8)
-        secondViewController.view.backgroundColor = .blue.withAlphaComponent(0.8)
-        thirdViewContoller.view.backgroundColor = .green.withAlphaComponent(0.8)
-        fouthViewController.view.backgroundColor = .white.withAlphaComponent(0.8)
-        
-        setViewControllers(
-            [firstViewController,
-             secondViewController,
-             emptyVC,
-             thirdViewContoller,
-             fouthViewController],
-            animated: true
         )
         
         tabBar.tintColor = .black.withAlphaComponent(0.8)
@@ -100,18 +74,21 @@ final class MainTabBarContoller: UITabBarController {
             alpha: 1.00
         )
         
-        // TODO: 이미지 에셋 받으면 변경
-        tabBar.items?[0].image = UIImage(systemName: "house.fill")
-        tabBar.items?[0].title = "홈"
+        guard let viewControllers = viewControllers else {
+            return
+        }
         
-        tabBar.items?[1].image = UIImage(systemName: "menucard")
-        tabBar.items?[1].title = "카테고리"
+        let tabBarItems = [
+            (viewControllers[0], "house.fill", "홈"),
+            (viewControllers[1], "menucard", "카테고리"),
+            (viewControllers[3], "sidebar.squares.right", "탐색"),
+            (viewControllers[4], "person.fill", "내정보")
+        ]
         
-        tabBar.items?[3].image = UIImage(systemName: "sidebar.squares.right")
-        tabBar.items?[3].title = "탐색"
-        
-        tabBar.items?[4].image = UIImage(systemName: "person.fill")
-        tabBar.items?[4].title = "내정보"
+        for (_, (vc, imageName, title)) in tabBarItems.enumerated() {
+            vc.tabBarItem.image = UIImage(systemName: imageName)
+            vc.tabBarItem.title = title
+        }
         
         tabBar.layer.masksToBounds = false
         
@@ -121,6 +98,8 @@ final class MainTabBarContoller: UITabBarController {
             radius: 5
         )
     }
+
+    //MARK: Private Methods
     
     @objc
     private func presentPostView() {
