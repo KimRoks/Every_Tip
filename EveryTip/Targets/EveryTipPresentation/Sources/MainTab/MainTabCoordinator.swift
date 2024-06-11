@@ -15,13 +15,13 @@ protocol MainTabCoordinator: Coordinator {
 final class DefaultMainTabCoordinator: MainTabCoordinator {
     
     //MARK: Internal Properties
-
+    
     weak var parentCoordinator: Coordinator?
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
     
     //MARK: Private Properties
-
+    
     private var mainTabBarController: MainTabBarContoller?
     
     init(navigationController: UINavigationController) {
@@ -31,15 +31,40 @@ final class DefaultMainTabCoordinator: MainTabCoordinator {
     //MARK: Internal Methods
     
     func start() {
+        let homeNavController = UINavigationController()
+        let homeCoordinator = DefaultHomeViewCoordinator(navigationController: homeNavController)
+        homeCoordinator.parentCoordinator = self
+        homeCoordinator.start()
+        
+        
         mainTabBarController = MainTabBarContoller()
         guard let mainTab = mainTabBarController else {
             return
         }
         mainTab.coordinator = self
+        
+        
+        // TODO: 각 ViewController, Coordinator 정의 및 start 메서드 실행
+        let secondVC = UIViewController()
+        let emptyVC = UIViewController()
+        emptyVC.tabBarItem.isEnabled = false
+        let thirdVC = UIViewController()
+        let fourthVC = UIViewController()
+        
+        mainTab.setViewControllers([
+            homeNavController,
+            secondVC,
+            // Empty for middle button
+            emptyVC,
+            thirdVC,
+            fourthVC
+        ], animated: true)
+        
         navigationController.setViewControllers(
             [mainTab],
             animated: true
         )
+        mainTabBarController?.configureMainTabBarController()
     }
     
     func presentPostView() {
