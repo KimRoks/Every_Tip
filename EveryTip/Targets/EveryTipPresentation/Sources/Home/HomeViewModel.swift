@@ -21,10 +21,10 @@ final class HomeViewModel {
         fetchPosts()
     }
     
-    public let posts: BehaviorSubject<[PostListModel]> = BehaviorSubject(value: [])
+    public let posts: BehaviorSubject<[Tip]> = BehaviorSubject(value: [])
     
     public func fetchPosts() {
-        postUseCase.fetchPost()
+        postUseCase.fetchPosts()
             .observe(on: MainScheduler.instance)
             .subscribe(
                 onSuccess: { [weak self] posts in

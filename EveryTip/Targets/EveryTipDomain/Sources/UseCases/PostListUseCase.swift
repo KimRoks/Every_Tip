@@ -11,7 +11,7 @@ import Foundation
 import RxSwift
 
 public protocol PostListUseCase {
-    func fetchPost() -> Single<[PostListModel]>
+    func fetchPosts() -> Single<[Tip]>
 }
 
 final public class DefaultPostListUseCase: PostListUseCase {
@@ -21,7 +21,7 @@ final public class DefaultPostListUseCase: PostListUseCase {
         self.postRepository = postRepository
     }
     
-    public func fetchPost() -> Single<[PostListModel]> {
-        return postRepository.fetchPost()
+    public func fetchPosts() -> Single<[Tip]> {
+        return postRepository.fetchPosts()
     }
 }
