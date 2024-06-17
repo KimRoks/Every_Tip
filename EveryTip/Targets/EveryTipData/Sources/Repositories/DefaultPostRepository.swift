@@ -15,7 +15,7 @@ import RxSwift
 final class DefaultPostRepository: PostRepository {
     
     // TODO: Mock Data -> api를 통한 실질적 Data
-    let mockPosts: [Tip] = [
+    let dummyPosts: [Tip] = [
         Tip(
             category: "레시피",
             title: "아침 밥 맛있게 만드는 방법",
@@ -154,6 +154,6 @@ final class DefaultPostRepository: PostRepository {
     ]
     
     func fetchPosts() -> Single<[Tip]> {
-        return Single<[Tip]>.just(mockPosts)
+        return Single<[Tip]>.just(dummyPosts)
     }
 }
