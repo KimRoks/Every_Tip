@@ -21,7 +21,7 @@ public struct DataAssembly: Assembly {
         }
         
         container.register(PostRepository.self) { _ in
-            return DefaultPostListRepository()
+            return DefaultPostRepository()
         }
     }
 }

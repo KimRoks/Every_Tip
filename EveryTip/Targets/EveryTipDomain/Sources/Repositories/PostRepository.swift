@@ -1,5 +1,5 @@
 //
-//  PostListModel.swift
+//  PostRepository.swift
 //  EveryTipDomain
 //
 //  Created by 김경록 on 6/10/24.

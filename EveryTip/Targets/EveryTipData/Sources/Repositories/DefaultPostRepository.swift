@@ -1,5 +1,5 @@
 //
-//  DefaultPostListRepository.swift
+//  DefaultPostRepository.swift
 //  EveryTipData
 //
 //  Created by 김경록 on 6/10/24.
@@ -12,7 +12,7 @@ import EveryTipDomain
 
 import RxSwift
 
-final class DefaultPostListRepository: PostRepository {
+final class DefaultPostRepository: PostRepository {
     
     // TODO: Mock Data -> api를 통한 실질적 Data
     let mockPosts: [Tip] = [
