@@ -42,7 +42,7 @@ final class PostListCell: UITableViewCell {
         return textView
     }()
     
-    let userImage: UIImageView = {
+    let userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "person.circle.fill")
         
@@ -64,7 +64,7 @@ final class PostListCell: UITableViewCell {
         return stackView
     }()
     
-    private let viewCountImage: UIImageView = {
+    private let viewCountImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "eye")
         
@@ -86,7 +86,7 @@ final class PostListCell: UITableViewCell {
         return stackView
     }()
     
-    let likeCountImage: UIImageView = {
+    let likeCountImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "heart")
         
@@ -125,7 +125,7 @@ final class PostListCell: UITableViewCell {
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: "postPreViewCell")
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupLayout()
         setupConstraints()
     }
@@ -138,13 +138,13 @@ final class PostListCell: UITableViewCell {
         titleStackView.addArrangedSubview(categoryLabel)
         titleStackView.addArrangedSubview(titleLabel)
         
-        userStackView.addArrangedSubview(userImage)
+        userStackView.addArrangedSubview(userImageView)
         userStackView.addArrangedSubview(userNameLabel)
         
-        likeCountStackView.addArrangedSubview(likeCountImage)
+        likeCountStackView.addArrangedSubview(likeCountImageView)
         likeCountStackView.addArrangedSubview(likeCountLabel)
         
-        viewCountStackView.addArrangedSubview(viewCountImage)
+        viewCountStackView.addArrangedSubview(viewCountImageView)
         viewCountStackView.addArrangedSubview(viewCountLabel)
         
         bottomStackView.addArrangedSubview(userStackView)
