@@ -31,28 +31,32 @@ final class DefaultMainTabCoordinator: MainTabCoordinator {
     //MARK: Internal Methods
     
     func start() {
-        let homeNavController = UINavigationController()
-        let homeCoordinator = DefaultHomeViewCoordinator(navigationController: homeNavController)
+        let homeCoordinator = DefaultHomeViewCoordinator(navigationController: navigationController)
         homeCoordinator.parentCoordinator = self
         homeCoordinator.start()
         
-        
-        mainTabBarController = MainTabBarContoller()
-        guard let mainTab = mainTabBarController else {
-            return
+        guard let homeViewController = homeCoordinator.homeViewController else {
+            fatalError("Failed to get HomeViewController from HomeViewCoordinator")
         }
-        mainTab.coordinator = self
-        
         
         // TODO: 각 ViewController, Coordinator 정의 및 start 메서드 실행
+    
         let secondVC = UIViewController()
+        
         let emptyVC = UIViewController()
         emptyVC.tabBarItem.isEnabled = false
+        
         let thirdVC = UIViewController()
+        
         let fourthVC = UIViewController()
         
-        mainTab.setViewControllers([
-            homeNavController,
+        mainTabBarController = MainTabBarContoller()
+        guard let mainTabBarController = mainTabBarController else {
+            return
+        }
+        mainTabBarController.coordinator = self
+        mainTabBarController.setViewControllers([
+            homeViewController,
             secondVC,
             // Empty for middle button
             emptyVC,
@@ -60,11 +64,12 @@ final class DefaultMainTabCoordinator: MainTabCoordinator {
             fourthVC
         ], animated: true)
         
+        mainTabBarController.configureMainTabBarController()
+
         navigationController.setViewControllers(
-            [mainTab],
+            [mainTabBarController],
             animated: true
         )
-        mainTabBarController?.configureMainTabBarController()
     }
     
     func presentPostView() {
