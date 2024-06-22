@@ -22,7 +22,7 @@ final class DefaultMainTabCoordinator: MainTabCoordinator {
     
     //MARK: Private Properties
     
-    private var mainTabBarController: MainTabBarContoller?
+    private let mainTabBarController = MainTabBarContoller()
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
@@ -31,40 +31,30 @@ final class DefaultMainTabCoordinator: MainTabCoordinator {
     //MARK: Internal Methods
     
     func start() {
-        let homeCoordinator = DefaultHomeViewCoordinator(navigationController: navigationController)
-        homeCoordinator.parentCoordinator = self
-        homeCoordinator.start()
-        
-        guard let homeViewController = homeCoordinator.homeViewController else {
-            fatalError("Failed to get HomeViewController from HomeViewCoordinator")
-        }
-        
         // TODO: 각 ViewController, Coordinator 정의 및 start 메서드 실행
-    
-        let secondVC = UIViewController()
-        
+        let homeNavigationController = UINavigationController()
+        let secondVC = UINavigationController()
         let emptyVC = UIViewController()
         emptyVC.tabBarItem.isEnabled = false
+        let thirdVC = UINavigationController()
+        let fourthVC = UINavigationController()
         
-        let thirdVC = UIViewController()
+        let homeCoordinator = DefaultHomeViewCoordinator(navigationController: homeNavigationController)
+        homeCoordinator.parentCoordinator = self
+        append(child: homeCoordinator)
         
-        let fourthVC = UIViewController()
+        homeCoordinator.start()
         
-        mainTabBarController = MainTabBarContoller()
-        guard let mainTabBarController = mainTabBarController else {
-            return
-        }
-        mainTabBarController.coordinator = self
-        mainTabBarController.setViewControllers([
-            homeViewController,
+        mainTabBarController.viewControllers = [
+            homeNavigationController,
             secondVC,
-            // Empty for middle button
             emptyVC,
             thirdVC,
             fourthVC
-        ], animated: true)
+        ]
         
         mainTabBarController.configureMainTabBarController()
+        mainTabBarController.coordinator = self
 
         navigationController.setViewControllers(
             [mainTabBarController],
@@ -73,9 +63,6 @@ final class DefaultMainTabCoordinator: MainTabCoordinator {
     }
     
     func presentPostView() {
-        guard let mainTabBarController = mainTabBarController else {
-            return
-        }
         let postCoordinator = DefaultPostTipViewCoordinator(
             navigationController: navigationController,
             presentingViewController: mainTabBarController

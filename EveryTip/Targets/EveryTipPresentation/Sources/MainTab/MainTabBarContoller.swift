@@ -57,6 +57,12 @@ final class MainTabBarContoller: UITabBarController {
         super.viewDidLoad()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // 메인 코디네이터의 네비게이션 컨트롤러 숨김
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
     func configureMainTabBarController() {
         tabBar.addSubview(middleButton)
         middleButton.frame = CGRect(

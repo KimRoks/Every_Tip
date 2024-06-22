@@ -41,8 +41,10 @@ final class DefaultHomeViewCoordinator: HomeViewCoordinator {
         let viewModel = HomeViewModel(postUseCase: useCase)
         homeViewController = HomeViewController(viewModel: viewModel)
         homeViewController?.coordinator = self
+        guard let homeViewController = homeViewController else { return }
+        navigationController.pushViewController(homeViewController, animated: true)
     }
-     
+    
     func didFinish() {
         parentCoordinator?.remove(child: self)
     }
