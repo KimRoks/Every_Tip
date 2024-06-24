@@ -10,9 +10,7 @@ import Foundation
 
 import RxSwift
 
-public protocol PostListUseCase {
-    func fetchPosts() -> Single<[Tip]>
-}
+public protocol PostListUseCase: FetchPostUseCase { }
 
 final public class DefaultPostListUseCase: PostListUseCase {
     private let postRepository: PostRepository
