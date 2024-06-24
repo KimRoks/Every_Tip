@@ -88,12 +88,11 @@ final class HomeViewController: BaseViewController {
     }
     
     private func setupTableView() {
-        postListTableView.register(PostListCell.self, forCellReuseIdentifier: "cell")
+        postListTableView.register(PostListCell.self, forCellReuseIdentifier: PostListCell.reuseIdentifier)
     }
     
     private func bindViewModel() {
-        viewModel.posts.bind(to: postListTableView.rx.items(cellIdentifier: "cell", cellType: PostListCell.self)) { row, data, cell in
-            cell.heightAnchor.constraint(equalToConstant: 120).isActive = true
+        viewModel.posts.bind(to: postListTableView.rx.items(cellIdentifier: PostListCell.reuseIdentifier, cellType: PostListCell.self)) { row, data, cell in
             cell.categoryLabel.text = data.category
             cell.titleLabel.text = data.title
             cell.mainTextView.text = data.mainText

@@ -10,7 +10,7 @@ import UIKit
 
 import SnapKit
 
-final class PostListCell: UITableViewCell {
+final class PostListCell: UITableViewCell, Reusable {
     
     let categoryLabel: UILabel = {
         let label = UILabel()
