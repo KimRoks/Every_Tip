@@ -12,17 +12,17 @@ import UIKit
 
 import Swinject
 
-protocol HomeViewCoordinator: Coordinator { }
+protocol HomeViewCoordinator: Coordinator {
+    func start() -> UIViewController
+}
 
 final class DefaultHomeViewCoordinator: HomeViewCoordinator {
-
+   
     //MARK: Internal Properties
     
     weak var parentCoordinator: Coordinator?
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
-    
-    var homeViewController: HomeViewController?
     
     //MARK: Private Properties
     
@@ -34,15 +34,18 @@ final class DefaultHomeViewCoordinator: HomeViewCoordinator {
     
     //MARK: Internal Methods
     
-    func start() {
+    func start() { }
+    
+    func start() -> UIViewController {
         guard let useCase = container.resolve(PostListUseCase.self) else {
             fatalError("의존성 주입이 옳바르지 않습니다!")
         }
+        
         let viewModel = HomeViewModel(postUseCase: useCase)
-        homeViewController = HomeViewController(viewModel: viewModel)
-        homeViewController?.coordinator = self
-        guard let homeViewController = homeViewController else { return }
-        navigationController.pushViewController(homeViewController, animated: true)
+        let homeViewController = HomeViewController(viewModel: viewModel)
+        homeViewController.coordinator = self
+        
+        return homeViewController
     }
     
     func didFinish() {
