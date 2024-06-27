@@ -14,6 +14,37 @@ final class MainTabBarContoller: UITabBarController {
     
     weak var coordinator: MainTabCoordinator?
     
+    //MARK: Navigation Items
+    
+    private let titleLogoLabel: UILabel = {
+        let label = UILabel()
+        label.text = "every tip"
+        label.textColor = .white
+        label.font = UIFont.systemFont(ofSize: 20, weight: .heavy)
+        
+        return label
+    }()
+    
+    private let searchButton: UIButton = {
+        let button = UIButton()
+        let boldConfig = UIImage.SymbolConfiguration(weight: .bold)
+        button.setImage(UIImage(systemName: "magnifyingglass", withConfiguration: boldConfig), for: .normal)
+        button.tintColor = .white
+        
+        return button
+    }()
+    
+    private let notificationButton: UIButton = {
+        let button = UIButton()
+        let boldConfig = UIImage.SymbolConfiguration(weight: .bold)
+        button.setImage(UIImage(systemName: "bell", withConfiguration: boldConfig), for: .normal)
+        button.tintColor = .white
+        
+        return button
+    }()
+    
+    //MARK: Tabbar Middle Button
+    
     private let buttonShadowSize: CGSize = CGSize(
         width: 1,
         height: 3
@@ -55,13 +86,10 @@ final class MainTabBarContoller: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupNavigationBar()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        // 메인 코디네이터의 네비게이션 컨트롤러 숨김
-        navigationController?.setNavigationBarHidden(true, animated: animated)
-    }
+    //MARK: Internal Methods
     
     func configureMainTabBarController() {
         tabBar.addSubview(middleButton)
@@ -110,5 +138,15 @@ final class MainTabBarContoller: UITabBarController {
     @objc
     private func presentPostView() {
         coordinator?.presentPostView()
+    }
+    
+    private func setupNavigationBar() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLogoLabel)
+        
+        let stackView = UIStackView(arrangedSubviews: [searchButton, notificationButton])
+        stackView.axis = .horizontal
+        stackView.spacing = 10
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: stackView)
     }
 }
