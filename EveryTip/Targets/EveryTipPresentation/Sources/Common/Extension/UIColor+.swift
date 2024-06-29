@@ -18,4 +18,7 @@ extension UIColor {
         
         /// 색상 코드: #BEC1C8
         static let et_textColor5 = UIColor(red: 0.75, green: 0.76, blue: 0.78, alpha: 1.00)
+        
+        /// 색상 코드: #999999
+        static let et_textColorBlack10 = UIColor(red: 0.60, green: 0.60, blue: 0.60, alpha: 1.00)
 }
