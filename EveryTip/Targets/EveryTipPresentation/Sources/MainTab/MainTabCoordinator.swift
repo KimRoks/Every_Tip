@@ -15,14 +15,14 @@ protocol MainTabCoordinator: Coordinator {
 final class DefaultMainTabCoordinator: MainTabCoordinator {
     
     //MARK: Internal Properties
-
+    
     weak var parentCoordinator: Coordinator?
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
     
     //MARK: Private Properties
-
-    private var mainTabBarController: MainTabBarContoller?
+    
+    private let mainTabBarController = MainTabBarContoller()
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
@@ -31,21 +31,35 @@ final class DefaultMainTabCoordinator: MainTabCoordinator {
     //MARK: Internal Methods
     
     func start() {
-        mainTabBarController = MainTabBarContoller()
-        guard let mainTab = mainTabBarController else {
-            return
-        }
-        mainTab.coordinator = self
+        // TODO: 각 ViewController, Coordinator 정의 및 start 메서드 실행
+        let secondVC = UINavigationController()
+        let emptyVC = UIViewController()
+        emptyVC.tabBarItem.isEnabled = false
+        let thirdVC = UINavigationController()
+        let fourthVC = UINavigationController()
+        
+        let homeCoordinator = DefaultHomeViewCoordinator(navigationController: navigationController)
+        homeCoordinator.parentCoordinator = self
+        append(child: homeCoordinator)
+                 
+        mainTabBarController.viewControllers = [
+            homeCoordinator.start(),
+            secondVC,
+            emptyVC,
+            thirdVC,
+            fourthVC
+        ]
+        
+        mainTabBarController.configureMainTabBarController()
+        mainTabBarController.coordinator = self
+
         navigationController.setViewControllers(
-            [mainTab],
+            [mainTabBarController],
             animated: true
         )
     }
     
     func presentPostView() {
-        guard let mainTabBarController = mainTabBarController else {
-            return
-        }
         let postCoordinator = DefaultPostTipViewCoordinator(
             navigationController: navigationController,
             presentingViewController: mainTabBarController
