@@ -180,7 +180,6 @@ final class HomeViewController: BaseViewController {
     }
     
     private func setupLayout() {
-        
         view.addSubview(weeklyTipLabel)
         view.addSubview(weeklyTipImageView)
         view.addSubview(weeklyTipReadMoreButton)
@@ -238,14 +237,6 @@ final class HomeViewController: BaseViewController {
             $0.trailing.equalTo(searchBar.snp.trailing).offset(-10)
             $0.bottom.equalTo(searchBar.snp.bottom).offset(-5)
         }
-        
-        //        tagButtonsScrollView.snp.makeConstraints {
-        //            $0.top.equalTo(searchBar.snp.bottom).offset(5)
-        //            $0.leading.equalTo(searchView.snp.leading).offset(10)
-        //            $0.trailing.equalTo(searchView.snp.trailing).offset(-10)
-        //            $0.bottom.equalTo(searchView.snp.bottom)
-        //            $0.height.equalTo(40)
-        //        }
         
         gradientMaskView.snp.makeConstraints {
             $0.top.equalTo(searchBar.snp.bottom).offset(5)
