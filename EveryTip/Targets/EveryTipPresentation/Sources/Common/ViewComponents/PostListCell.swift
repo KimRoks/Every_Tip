@@ -149,24 +149,24 @@ final class PostListCell: UITableViewCell, Reusable {
     
     private func setupLayout() {
         titleLabel.addSubview(categoryLabel)
-        
+        contentView.addSubview(titleLabel)
+
         userStackView.addArrangedSubview(userImageView)
         userStackView.addArrangedSubview(userNameLabel)
-        
+        contentView.addSubview(userStackView)
+
         likeCountStackView.addArrangedSubview(likeCountImageView)
         likeCountStackView.addArrangedSubview(likeCountLabel)
-        
+        contentView.addSubview(likeCountStackView)
+
         viewCountStackView.addArrangedSubview(viewCountImageView)
         viewCountStackView.addArrangedSubview(viewCountLabel)
-        
-        rightSpacer.addSubview(thumbnailImageView)
-        
-        contentView.addSubview(titleLabel)
-        contentView.addSubview(mainTextLabel)
-        contentView.addSubview(rightSpacer)
-        contentView.addSubview(userStackView)
         contentView.addSubview(viewCountStackView)
-        contentView.addSubview(likeCountStackView)
+
+        rightSpacer.addSubview(thumbnailImageView)
+        contentView.addSubview(rightSpacer)
+
+        contentView.addSubview(mainTextLabel)
     }
     
     private func setupConstraints() {
