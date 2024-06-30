@@ -38,7 +38,7 @@ final class PostListCell: UITableViewCell, Reusable {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14)
         label.numberOfLines = 2
-        label.textColor = UIColor(red: 0.33, green: 0.33, blue: 0.33, alpha: 1.00)
+        label.textColor = .et_textColorBlack50
         
         return label
     }()
@@ -147,7 +147,6 @@ final class PostListCell: UITableViewCell, Reusable {
         fatalError("init(coder:) has not been implemented")
     }
     
-
     private func setupLayout() {
         titleLabel.addSubview(categoryLabel)
         
