@@ -8,13 +8,15 @@
 
 import UIKit
 
+import EveryTipDesignSystem
+
 import SnapKit
 
 final class PostListCell: UITableViewCell, Reusable {
     
     let categoryLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 14)
+        label.font = EveryTipDesignSystemFontFamily.Pretendard.bold.font(size: 14)
         label.sizeToFit()
         label.layer.cornerRadius = 4
         label.clipsToBounds = true
@@ -29,14 +31,14 @@ final class PostListCell: UITableViewCell, Reusable {
     let titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 2
-        label.font = UIFont.boldSystemFont(ofSize: 16)
-        
+        label.font = EveryTipDesignSystemFontFamily.Pretendard.bold.font(size: 16)
+
         return label
     }()
     
     let mainTextLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.font = EveryTipDesignSystemFontFamily.Pretendard.medium.font(size: 14)
         label.numberOfLines = 2
         label.textColor = .et_textColorBlack50
         
@@ -54,7 +56,7 @@ final class PostListCell: UITableViewCell, Reusable {
     
     let userNameLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 12)
+        label.font = EveryTipDesignSystemFontFamily.Pretendard.medium.font(size: 12)
         label.sizeToFit()
         
         return label
@@ -80,7 +82,7 @@ final class PostListCell: UITableViewCell, Reusable {
     
     let viewCountLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 12)
+        label.font = EveryTipDesignSystemFontFamily.Pretendard.medium.font(size: 12)
         label.sizeToFit()
         
         return label
@@ -107,7 +109,7 @@ final class PostListCell: UITableViewCell, Reusable {
     
     let likeCountLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 12)
+        label.font = EveryTipDesignSystemFontFamily.Pretendard.medium.font(size: 12)
         label.sizeToFit()
         
         return label

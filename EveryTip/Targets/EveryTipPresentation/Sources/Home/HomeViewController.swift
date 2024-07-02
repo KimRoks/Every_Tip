@@ -8,6 +8,8 @@
 
 import UIKit
 
+import EveryTipDesignSystem
+
 import RxCocoa
 import RxSwift
 import SnapKit
@@ -35,7 +37,7 @@ final class HomeViewController: BaseViewController {
         let label = UILabel()
         label.text = "코끼리는 유일하게 OO를\n하지 못하는 포유류입니다 "
         label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: 18, weight: .black)
+        label.font = EveryTipDesignSystemFontFamily.Pretendard.extraBold.font(size: 18)
         
         label.numberOfLines = 0
         
@@ -135,7 +137,7 @@ final class HomeViewController: BaseViewController {
     private let moabogiLabel: UILabel = {
         let label = UILabel()
         label.text = "인기 팁 모아보기 🔥"
-        label.font = UIFont.systemFont(ofSize: 18, weight: .heavy)
+        label.font = EveryTipDesignSystemFontFamily.Pretendard.bold.font(size: 18)
         
         return label
     }()
@@ -143,9 +145,9 @@ final class HomeViewController: BaseViewController {
     private let thebogiButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("더보기", for: .normal)
-        UIFont.systemFont(ofSize: 14, weight: .medium)
         button.setTitleColor(.et_textColorBlack10, for: .normal)
-        
+        button.titleLabel?.font = EveryTipDesignSystemFontFamily.Pretendard.bold.font(size: 14)
+
         return button
     }()
     

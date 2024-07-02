@@ -8,6 +8,8 @@
 
 import UIKit
 
+import EveryTipDesignSystem
+
 final class MainTabBarContoller: UITabBarController {
     
     //MARK: Properties
@@ -20,8 +22,8 @@ final class MainTabBarContoller: UITabBarController {
         let label = UILabel()
         label.text = "every tip"
         label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: 20, weight: .heavy)
-        
+        label.font = EveryTipDesignSystemFontFamily.Pretendard.bold.font(size: 20)
+
         return label
     }()
     
