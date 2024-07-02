@@ -185,7 +185,7 @@ let project = Project(
                 .external(name: "ReactorKit")
             ]
         ),
-        //UIResources layer
+        //Design System layer
         makeEveryTipDesignSystemTarget(
             name: Layer.designSystem.layerName,
             platform: .iOS,
