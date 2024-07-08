@@ -37,8 +37,11 @@ final class HomeViewController: BaseViewController {
         let label = UILabel()
         label.text = "코끼리는 유일하게 OO를\n하지 못하는 포유류입니다 "
         label.textColor = .white
-        label.font = EveryTipDesignSystemFontFamily.Pretendard.extraBold.font(size: 18)
-        
+        label.font = UIFont.et_pretendard(
+            style: .extraBold,
+            size: 18
+        )
+                
         label.numberOfLines = 0
         
         return label
@@ -137,7 +140,10 @@ final class HomeViewController: BaseViewController {
     private let moabogiLabel: UILabel = {
         let label = UILabel()
         label.text = "인기 팁 모아보기 🔥"
-        label.font = EveryTipDesignSystemFontFamily.Pretendard.bold.font(size: 18)
+        label.font = UIFont.et_pretendard(
+            style: .bold,
+            size: 18
+        )
         
         return label
     }()
@@ -146,8 +152,10 @@ final class HomeViewController: BaseViewController {
         let button = UIButton(type: .system)
         button.setTitle("더보기", for: .normal)
         button.setTitleColor(.et_textColorBlack10, for: .normal)
-        button.titleLabel?.font = EveryTipDesignSystemFontFamily.Pretendard.bold.font(size: 14)
-
+        button.titleLabel?.font = UIFont.et_pretendard(
+            style: .bold,
+            size: 14
+        )
         return button
     }()
     

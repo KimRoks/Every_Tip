@@ -13,7 +13,10 @@ import EveryTipDesignSystem
 final class DetailDisclosureView: UIStackView {
     let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = EveryTipDesignSystemFontFamily.Pretendard.medium.font(size: 16)
+        label.font = UIFont.et_pretendard(
+            style: .medium,
+            size: 16
+        )
         
         return label
     }()

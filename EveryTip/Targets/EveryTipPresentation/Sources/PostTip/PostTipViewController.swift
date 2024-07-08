@@ -32,7 +32,10 @@ final class PostTipViewController: BaseViewController {
     private let topTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "팁 추가"
-        label.font = EveryTipDesignSystemFontFamily.Pretendard.semiBold.font(size: 18)
+        label.font = UIFont.et_pretendard(
+            style: .semiBold,
+            size: 18
+        )
         
         return label
     }()
@@ -43,7 +46,11 @@ final class PostTipViewController: BaseViewController {
             "등록",
             for: .normal
         )
-        button.titleLabel?.font = EveryTipDesignSystemFontFamily.Pretendard.medium.font(size: 16)
+        button.titleLabel?.font = UIFont.et_pretendard(
+            style: .medium,
+            size: 16
+        )
+        
         button.tintColor = .black
         
         return button
@@ -77,8 +84,11 @@ final class PostTipViewController: BaseViewController {
     private let titleTextField: UITextField = {
         let field = UITextField()
         field.placeholder = "제목을 입력하세요"
-        field.font = EveryTipDesignSystemFontFamily.Pretendard.semiBold.font(size: 20)
-
+        field.font = UIFont.et_pretendard(
+            style: .semiBold,
+            size: 20
+        )
+        
         return field
     }()
     
@@ -86,7 +96,11 @@ final class PostTipViewController: BaseViewController {
         let textView = UITextView()
         textView.text = "내용 입력"
         textView.textColor = UIColor.placeholderText
-        textView.font = EveryTipDesignSystemFontFamily.Pretendard.medium.font(size: 16)
+        textView.font = UIFont.et_pretendard(
+            style: .medium,
+            size: 16
+        )
+        
         textView.isScrollEnabled = true
         textView.textContainer.lineFragmentPadding = 0
         textView.textContainerInset = .zero

@@ -16,7 +16,12 @@ final class PostListCell: UITableViewCell, Reusable {
     
     let categoryLabel: UILabel = {
         let label = UILabel()
-        label.font = EveryTipDesignSystemFontFamily.Pretendard.bold.font(size: 14)
+
+        label.font = UIFont.et_pretendard(
+            style: .bold,
+            size: 14
+        )
+
         label.sizeToFit()
         label.layer.cornerRadius = 4
         label.clipsToBounds = true
@@ -31,14 +36,20 @@ final class PostListCell: UITableViewCell, Reusable {
     let titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 2
-        label.font = EveryTipDesignSystemFontFamily.Pretendard.bold.font(size: 16)
-
+        label.font = UIFont.et_pretendard(
+            style: .bold,
+            size: 16
+        )
+        
         return label
     }()
     
     let mainTextLabel: UILabel = {
         let label = UILabel()
-        label.font = EveryTipDesignSystemFontFamily.Pretendard.medium.font(size: 14)
+        label.font = UIFont.et_pretendard(
+            style: .medium,
+            size: 14
+        )
         label.numberOfLines = 2
         label.textColor = .et_textColorBlack50
         
@@ -56,7 +67,10 @@ final class PostListCell: UITableViewCell, Reusable {
     
     let userNameLabel: UILabel = {
         let label = UILabel()
-        label.font = EveryTipDesignSystemFontFamily.Pretendard.medium.font(size: 12)
+        label.font = UIFont.et_pretendard(
+            style: .medium,
+            size: 12
+        )
         label.sizeToFit()
         
         return label
@@ -82,7 +96,10 @@ final class PostListCell: UITableViewCell, Reusable {
     
     let viewCountLabel: UILabel = {
         let label = UILabel()
-        label.font = EveryTipDesignSystemFontFamily.Pretendard.medium.font(size: 12)
+        label.font = UIFont.et_pretendard(
+            style: .medium,
+            size: 12
+        )
         label.sizeToFit()
         
         return label
@@ -109,7 +126,10 @@ final class PostListCell: UITableViewCell, Reusable {
     
     let likeCountLabel: UILabel = {
         let label = UILabel()
-        label.font = EveryTipDesignSystemFontFamily.Pretendard.medium.font(size: 12)
+        label.font = UIFont.et_pretendard(
+            style: .medium,
+            size: 12
+        )
         label.sizeToFit()
         
         return label
@@ -226,7 +246,7 @@ final class PostListCell: UITableViewCell, Reusable {
         thumbnailImageView.snp.makeConstraints {
             $0.top.equalTo(rightSpacer.snp.top).offset(10)
             $0.trailing.equalTo(rightSpacer.snp.trailing).offset(-10)
-            $0.width.equalTo(contentView.snp.width).multipliedBy(0.21)
+            $0.width.equalTo(contentView.snp.width).multipliedBy(0.26)
             $0.height.equalTo(thumbnailImageView.snp.width)
         }
         

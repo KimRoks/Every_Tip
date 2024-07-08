@@ -22,15 +22,22 @@ final class MainTabBarContoller: UITabBarController {
         let label = UILabel()
         label.text = "every tip"
         label.textColor = .white
-        label.font = EveryTipDesignSystemFontFamily.Pretendard.bold.font(size: 20)
-
+        label.font = UIFont.et_pretendard(
+            style: .bold,
+            size: 20
+        )
+        
         return label
     }()
     
     private let searchButton: UIButton = {
         let button = UIButton()
         let boldConfig = UIImage.SymbolConfiguration(weight: .bold)
-        button.setImage(UIImage(systemName: "magnifyingglass", withConfiguration: boldConfig), for: .normal)
+        button.setImage(UIImage(
+            systemName: "magnifyingglass",
+            withConfiguration: boldConfig
+        ), for: .normal
+        )
         button.tintColor = .white
         
         return button
@@ -39,7 +46,11 @@ final class MainTabBarContoller: UITabBarController {
     private let notificationButton: UIButton = {
         let button = UIButton()
         let boldConfig = UIImage.SymbolConfiguration(weight: .bold)
-        button.setImage(UIImage(systemName: "bell", withConfiguration: boldConfig), for: .normal)
+        button.setImage(UIImage(
+            systemName: "bell",
+            withConfiguration: boldConfig
+        ), for: .normal
+        )
         button.tintColor = .white
         
         return button
@@ -134,7 +145,7 @@ final class MainTabBarContoller: UITabBarController {
             radius: 5
         )
     }
-
+    
     //MARK: Private Methods
     
     @objc
