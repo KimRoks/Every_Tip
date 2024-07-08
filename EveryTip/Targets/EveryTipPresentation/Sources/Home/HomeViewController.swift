@@ -131,11 +131,15 @@ final class HomeViewController: BaseViewController {
         return view
     }()
     
+    // TODO: 추가 Section 정의
+    
     private let headerView: UIView = {
         let view = UIView()
         
         return view
     }()
+    
+    // TODO: 모아보기 및 더보기 네이밍 수정
     
     private let moabogiLabel: UILabel = {
         let label = UILabel()
@@ -329,6 +333,8 @@ final class HomeViewController: BaseViewController {
             
         }.disposed(by: disposeBag)
     }
+    
+    // TODO: 동작 방식 개선
     
     private func addSpace(forTitleLength length: Int) -> String {
         if length <= 2 {
