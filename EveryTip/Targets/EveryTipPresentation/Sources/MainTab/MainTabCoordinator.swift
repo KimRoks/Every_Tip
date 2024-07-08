@@ -32,7 +32,6 @@ final class DefaultMainTabCoordinator: MainTabCoordinator {
     
     func start() {
         // TODO: 각 ViewController, Coordinator 정의 및 start 메서드 실행
-        let secondVC = UINavigationController()
         let emptyVC = UIViewController()
         emptyVC.tabBarItem.isEnabled = false
         let thirdVC = UINavigationController()
@@ -41,10 +40,14 @@ final class DefaultMainTabCoordinator: MainTabCoordinator {
         let homeCoordinator = DefaultHomeViewCoordinator(navigationController: navigationController)
         homeCoordinator.parentCoordinator = self
         append(child: homeCoordinator)
+        
+        let categoryCoordinator = DefaultCategoryViewCoordinator(navigationController: navigationController)
+        categoryCoordinator.parentCoordinator = self
+        append(child: categoryCoordinator)
                  
         mainTabBarController.viewControllers = [
             homeCoordinator.start(),
-            secondVC,
+            categoryCoordinator.start(),
             emptyVC,
             thirdVC,
             fourthVC
