@@ -155,6 +155,7 @@ final class PostListCell: UITableViewCell, Reusable {
     let thumbnailImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.backgroundColor = .gray
+        imageView.contentMode = .scaleAspectFit
         
         return imageView
     }()
@@ -186,7 +187,7 @@ final class PostListCell: UITableViewCell, Reusable {
         viewCountStackView.addArrangedSubview(viewCountLabel)
         
         contentView.addSubview(rightSpacer)
-        rightSpacer.addSubview(thumbnailImageView)
+        contentView.addSubview(thumbnailImageView)
         
         contentView.addSubview(mainTextLabel)
     }
@@ -244,10 +245,11 @@ final class PostListCell: UITableViewCell, Reusable {
         }
         
         thumbnailImageView.snp.makeConstraints {
-            $0.top.equalTo(rightSpacer.snp.top).offset(10)
-            $0.trailing.equalTo(rightSpacer.snp.trailing).offset(-10)
+            $0.top.equalTo(contentView.snp.top).offset(10)
+            $0.trailing.equalTo(contentView.snp.trailing).offset(-10)
             $0.width.equalTo(contentView.snp.width).multipliedBy(0.26)
             $0.height.equalTo(thumbnailImageView.snp.width)
+            $0.bottom.lessThanOrEqualTo(contentView.snp.bottom).offset(-10)
         }
         
         rightSpacer.snp.makeConstraints {

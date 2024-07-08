@@ -304,6 +304,8 @@ final class HomeViewController: BaseViewController {
         postListTableView.register(PostListCell.self, forCellReuseIdentifier: PostListCell.reuseIdentifier)
         headerView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 40)
         postListTableView.tableHeaderView = headerView
+        postListTableView.rowHeight = UITableView.automaticDimension
+        postListTableView.estimatedRowHeight = 110
     }
     
     private func setupTags() {
