@@ -187,14 +187,11 @@ final class PostTipViewController: BaseViewController {
     //MARK: Private Methods
     
     private func setupLayout() {
+        view.addSubview(topStackView)
         topStackView.addArrangedSubview(closeButton)
         topStackView.addArrangedSubview(topTitleLabel)
         topStackView.addArrangedSubview(registerButton)
         
-        attachmentStackView.addArrangedSubview(addImageButton)
-        attachmentStackView.addArrangedSubview(addLinkButton)
-        
-        view.addSubview(topStackView)
         view.addSubview(choiceCategoryView)
         view.addSubview(categoryUnderLine)
         view.addSubview(hashtagView)
@@ -203,7 +200,11 @@ final class PostTipViewController: BaseViewController {
         view.addSubview(bodyTextView)
         view.addSubview(addedImageView)
         view.addSubview(bodyUnderLine)
+        
         view.addSubview(attachmentStackView)
+        attachmentStackView.addArrangedSubview(addImageButton)
+        attachmentStackView.addArrangedSubview(addLinkButton)
+        
         view.addSubview(temporaryStorageButton)
     }
     

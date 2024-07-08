@@ -173,21 +173,21 @@ final class PostListCell: UITableViewCell, Reusable {
         titleLabel.addSubview(categoryLabel)
         contentView.addSubview(titleLabel)
 
+        contentView.addSubview(userStackView)
         userStackView.addArrangedSubview(userImageView)
         userStackView.addArrangedSubview(userNameLabel)
-        contentView.addSubview(userStackView)
-
+        
+        contentView.addSubview(likeCountStackView)
         likeCountStackView.addArrangedSubview(likeCountImageView)
         likeCountStackView.addArrangedSubview(likeCountLabel)
-        contentView.addSubview(likeCountStackView)
 
+        contentView.addSubview(viewCountStackView)
         viewCountStackView.addArrangedSubview(viewCountImageView)
         viewCountStackView.addArrangedSubview(viewCountLabel)
-        contentView.addSubview(viewCountStackView)
-
-        rightSpacer.addSubview(thumbnailImageView)
+        
         contentView.addSubview(rightSpacer)
-
+        rightSpacer.addSubview(thumbnailImageView)
+        
         contentView.addSubview(mainTextLabel)
     }
     
