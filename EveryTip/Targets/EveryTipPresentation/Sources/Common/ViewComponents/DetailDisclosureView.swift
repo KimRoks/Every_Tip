@@ -8,9 +8,15 @@
 
 import UIKit
 
+import EveryTipDesignSystem
+
 final class DetailDisclosureView: UIStackView {
     let titleLabel: UILabel = {
         let label = UILabel()
+        label.font = UIFont.et_pretendard(
+            style: .medium,
+            size: 16
+        )
         
         return label
     }()

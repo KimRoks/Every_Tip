@@ -8,6 +8,8 @@
 
 import UIKit
 
+import EveryTipDesignSystem
+
 import SnapKit
 
 final class PostTipViewController: BaseViewController {
@@ -30,6 +32,10 @@ final class PostTipViewController: BaseViewController {
     private let topTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "팁 추가"
+        label.font = UIFont.et_pretendard(
+            style: .semiBold,
+            size: 18
+        )
         
         return label
     }()
@@ -40,6 +46,11 @@ final class PostTipViewController: BaseViewController {
             "등록",
             for: .normal
         )
+        button.titleLabel?.font = UIFont.et_pretendard(
+            style: .medium,
+            size: 16
+        )
+        
         button.tintColor = .black
         
         return button
@@ -73,9 +84,9 @@ final class PostTipViewController: BaseViewController {
     private let titleTextField: UITextField = {
         let field = UITextField()
         field.placeholder = "제목을 입력하세요"
-        field.font = .systemFont(
-            ofSize: 20,
-            weight: UIFont.Weight(rawValue: 700)
+        field.font = UIFont.et_pretendard(
+            style: .semiBold,
+            size: 20
         )
         
         return field
@@ -85,10 +96,11 @@ final class PostTipViewController: BaseViewController {
         let textView = UITextView()
         textView.text = "내용 입력"
         textView.textColor = UIColor.placeholderText
-        textView.font = .systemFont(
-            ofSize: 16,
-            weight: UIFont.Weight(rawValue: 500)
+        textView.font = UIFont.et_pretendard(
+            style: .medium,
+            size: 16
         )
+        
         textView.isScrollEnabled = true
         textView.textContainer.lineFragmentPadding = 0
         textView.textContainerInset = .zero
@@ -175,14 +187,11 @@ final class PostTipViewController: BaseViewController {
     //MARK: Private Methods
     
     private func setupLayout() {
+        view.addSubview(topStackView)
         topStackView.addArrangedSubview(closeButton)
         topStackView.addArrangedSubview(topTitleLabel)
         topStackView.addArrangedSubview(registerButton)
         
-        attachmentStackView.addArrangedSubview(addImageButton)
-        attachmentStackView.addArrangedSubview(addLinkButton)
-        
-        view.addSubview(topStackView)
         view.addSubview(choiceCategoryView)
         view.addSubview(categoryUnderLine)
         view.addSubview(hashtagView)
@@ -191,7 +200,11 @@ final class PostTipViewController: BaseViewController {
         view.addSubview(bodyTextView)
         view.addSubview(addedImageView)
         view.addSubview(bodyUnderLine)
+        
         view.addSubview(attachmentStackView)
+        attachmentStackView.addArrangedSubview(addImageButton)
+        attachmentStackView.addArrangedSubview(addLinkButton)
+        
         view.addSubview(temporaryStorageButton)
     }
     

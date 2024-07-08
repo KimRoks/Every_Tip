@@ -14,6 +14,7 @@ private enum Layer: CaseIterable {
     case domain
     case data
     case presentation
+    case designSystem
     
     var layerName: String {
         switch self {
@@ -21,6 +22,7 @@ private enum Layer: CaseIterable {
         case .domain: return "\(appName)Domain"
         case .data: return "\(appName)Data"
         case .presentation: return "\(appName)Presentation"
+        case .designSystem: return "\(appName)DesignSystem"
         }
     }
 }
@@ -44,6 +46,56 @@ func makeEveryTipFrameworkTargets(
             base: .init().swiftCompilationMode(.wholemodule)
         )
     )
+    let testTarget = Target(
+        name: "\(name)Tests",
+        platform: platform,
+        product: .unitTests,
+        bundleId: "com.sonmoham.\(name)Tests",
+        deploymentTarget: deploymentTarget,
+        infoPlist: .default,
+        sources: ["Targets/\(name)/Tests/**"],
+        resources: [],
+        dependencies: [
+            .target(name: name)
+            // nimble, etc ....
+        ]
+    )
+    return [sourceTarget, testTarget]
+}
+
+
+func makeEveryTipDesignSystemTarget(
+    name: String,
+    platform: Platform,
+    dependencies: [TargetDependency]
+) -> [Target] {
+    
+    let fonts = [
+        "Pretendard-Bold.otf",
+        "Pretendard-ExtraBold.otf",
+        "Pretendard-Medium.otf",
+        "Pretendard-SemiBold.otf",
+    ]
+   
+    let infoPlist: [String: Plist.Value] = [
+        "Fonts provided by application": .array(fonts.map { .string($0) })
+    ]
+    
+    let sourceTarget = Target(
+        name: name,
+        platform: platform,
+        product: .framework,
+        bundleId: "com.sonmoham.\(name)",
+        deploymentTarget: deploymentTarget,
+        infoPlist: .extendingDefault(with: infoPlist),
+        sources: ["Targets/\(name)/Sources/**"],
+        resources: ["Targets/\(name)/Resources/**"],
+        dependencies: dependencies,
+        settings: .settings(
+            base: .init().swiftCompilationMode(.wholemodule)
+        )
+    )
+    
     let testTarget = Target(
         name: "\(name)Tests",
         platform: platform,
@@ -127,11 +179,19 @@ let project = Project(
             platform: .iOS,
             dependencies: [
                 .target(name: Layer.domain.layerName),
+                .target(name: Layer.designSystem.layerName),
                 .external(name: "SnapKit"),
                 .external(name: "RxCocoa"),
                 .external(name: "ReactorKit")
             ]
         ),
+        //Design System layer
+        makeEveryTipDesignSystemTarget(
+            name: Layer.designSystem.layerName,
+            platform: .iOS,
+            dependencies: []
+        ),
+        
         // data layer
         makeEveryTipFrameworkTargets(
             name: Layer.data.layerName,

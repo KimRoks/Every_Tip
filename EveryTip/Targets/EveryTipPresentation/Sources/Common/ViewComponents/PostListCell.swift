@@ -8,50 +8,70 @@
 
 import UIKit
 
+import EveryTipDesignSystem
+
 import SnapKit
 
 final class PostListCell: UITableViewCell, Reusable {
     
     let categoryLabel: UILabel = {
         let label = UILabel()
-        label.backgroundColor = .green
+
+        label.font = UIFont.et_pretendard(
+            style: .bold,
+            size: 14
+        )
+
+        label.sizeToFit()
+        label.layer.cornerRadius = 4
+        label.clipsToBounds = true
+        
+        // TODO: 각 카테고리 라벨별 색깔 지정 처리
+        label.backgroundColor = UIColor(red: 0.98, green: 0.88, blue: 0.89, alpha: 1.00)
+        label.textColor = UIColor(red: 0.91, green: 0.30, blue: 0.40, alpha: 1.00)
         
         return label
     }()
     
     let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 16)
         label.numberOfLines = 2
+        label.font = UIFont.et_pretendard(
+            style: .bold,
+            size: 16
+        )
         
         return label
     }()
     
-    private lazy var titleStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.spacing = 3
+    let mainTextLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.et_pretendard(
+            style: .medium,
+            size: 14
+        )
+        label.numberOfLines = 2
+        label.textColor = .et_textColorBlack50
         
-        return stackView
+        return label
     }()
     
-    let mainTextView: UILabel = {
-        let textView = UILabel()
-        textView.font = UIFont(name: "Pretendard", size: 14)
-        textView.numberOfLines = 2
-        return textView
-    }()
-    
+    // TODO: 현재 기본 이미지, 추후 서버 이미지로 처리 시 적절한 cornerRadius 설정 필요
     let userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "person.circle.fill")
+        imageView.tintColor = .gray
         
         return imageView
     }()
     
     let userNameLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Pretendard", size: 12)
+        label.font = UIFont.et_pretendard(
+            style: .medium,
+            size: 12
+        )
+        label.sizeToFit()
         
         return label
     }()
@@ -60,20 +80,27 @@ final class PostListCell: UITableViewCell, Reusable {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 3
+        stackView.distribution = .fill
+        stackView.sizeToFit()
         
         return stackView
     }()
     
-    private let viewCountImageView: UIImageView = {
+    let viewCountImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "eye")
+        imageView.tintColor = .gray
         
         return imageView
     }()
     
     let viewCountLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Pretendard", size: 12)
+        label.font = UIFont.et_pretendard(
+            style: .medium,
+            size: 12
+        )
+        label.sizeToFit()
         
         return label
     }()
@@ -82,20 +109,28 @@ final class PostListCell: UITableViewCell, Reusable {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 3
+        stackView.distribution = .fill
+        stackView.sizeToFit()
         
         return stackView
     }()
     
+    // TODO: 내가 좋아요 표시 한 경우 빨간색으로 표시
     let likeCountImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "heart")
+        imageView.tintColor = .gray
         
         return imageView
     }()
     
     let likeCountLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Pretendard", size: 12)
+        label.font = UIFont.et_pretendard(
+            style: .medium,
+            size: 12
+        )
+        label.sizeToFit()
         
         return label
     }()
@@ -104,22 +139,23 @@ final class PostListCell: UITableViewCell, Reusable {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 3
+        stackView.distribution = .fill
+        stackView.sizeToFit()
         
         return stackView
     }()
     
-    private lazy var bottomStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.spacing = 5
-        stackView.distribution = .fill
+    // 레이아웃 편의를 위한 우측 공백 뷰
+    private let rightSpacer: UIView = {
+        let view = UIView()
         
-        return stackView
+        return view
     }()
     
     let thumbnailImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.backgroundColor = .gray
+        imageView.contentMode = .scaleAspectFit
         
         return imageView
     }()
@@ -135,59 +171,92 @@ final class PostListCell: UITableViewCell, Reusable {
     }
     
     private func setupLayout() {
-        titleStackView.addArrangedSubview(categoryLabel)
-        titleStackView.addArrangedSubview(titleLabel)
-        
+        titleLabel.addSubview(categoryLabel)
+        contentView.addSubview(titleLabel)
+
+        contentView.addSubview(userStackView)
         userStackView.addArrangedSubview(userImageView)
         userStackView.addArrangedSubview(userNameLabel)
         
+        contentView.addSubview(likeCountStackView)
         likeCountStackView.addArrangedSubview(likeCountImageView)
         likeCountStackView.addArrangedSubview(likeCountLabel)
-        
+
+        contentView.addSubview(viewCountStackView)
         viewCountStackView.addArrangedSubview(viewCountImageView)
         viewCountStackView.addArrangedSubview(viewCountLabel)
         
-        bottomStackView.addArrangedSubview(userStackView)
-        bottomStackView.addArrangedSubview(likeCountStackView)
-        bottomStackView.addArrangedSubview(viewCountStackView)
+        contentView.addSubview(rightSpacer)
+        contentView.addSubview(thumbnailImageView)
         
-        self.addSubview(titleStackView)
-        self.addSubview(mainTextView)
-        self.addSubview(bottomStackView)
-        self.addSubview(thumbnailImageView)
+        contentView.addSubview(mainTextLabel)
     }
     
     private func setupConstraints() {
         categoryLabel.snp.makeConstraints {
-            $0.top.equalTo(self.snp.top).offset(10)
-            $0.leading.equalTo(self.snp.leading).offset(10)
-            $0.width.equalTo(50)
-            $0.height.equalTo(24)
+            $0.top.equalTo(titleLabel.snp.top)
+            $0.leading.equalTo(titleLabel.snp.leading)
         }
         
         titleLabel.snp.makeConstraints {
-            $0.top.equalTo(self.snp.top).offset(10)
-            $0.leading.equalTo(categoryLabel.snp.trailing).offset(3)
-            $0.trailing.equalTo(thumbnailImageView.snp.leading).offset(-5)
+            $0.top.equalTo(contentView.snp.top).offset(10)
+            $0.leading.equalTo(contentView.snp.leading)
+            $0.trailing.equalTo(rightSpacer.snp.leading).offset(-10)
         }
         
-        mainTextView.snp.makeConstraints {
+        mainTextLabel.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(10)
-            $0.leading.equalTo(self.snp.leading).offset(10)
-            $0.trailing.equalTo(thumbnailImageView.snp.leading).offset(-5)
-            $0.bottom.equalTo(self.snp.bottom).offset(-30)
+            $0.leading.equalTo(contentView.snp.leading)
+            $0.trailing.equalTo(rightSpacer.snp.leading).offset(-10)
+            $0.bottom.equalTo(contentView.snp.bottom).offset(-30)
         }
         
-        bottomStackView.snp.makeConstraints {
-            $0.leading.equalTo(self.snp.leading).offset(10)
-            $0.bottom.equalTo(self.snp.bottom).offset(-5)
+        userImageView.snp.makeConstraints {
+            $0.width.equalTo(20)
+        }
+        
+        likeCountImageView.snp.makeConstraints {
+            $0.width.equalTo(20)
+        }
+        
+        viewCountImageView.snp.makeConstraints {
+            $0.width.equalTo(20)
+        }
+        
+        userStackView.snp.makeConstraints {
+            $0.top.equalTo(mainTextLabel.snp.bottom).offset(5)
+            $0.leading.equalTo(contentView.snp.leading)
+            $0.bottom.equalTo(contentView.snp.bottom).offset(-5)
+            $0.width.lessThanOrEqualTo(contentView.snp.width).multipliedBy(0.2)
+        }
+        
+        likeCountStackView.snp.makeConstraints {
+            $0.top.equalTo(mainTextLabel.snp.bottom).offset(5)
+            $0.leading.equalTo(userStackView.snp.trailing).offset(3)
+            $0.bottom.equalTo(contentView.snp.bottom).offset(-5)
+            $0.width.lessThanOrEqualTo(contentView.snp.width).multipliedBy(0.2)
+        }
+        
+        viewCountStackView.snp.makeConstraints {
+            $0.top.equalTo(mainTextLabel.snp.bottom).offset(5)
+            $0.leading.equalTo(likeCountStackView.snp.trailing).offset(3)
+            $0.bottom.equalTo(contentView.snp.bottom).offset(-5)
+            $0.width.lessThanOrEqualTo(contentView.snp.width).multipliedBy(0.2)
         }
         
         thumbnailImageView.snp.makeConstraints {
-            $0.top.equalTo(self.snp.top).offset(10)
-            $0.bottom.equalTo(self.snp.bottom).offset(-20)
-            $0.trailing.equalTo(self.snp.trailing).offset(-10)
-            $0.width.equalTo(thumbnailImageView.snp.height)
+            $0.top.equalTo(contentView.snp.top).offset(10)
+            $0.trailing.equalTo(contentView.snp.trailing).offset(-10)
+            $0.width.equalTo(contentView.snp.width).multipliedBy(0.26)
+            $0.height.equalTo(thumbnailImageView.snp.width)
+            $0.bottom.lessThanOrEqualTo(contentView.snp.bottom).offset(-10)
+        }
+        
+        rightSpacer.snp.makeConstraints {
+            $0.top.equalTo(contentView.snp.top)
+            $0.bottom.equalTo(contentView.snp.bottom)
+            $0.trailing.equalTo(contentView.snp.trailing)
+            $0.width.equalTo(contentView.snp.width).multipliedBy(0.3)
         }
     }
 }

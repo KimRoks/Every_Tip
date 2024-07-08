@@ -18,16 +18,17 @@ final class DefaultPostRepository: PostRepository {
     let dummyPosts: [Tip] = [
         Tip(
             category: "레시피",
-            title: "아침 밥 맛있게 만드는 방법",
+            title: "아침 밥 맛있게 만드는 방법 아침 밥 맛있게 만드는 방법아침 밥 맛있게 만드는 방법아침 밥 맛있게 만드는 방법",
             mainText: "프랑스에서는 빵을 전혀 다른 요리로 만들었다는 뜻에서 프렌치토스트를 ‘잃어버린 빵’이라고 부른다고 해요. 달걀과 우유를 섞은 물에 퐁당 빠졌다가 나왔을 뿐인데 정말 색다른 맛으로 변신하지요. 바삭하게 구워내는 토스트도 좋지만, 폭신폭신하고 부드러운 프렌치토스트는 아침에 까끌까끌한 입을 달래준답니다. 노릇노릇 구워진 빵위에 달콤한 시럽과 과일을 곁들여 근사한 아침 식사를 만들어보세요.",
             thumbnailImageURL: "swift.png",
-            userName: "JohnDoe",
-            viewCount: 42,
-            likeCount: 78
+            userName: "JohJohnDoe",
+            viewCount: 252562525625256,
+            
+            likeCount: 2131412421314124
         ),
         Tip(
             category: "생활",
-            title: "빨래할 때 유용한 팁",
+            title: "빨래할 때 유용한 팁빨래할 때 유용한 팁빨래할 때 유용한 팁빨래할 때 유용한 팁빨래할 때 유용한 팁",
             mainText: "빨래를 할 때 세탁망을 사용하면 옷감의 손상을 줄일 수 있습니다. 특히 얇은 옷이나 니트류는 세탁망에 넣어 세탁하는 것이 좋습니다. 또한, 세제를 너무 많이 사용하지 않는 것이 중요합니다. 세제가 많이 남으면 옷감에 손상을 줄 수 있으므로 적정량을 사용하는 것이 좋습니다. 마지막으로, 세탁 후에는 옷을 바로 건조기에 넣지 말고 바람이 잘 통하는 곳에서 자연 건조하는 것이 옷을 오래 입는 비결입니다.",
             thumbnailImageURL: "laundry.png",
             userName: "David",
@@ -63,7 +64,7 @@ final class DefaultPostRepository: PostRepository {
         ),
         Tip(
             category: "레시피",
-            title: "아침 밥 맛있게 만드는 방법",
+            title: "아침 밥 맛있게 만드는 방법아침 밥 맛있게 만드는 방법아침 밥 맛있게 만드는 방법아침 밥 맛있게 만드는 방법아침 밥 맛있게 만드는 방법아침 밥 맛있게 만드는 방법아침 밥 맛있게 만드는 방법아침 밥 맛있게 만드는 방법",
             mainText: "프랑스에서는 빵을 전혀 다른 요리로 만들었다는 뜻에서 프렌치토스트를 ‘잃어버린 빵’이라고 부른다고 해요. 달걀과 우유를 섞은 물에 퐁당 빠졌다가 나왔을 뿐인데 정말 색다른 맛으로 변신하지요. 바삭하게 구워내는 토스트도 좋지만, 폭신폭신하고 부드러운 프렌치토스트는 아침에 까끌까끌한 입을 달래준답니다. 노릇노릇 구워진 빵위에 달콤한 시럽과 과일을 곁들여 근사한 아침 식사를 만들어보세요.",
             thumbnailImageURL: "swift.png",
             userName: "JohnDoe",
@@ -100,7 +101,7 @@ final class DefaultPostRepository: PostRepository {
         Tip(
             category: "사회",
             title: "효과적인 자원봉사 방법",
-            mainText: "자원봉사는 단순히 시간을 보내는 것이 아니라, 자신이 가진 능력을 통해 다른 사람을 돕는 의미 있는 활동입니다. 자원봉사를 할 때에는 자신의 관심사와 능력에 맞는 봉사활동을 선택하는 것이 중요합니다. 예를 들어, 교육에 관심이 있다면 학습 멘토링을, 환경 보호에 관심이 있다면 쓰레기 줍기 활동을 선택할 수 있습니다. 이렇게 자신이 잘 할 수 있는 분야에서 봉사활동을 하면 더 큰 보람을 느낄 수 있습니다.",
+            mainText: "자원봉사는 단순히 시간을.",
             thumbnailImageURL: "volunteer.png",
             userName: "Helper",
             viewCount: 32,
