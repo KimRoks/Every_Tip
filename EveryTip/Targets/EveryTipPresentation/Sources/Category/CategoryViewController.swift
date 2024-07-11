@@ -105,11 +105,13 @@ final class CategoryViewController: BaseViewController {
         bannerTitleLabel.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(20)
             $0.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
+            $0.trailing.equalTo(bannerImageView.snp.leading)
         }
         
         bannerDescriptionLabel.snp.makeConstraints {
             $0.top.equalTo(bannerTitleLabel.snp.bottom).offset(5)
             $0.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
+            $0.trailing.equalTo(bannerImageView.snp.leading)
         }
         
         bannerImageView.snp.makeConstraints {
