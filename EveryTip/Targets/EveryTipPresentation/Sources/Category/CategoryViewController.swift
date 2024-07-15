@@ -16,6 +16,8 @@ final class CategoryViewController: BaseViewController {
     
     weak var coordinator: CategoryViewCoordinator?
     
+    // TODO: 상수 파일로 분리
+    
     private let categories: [TipCategory] = [
         .hobby,
         .it,

@@ -8,6 +8,8 @@
 
 import UIKit
 
+// TODO: 해당 구조체 분류(enum)과 ui정보 분리
+
 struct TipCategory {
     let image: UIImage?
     let title: String
