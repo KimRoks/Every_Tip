@@ -10,6 +10,7 @@ import UIKit
 
 import EveryTipDesignSystem
 
+import ReactorKit
 import RxCocoa
 import RxSwift
 import SnapKit
@@ -18,12 +19,12 @@ final class HomeViewController: BaseViewController {
     
     weak var coordinator: HomeViewCoordinator?
     
-    private let viewModel: HomeViewModel
+    private var reactor: HomeReactor
     
-    private let disposeBag = DisposeBag()
+    var disposeBag = DisposeBag()
     
-    init(viewModel: HomeViewModel) {
-        self.viewModel = viewModel
+    init(reactor: HomeReactor) {
+        self.reactor = reactor
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -41,7 +42,7 @@ final class HomeViewController: BaseViewController {
             style: .extraBold,
             size: 18
         )
-                
+        
         label.numberOfLines = 0
         
         return label
@@ -186,7 +187,8 @@ final class HomeViewController: BaseViewController {
         setupConstraints()
         setupTableView()
         setupTags()
-        bindViewModel()
+        self.bind(reactor: reactor)
+        self.reactor.action.onNext(.fetchPosts)
     }
     
     override func viewDidLayoutSubviews() {
@@ -205,7 +207,7 @@ final class HomeViewController: BaseViewController {
         
         gradientMaskView.addSubview(tagButtonsScrollView)
         tagButtonsScrollView.addSubview(tagsStackView)
-
+        
         view.addSubview(spacer)
         
         headerView.addSubview(moabogiLabel)
@@ -321,21 +323,6 @@ final class HomeViewController: BaseViewController {
         }
     }
     
-    private func bindViewModel() {
-        viewModel.posts.bind(to: postListTableView.rx.items(cellIdentifier: PostListCell.reuseIdentifier, cellType: PostListCell.self)) { row, data, cell in
-            
-            cell.categoryLabel.text = " \(data.category) "
-            cell.titleLabel.text = "\(self.addSpace(forTitleLength: data.category.count) + data.title)  "
-            cell.mainTextLabel.text = data.mainText
-            cell.userNameLabel.text = data.userName
-            cell.likeCountLabel.text = "\(data.likeCount)"
-            cell.viewCountLabel.text = "\(data.viewCount)"
-            // TODO: 이미지 url을 통한 패칭 적용
-            //            cell.thumbnailImageView.image = UIImage(data: <#T##Data#>)
-            
-        }.disposed(by: disposeBag)
-    }
-    
     // TODO: 동작 방식 개선
     
     private func addSpace(forTitleLength length: Int) -> String {
@@ -355,5 +342,37 @@ final class HomeViewController: BaseViewController {
         gradientLayer.endPoint = CGPoint(x: 0.8, y: 0.5)
         
         gradientMaskView.layer.mask = gradientLayer
+    }
+}
+
+extension HomeViewController: View {
+    func bind(reactor: HomeReactor) {
+        reactor.state.map { $0.posts }
+            .bind(
+                to: postListTableView.rx.items(
+                    cellIdentifier: PostListCell.reuseIdentifier,
+                    cellType: PostListCell.self
+                )
+            ) { index, post, cell in
+                cell.categoryLabel.text = " \(post.category) "
+                cell.titleLabel.text = "\(self.addSpace(forTitleLength: post.category.count) + post.title)  "
+                cell.mainTextLabel.text = post.mainText
+                cell.userNameLabel.text = post.userName
+                cell.likeCountLabel.text = "\(post.likeCount)"
+                cell.viewCountLabel.text = "\(post.viewCount)"
+                //            // TODO: 이미지 url을 통한 패칭 적용
+                //            //            cell.thumbnailImageView.image = UIImage(data: <#T##Data#>)
+                
+            }.disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.fetchError }
+            .subscribe(onNext: { error in
+                if let error = error {
+                    print("Error: \(error)")
+                    // 에러 핸들링 로직 추가 (예: Alert 표시)
+                }
+            })
+        .disposed(by: disposeBag)   
     }
 }

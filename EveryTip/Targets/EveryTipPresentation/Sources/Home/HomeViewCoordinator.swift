@@ -40,9 +40,9 @@ final class DefaultHomeViewCoordinator: HomeViewCoordinator {
         guard let useCase = container.resolve(PostListUseCase.self) else {
             fatalError("의존성 주입이 옳바르지 않습니다!")
         }
+        let reactor = HomeReactor(postUseCase: useCase)
+        let homeViewController = HomeViewController(reactor: reactor)
         
-        let viewModel = HomeViewModel(postUseCase: useCase)
-        let homeViewController = HomeViewController(viewModel: viewModel)
         homeViewController.coordinator = self
         
         return homeViewController
