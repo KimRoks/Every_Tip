@@ -31,7 +31,6 @@ class HomeReactor: Reactor {
     let initialState: State
     
     private let postUseCase: PostListUseCase
-    private let disposeBag = DisposeBag()
     
     init(postUseCase: PostListUseCase) {
         self.postUseCase = postUseCase
