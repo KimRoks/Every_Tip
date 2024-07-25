@@ -18,14 +18,12 @@ import SnapKit
 final class HomeViewController: BaseViewController {
     
     weak var coordinator: HomeViewCoordinator?
-    
-    private var reactor: HomeReactor
-    
+
     var disposeBag = DisposeBag()
     
     init(reactor: HomeReactor) {
-        self.reactor = reactor
         super.init(nibName: nil, bundle: nil)
+        self.reactor = reactor
     }
     
     required init?(coder: NSCoder) {
@@ -187,8 +185,6 @@ final class HomeViewController: BaseViewController {
         setupConstraints()
         setupTableView()
         setupTags()
-        self.bind(reactor: reactor)
-        self.reactor.action.onNext(.fetchPosts)
     }
     
     override func viewDidLayoutSubviews() {
@@ -345,8 +341,12 @@ final class HomeViewController: BaseViewController {
     }
 }
 
+//MARK: Reactor
+
 extension HomeViewController: View {
     func bind(reactor: HomeReactor) {
+        self.reactor?.action.onNext(.viewDidLoad)
+        
         reactor.state.map { $0.posts }
             .bind(
                 to: postListTableView.rx.items(

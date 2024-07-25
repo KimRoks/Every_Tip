@@ -15,7 +15,7 @@ import RxSwift
 
 class HomeReactor: Reactor {
     enum Action {
-        case fetchPosts
+        case viewDidLoad
     }
     
     enum Mutation {
@@ -39,7 +39,7 @@ class HomeReactor: Reactor {
     
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case .fetchPosts:
+        case .viewDidLoad:
             return postUseCase.fetchPosts()
                 .asObservable()
                 .map(Mutation.setPosts)
