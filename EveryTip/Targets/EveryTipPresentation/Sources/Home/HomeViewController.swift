@@ -46,7 +46,7 @@ final class HomeViewController: BaseViewController {
         return label
     }()
     
-    private let weeklyTipReadMoreButton: UIButton = {
+    private let weeklyTipLearnMoreButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("자세히 보기 >", for: .normal)
         button.tintColor = .white
@@ -137,10 +137,8 @@ final class HomeViewController: BaseViewController {
         
         return view
     }()
-    
-    // TODO: 모아보기 및 더보기 네이밍 수정
-    
-    private let moabogiLabel: UILabel = {
+        
+    private let popularTipLabel: UILabel = {
         let label = UILabel()
         label.text = "인기 팁 모아보기 🔥"
         label.font = UIFont.et_pretendard(
@@ -151,7 +149,7 @@ final class HomeViewController: BaseViewController {
         return label
     }()
     
-    private let thebogiButton: UIButton = {
+    private let popularTipLearnMoreButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("더보기", for: .normal)
         button.setTitleColor(.et_textColorBlack10, for: .normal)
@@ -194,7 +192,7 @@ final class HomeViewController: BaseViewController {
     private func setupLayout() {
         view.addSubview(weeklyTipLabel)
         view.addSubview(weeklyTipImageView)
-        view.addSubview(weeklyTipReadMoreButton)
+        view.addSubview(weeklyTipLearnMoreButton)
         
         view.addSubview(searchView)
         searchBar.addSubview(searchIcon)
@@ -206,8 +204,8 @@ final class HomeViewController: BaseViewController {
         
         view.addSubview(spacer)
         
-        headerView.addSubview(moabogiLabel)
-        headerView.addSubview(thebogiButton)
+        headerView.addSubview(popularTipLabel)
+        headerView.addSubview(popularTipLearnMoreButton)
         
         view.addSubview(tableViewBackgroundView)
         view.addSubview(postListTableView)
@@ -219,7 +217,7 @@ final class HomeViewController: BaseViewController {
             $0.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
         }
         
-        weeklyTipReadMoreButton.snp.makeConstraints {
+        weeklyTipLearnMoreButton.snp.makeConstraints {
             $0.top.equalTo(weeklyTipLabel.snp.bottom).offset(5)
             $0.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
         }
@@ -266,12 +264,12 @@ final class HomeViewController: BaseViewController {
             $0.edges.equalToSuperview()
         }
         
-        moabogiLabel.snp.makeConstraints {
+        popularTipLabel.snp.makeConstraints {
             $0.leading.equalTo(headerView)
             $0.centerY.equalToSuperview()
         }
         
-        thebogiButton.snp.makeConstraints {
+        popularTipLearnMoreButton.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.trailing.equalTo(headerView)
         }
@@ -374,5 +372,19 @@ extension HomeViewController: View {
                 }
             })
         .disposed(by: disposeBag)   
+        
+        postListTableView.rx.itemSelected
+            .map{Reactor.Action.itemSeleted($0)}
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.selectedIndexPath }
+            .subscribe { [weak self] indexPath in
+                
+                // TODO: 예시 데이터로 터치된 indexPath 전달 추후 변경
+                self?.coordinator?.navigateToTestView(with: "\(indexPath)")
+            }
+            .disposed(by: disposeBag)
     }
 }
