@@ -16,16 +16,21 @@ import RxSwift
 class HomeReactor: Reactor {
     enum Action {
         case viewDidLoad
+        case itemSeleted(IndexPath)
     }
     
     enum Mutation {
+        //viewDidLoad 시
         case setPosts([Tip])
         case setError(Error)
+        
+        case pushToItemView(IndexPath)
     }
     
     struct State {
         var posts: [Tip] = []
         var fetchError: Error?
+        var selectedIndexPath: IndexPath?
     }
     
     let initialState: State
@@ -46,6 +51,9 @@ class HomeReactor: Reactor {
                 .catch { error in
                     Observable.just(Mutation.setError(error))
                 }
+            
+        case .itemSeleted(let indexPath):
+            return .just(Mutation.pushToItemView(indexPath))
         }
     }
     
@@ -53,13 +61,17 @@ class HomeReactor: Reactor {
         var newState = state
         
         switch mutation {
-        case let .setPosts(posts):
+        case .setPosts(let posts):
             newState.posts = posts
-    
-        case let .setError(error):
+            
+        case .setError(let error):
             newState.fetchError = error
+            
+        case .pushToItemView(let indexPath):
+            newState.selectedIndexPath = indexPath
         }
         
         return newState
     }
 }
+
