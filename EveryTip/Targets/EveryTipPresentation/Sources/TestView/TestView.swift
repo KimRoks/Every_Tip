@@ -8,14 +8,16 @@
 
 import UIKit
 
+import EveryTipDomain
+
 final class TestView: UIViewController {
     weak var coordinator: TestViewCoordinator?
     
-    var text: String?
+    var tip: Tip?
     
-    init(text: String? = nil) {
+    init(tip: Tip?) {
         super.init(nibName: nil, bundle: nil)
-        self.text = text
+        self.tip = tip
     }
     
     required init?(coder: NSCoder) {
@@ -24,6 +26,6 @@ final class TestView: UIViewController {
     
     override func viewDidLoad() {
         view.backgroundColor = .blue
-        print(text)
+        print(tip)
     }
 }

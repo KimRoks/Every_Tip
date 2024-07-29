@@ -9,8 +9,10 @@
 
 import UIKit
 
+import EveryTipDomain
+
 protocol TestViewCoordinator: Coordinator {
-    func start(with data: String)
+    func start(with tip: Tip)
 }
 
 final class DefaultTestViewCoordinator: TestViewCoordinator {
@@ -27,8 +29,8 @@ final class DefaultTestViewCoordinator: TestViewCoordinator {
     
     func start() { }
     
-    func start(with data: String) {
-        let testView = TestView(text: data)
+    func start(with tip: Tip) {
+        let testView = TestView(tip: tip)
         testView.coordinator = self
         navigationController
             .pushViewController(

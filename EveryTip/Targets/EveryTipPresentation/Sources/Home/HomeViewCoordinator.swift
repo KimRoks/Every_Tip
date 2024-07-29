@@ -14,7 +14,7 @@ import Swinject
 
 protocol HomeViewCoordinator: Coordinator {
     func start() -> UIViewController
-    func navigateToTestView(with data: String)
+    func navigateToTestView(with data: Tip)
 }
 
 final class DefaultHomeViewCoordinator: HomeViewCoordinator {
@@ -53,13 +53,13 @@ final class DefaultHomeViewCoordinator: HomeViewCoordinator {
         parentCoordinator?.remove(child: self)
     }
     
-    func navigateToTestView(with data: String) {
+    func navigateToTestView(with tip: Tip) {
         let testViewCoordinator = DefaultTestViewCoordinator(
             navigationController: navigationController
         )
         testViewCoordinator.parentCoordinator = self
         childCoordinators.append(testViewCoordinator)
         
-        testViewCoordinator.start(with: data)
+        testViewCoordinator.start(with: tip)
     }
 }

@@ -18,7 +18,7 @@ import SnapKit
 final class HomeViewController: BaseViewController {
     
     weak var coordinator: HomeViewCoordinator?
-
+    
     var disposeBag = DisposeBag()
     
     init(reactor: HomeReactor) {
@@ -137,7 +137,7 @@ final class HomeViewController: BaseViewController {
         
         return view
     }()
-        
+    
     private let popularTipLabel: UILabel = {
         let label = UILabel()
         label.text = "인기 팁 모아보기 🔥"
@@ -371,7 +371,7 @@ extension HomeViewController: View {
                     // 에러 핸들링 로직 추가 (예: Alert 표시)
                 }
             })
-        .disposed(by: disposeBag)   
+            .disposed(by: disposeBag)
         
         postListTableView.rx.itemSelected
             .map{Reactor.Action.itemSeleted($0)}
@@ -379,12 +379,11 @@ extension HomeViewController: View {
             .disposed(by: disposeBag)
         
         reactor.state
-            .map { $0.selectedIndexPath }
-            .subscribe { [weak self] indexPath in
-                
-                // TODO: 예시 데이터로 터치된 indexPath 전달 추후 변경
-                self?.coordinator?.navigateToTestView(with: "\(indexPath)")
-            }
+            .map { $0.selectedItem }
+            .compactMap{ $0 }
+            .subscribe(onNext: { [weak self] tip in
+                self?.coordinator?.navigateToTestView(with: tip)
+            })
             .disposed(by: disposeBag)
     }
 }

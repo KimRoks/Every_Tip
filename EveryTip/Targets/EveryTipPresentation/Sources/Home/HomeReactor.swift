@@ -24,13 +24,13 @@ class HomeReactor: Reactor {
         case setPosts([Tip])
         case setError(Error)
         
-        case pushToItemView(IndexPath)
+        case pushToItemView(Tip)
     }
     
     struct State {
         var posts: [Tip] = []
         var fetchError: Error?
-        var selectedIndexPath: IndexPath?
+        var selectedItem: Tip?
     }
     
     let initialState: State
@@ -53,7 +53,8 @@ class HomeReactor: Reactor {
                 }
             
         case .itemSeleted(let indexPath):
-            return .just(Mutation.pushToItemView(indexPath))
+            let tip = currentState.posts[indexPath.row]
+            return .just(Mutation.pushToItemView(tip))
         }
     }
     
@@ -67,8 +68,8 @@ class HomeReactor: Reactor {
         case .setError(let error):
             newState.fetchError = error
             
-        case .pushToItemView(let indexPath):
-            newState.selectedIndexPath = indexPath
+        case .pushToItemView(let tip):
+            newState.selectedItem = tip
         }
         
         return newState
