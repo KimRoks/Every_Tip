@@ -183,6 +183,7 @@ final class HomeViewController: BaseViewController {
         setupConstraints()
         setupTableView()
         setupTags()
+        self.reactor?.action.onNext(.viewDidLoad)
     }
     
     override func viewDidLayoutSubviews() {
@@ -343,8 +344,18 @@ final class HomeViewController: BaseViewController {
 
 extension HomeViewController: View {
     func bind(reactor: HomeReactor) {
-        self.reactor?.action.onNext(.viewDidLoad)
-        
+        bindInputs(to: reactor)
+        bindOutputs(to: reactor)
+    }
+    
+    private func bindInputs(to reactor: HomeReactor) {
+        postListTableView.rx.itemSelected
+            .map{Reactor.Action.itemSeleted($0)}
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindOutputs(to reactor: HomeReactor) {
         reactor.state.map { $0.posts }
             .bind(
                 to: postListTableView.rx.items(
@@ -371,11 +382,6 @@ extension HomeViewController: View {
                     // 에러 핸들링 로직 추가 (예: Alert 표시)
                 }
             })
-            .disposed(by: disposeBag)
-        
-        postListTableView.rx.itemSelected
-            .map{Reactor.Action.itemSeleted($0)}
-            .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         reactor.state
