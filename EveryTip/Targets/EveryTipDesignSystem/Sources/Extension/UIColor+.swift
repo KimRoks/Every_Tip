@@ -19,6 +19,8 @@ extension UIColor {
     /// 색상 코드: #BEC1C8
     public static let et_textColor5 = UIColor(red: 0.75, green: 0.76, blue: 0.78, alpha: 1.00)
     
+    /// 색상코드: #000000
+    public static let et_textColorBlack100 = UIColor(red: 0.00, green: 0.00, blue: 0.00, alpha: 1.00)
     
     /// 색상 코드: #111111
     public static let et_textColorBlack90 = UIColor(red: 0.07, green: 0.07, blue: 0.07, alpha: 1.00)
@@ -29,9 +31,22 @@ extension UIColor {
     /// 색상 코드: #555555
     public static let et_textColorBlack50 = UIColor(red: 0.33, green: 0.33, blue: 0.33, alpha: 1.00)
     
-    /// /// 색상 코드: #777777
+    /// 색상 코드: #777777
     public static let et_textColorBlack30 = UIColor(red: 0.47, green: 0.47, blue: 0.47, alpha: 1.00)
     
     /// 색상 코드: #999999
     public static let et_textColorBlack10 = UIColor(red: 0.60, green: 0.60, blue: 0.60, alpha: 1.00)
+    
+    
+    /// 색상코드: #E1E1E1
+    public static let et_lineGray40 = UIColor(red: 0.88, green: 0.88, blue: 0.88, alpha: 1.00)
+    
+    /// 색상코드: #F1F1F1
+    public static let et_lineGray30 = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.00)
+    
+    /// 색상코드: #F6F6F6
+    public static let et_lineGray20 = UIColor(red: 0.96, green: 0.96, blue: 0.96, alpha: 1.00)
+    
+    /// 색상코드: #FBFBFB
+    public static let et_lineGray10 = UIColor(red: 0.98, green: 0.98, blue: 0.98, alpha: 1.00)
 }
