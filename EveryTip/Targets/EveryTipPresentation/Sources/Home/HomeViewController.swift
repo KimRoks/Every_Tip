@@ -183,7 +183,6 @@ final class HomeViewController: BaseViewController {
         setupConstraints()
         setupTableView()
         setupTags()
-        self.reactor?.action.onNext(.viewDidLoad)
     }
     
     override func viewDidLayoutSubviews() {
@@ -349,6 +348,8 @@ extension HomeViewController: View {
     }
     
     private func bindInputs(to reactor: HomeReactor) {
+        self.reactor?.action.onNext(.viewDidLoad)
+        
         postListTableView.rx.itemSelected
             .map{Reactor.Action.itemSeleted($0)}
             .bind(to: reactor.action)
