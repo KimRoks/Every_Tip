@@ -14,6 +14,7 @@ import Swinject
 
 protocol HomeViewCoordinator: Coordinator {
     func start() -> UIViewController
+    func navigateToTestView(with data: Tip)
 }
 
 final class DefaultHomeViewCoordinator: HomeViewCoordinator {
@@ -40,9 +41,9 @@ final class DefaultHomeViewCoordinator: HomeViewCoordinator {
         guard let useCase = container.resolve(PostListUseCase.self) else {
             fatalError("의존성 주입이 옳바르지 않습니다!")
         }
+        let reactor = HomeReactor(postUseCase: useCase)
+        let homeViewController = HomeViewController(reactor: reactor)
         
-        let viewModel = HomeViewModel(postUseCase: useCase)
-        let homeViewController = HomeViewController(viewModel: viewModel)
         homeViewController.coordinator = self
         
         return homeViewController
@@ -50,5 +51,15 @@ final class DefaultHomeViewCoordinator: HomeViewCoordinator {
     
     func didFinish() {
         parentCoordinator?.remove(child: self)
+    }
+    
+    func navigateToTestView(with tip: Tip) {
+        let testViewCoordinator = DefaultTestViewCoordinator(
+            navigationController: navigationController
+        )
+        testViewCoordinator.parentCoordinator = self
+        childCoordinators.append(testViewCoordinator)
+        
+        testViewCoordinator.start(with: tip)
     }
 }

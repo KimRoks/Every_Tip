@@ -10,6 +10,7 @@ import UIKit
 
 import EveryTipDesignSystem
 
+import ReactorKit
 import RxCocoa
 import RxSwift
 import SnapKit
@@ -18,13 +19,11 @@ final class HomeViewController: BaseViewController {
     
     weak var coordinator: HomeViewCoordinator?
     
-    private let viewModel: HomeViewModel
+    var disposeBag = DisposeBag()
     
-    private let disposeBag = DisposeBag()
-    
-    init(viewModel: HomeViewModel) {
-        self.viewModel = viewModel
+    init(reactor: HomeReactor) {
         super.init(nibName: nil, bundle: nil)
+        self.reactor = reactor
     }
     
     required init?(coder: NSCoder) {
@@ -41,13 +40,13 @@ final class HomeViewController: BaseViewController {
             style: .extraBold,
             size: 18
         )
-                
+        
         label.numberOfLines = 0
         
         return label
     }()
     
-    private let weeklyTipReadMoreButton: UIButton = {
+    private let weeklyTipLearnMoreButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("자세히 보기 >", for: .normal)
         button.tintColor = .white
@@ -139,9 +138,7 @@ final class HomeViewController: BaseViewController {
         return view
     }()
     
-    // TODO: 모아보기 및 더보기 네이밍 수정
-    
-    private let moabogiLabel: UILabel = {
+    private let popularTipLabel: UILabel = {
         let label = UILabel()
         label.text = "인기 팁 모아보기 🔥"
         label.font = UIFont.et_pretendard(
@@ -152,7 +149,7 @@ final class HomeViewController: BaseViewController {
         return label
     }()
     
-    private let thebogiButton: UIButton = {
+    private let popularTipLearnMoreButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("더보기", for: .normal)
         button.setTitleColor(.et_textColorBlack10, for: .normal)
@@ -186,7 +183,6 @@ final class HomeViewController: BaseViewController {
         setupConstraints()
         setupTableView()
         setupTags()
-        bindViewModel()
     }
     
     override func viewDidLayoutSubviews() {
@@ -196,7 +192,7 @@ final class HomeViewController: BaseViewController {
     private func setupLayout() {
         view.addSubview(weeklyTipLabel)
         view.addSubview(weeklyTipImageView)
-        view.addSubview(weeklyTipReadMoreButton)
+        view.addSubview(weeklyTipLearnMoreButton)
         
         view.addSubview(searchView)
         searchBar.addSubview(searchIcon)
@@ -205,11 +201,11 @@ final class HomeViewController: BaseViewController {
         
         gradientMaskView.addSubview(tagButtonsScrollView)
         tagButtonsScrollView.addSubview(tagsStackView)
-
+        
         view.addSubview(spacer)
         
-        headerView.addSubview(moabogiLabel)
-        headerView.addSubview(thebogiButton)
+        headerView.addSubview(popularTipLabel)
+        headerView.addSubview(popularTipLearnMoreButton)
         
         view.addSubview(tableViewBackgroundView)
         view.addSubview(postListTableView)
@@ -221,7 +217,7 @@ final class HomeViewController: BaseViewController {
             $0.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
         }
         
-        weeklyTipReadMoreButton.snp.makeConstraints {
+        weeklyTipLearnMoreButton.snp.makeConstraints {
             $0.top.equalTo(weeklyTipLabel.snp.bottom).offset(5)
             $0.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
         }
@@ -268,12 +264,12 @@ final class HomeViewController: BaseViewController {
             $0.edges.equalToSuperview()
         }
         
-        moabogiLabel.snp.makeConstraints {
+        popularTipLabel.snp.makeConstraints {
             $0.leading.equalTo(headerView)
             $0.centerY.equalToSuperview()
         }
         
-        thebogiButton.snp.makeConstraints {
+        popularTipLearnMoreButton.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.trailing.equalTo(headerView)
         }
@@ -321,21 +317,6 @@ final class HomeViewController: BaseViewController {
         }
     }
     
-    private func bindViewModel() {
-        viewModel.posts.bind(to: postListTableView.rx.items(cellIdentifier: PostListCell.reuseIdentifier, cellType: PostListCell.self)) { row, data, cell in
-            
-            cell.categoryLabel.text = " \(data.category) "
-            cell.titleLabel.text = "\(self.addSpace(forTitleLength: data.category.count) + data.title)  "
-            cell.mainTextLabel.text = data.mainText
-            cell.userNameLabel.text = data.userName
-            cell.likeCountLabel.text = "\(data.likeCount)"
-            cell.viewCountLabel.text = "\(data.viewCount)"
-            // TODO: 이미지 url을 통한 패칭 적용
-            //            cell.thumbnailImageView.image = UIImage(data: <#T##Data#>)
-            
-        }.disposed(by: disposeBag)
-    }
-    
     // TODO: 동작 방식 개선
     
     private func addSpace(forTitleLength length: Int) -> String {
@@ -355,5 +336,61 @@ final class HomeViewController: BaseViewController {
         gradientLayer.endPoint = CGPoint(x: 0.8, y: 0.5)
         
         gradientMaskView.layer.mask = gradientLayer
+    }
+}
+
+//MARK: Reactor
+
+extension HomeViewController: View {
+    func bind(reactor: HomeReactor) {
+        bindInputs(to: reactor)
+        bindOutputs(to: reactor)
+    }
+    
+    private func bindInputs(to reactor: HomeReactor) {
+        self.reactor?.action.onNext(.viewDidLoad)
+        
+        postListTableView.rx.itemSelected
+            .map{Reactor.Action.itemSeleted($0)}
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindOutputs(to reactor: HomeReactor) {
+        reactor.state.map { $0.posts }
+            .bind(
+                to: postListTableView.rx.items(
+                    cellIdentifier: PostListCell.reuseIdentifier,
+                    cellType: PostListCell.self
+                )
+            ) { index, post, cell in
+                cell.categoryLabel.text = " \(post.category) "
+                cell.titleLabel.text = "\(self.addSpace(forTitleLength: post.category.count) + post.title)  "
+                cell.mainTextLabel.text = post.mainText
+                cell.userNameLabel.text = post.userName
+                cell.likeCountLabel.text = "\(post.likeCount)"
+                cell.viewCountLabel.text = "\(post.viewCount)"
+                //            // TODO: 이미지 url을 통한 패칭 적용
+                //            //            cell.thumbnailImageView.image = UIImage(data: <#T##Data#>)
+                
+            }.disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.fetchError }
+            .subscribe(onNext: { error in
+                if let error = error {
+                    print("Error: \(error)")
+                    // 에러 핸들링 로직 추가 (예: Alert 표시)
+                }
+            })
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.selectedItem }
+            .compactMap{ $0 }
+            .subscribe(onNext: { [weak self] tip in
+                self?.coordinator?.navigateToTestView(with: tip)
+            })
+            .disposed(by: disposeBag)
     }
 }
