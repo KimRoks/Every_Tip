@@ -35,7 +35,6 @@ final class DefaultMainTabCoordinator: MainTabCoordinator {
         let emptyVC = UIViewController()
         emptyVC.tabBarItem.isEnabled = false
         let thirdVC = UINavigationController()
-        let fourthVC = UINavigationController()
         
         let homeCoordinator = DefaultHomeViewCoordinator(navigationController: navigationController)
         homeCoordinator.parentCoordinator = self
@@ -44,13 +43,17 @@ final class DefaultMainTabCoordinator: MainTabCoordinator {
         let categoryCoordinator = DefaultCategoryViewCoordinator(navigationController: navigationController)
         categoryCoordinator.parentCoordinator = self
         append(child: categoryCoordinator)
-                 
+        
+        let userInfoCoodinator = DefaultUserInfoViewCoordinator(navigationController: navigationController)
+        userInfoCoodinator.parentCoordinator = self
+        append(child: userInfoCoodinator)
+        
         mainTabBarController.viewControllers = [
             homeCoordinator.start(),
             categoryCoordinator.start(),
             emptyVC,
             thirdVC,
-            fourthVC
+            userInfoCoodinator.start()
         ]
         
         mainTabBarController.configureMainTabBarController()

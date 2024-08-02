@@ -1,0 +1,48 @@
+//
+//  UserInfoViewCoordinator.swift
+//  EveryTipPresentation
+//
+//  Created by 김경록 on 7/31/24.
+//  Copyright © 2024 EveryTip. All rights reserved.
+//
+
+import UIKit
+
+import Swinject
+
+import EveryTipDomain
+
+protocol UserInfoViewCoordinator: Coordinator {
+    func start() -> UIViewController
+}
+
+final class DefaultUserInfoViewCoordinator: UserInfoViewCoordinator {
+    var parentCoordinator: Coordinator?
+    
+    var childCoordinators: [Coordinator] = []
+    
+    var navigationController: UINavigationController
+    
+    private let container = Container.shared
+
+    init(navigationController: UINavigationController) {
+        self.navigationController = navigationController
+    }
+    
+    func start() { }
+    
+    func start() -> UIViewController {
+        guard let useCase = container.resolve(UserInfoUseCase.self) else {
+            fatalError("의존성 주입이 옳바르지않습니다! \(self)")
+        }
+        let reactor = UserInfoReactor(userInfoUserCase: useCase)
+        
+        let userInfoViewController = UserInfoViewController(reactor: reactor)
+        userInfoViewController.coordinator = self
+        return userInfoViewController
+    }
+    
+    func didFinish() {
+        parentCoordinator?.remove(child: self)
+    }
+}
