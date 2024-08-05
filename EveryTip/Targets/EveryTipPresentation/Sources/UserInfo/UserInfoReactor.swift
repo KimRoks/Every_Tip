@@ -72,4 +72,8 @@ class UserInfoReactor: Reactor {
         
         return newState
     }
+    
+    func getInfoTableViewItems() -> [String] {
+        userInfoUserCase.getInfoTableViewItems()
+    }
 }

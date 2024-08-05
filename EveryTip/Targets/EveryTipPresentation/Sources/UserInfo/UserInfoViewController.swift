@@ -19,16 +19,6 @@ final class UserInfoViewController: BaseViewController {
 
     weak var coordinator: Coordinator?
     var disposeBag = DisposeBag()
-    
-    private let item: [String] = [
-        "공지사항",
-        "고객센터",
-        "구독 설정",
-        "관심사 설정",
-        "이용약관",
-        "버전",
-        "로그아웃"
-    ]
         
     private let roundedBackgroundView: UIView = {
         let view = UIView()
@@ -179,7 +169,6 @@ final class UserInfoViewController: BaseViewController {
     
     private let userInfoTableView: UITableView = {
         let tableView = UITableView()
-        tableView.isScrollEnabled = false
         
         return tableView
     }()
@@ -314,7 +303,9 @@ extension UserInfoViewController: UITableViewDelegate {
 
 extension UserInfoViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return item.count
+        guard let reactor = reactor else { return 0 }
+
+        return reactor.getInfoTableViewItems().count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -325,7 +316,7 @@ extension UserInfoViewController: UITableViewDataSource {
             UITableViewCell()
         }
         
-        cell.leftLabel.text = item[indexPath.row]
+        cell.leftLabel.text = reactor?.getInfoTableViewItems()[indexPath.row]
         
         switch indexPath.row {
         case 0...4:

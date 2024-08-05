@@ -1,5 +1,5 @@
 //
-//  UserRepository.swift
+//  GetInfoList.swift
 //  EveryTipDomain
 //
 //  Created by 김경록 on 8/3/24.
@@ -10,7 +10,6 @@ import Foundation
 
 import RxSwift
 
-public protocol UserInfoRepository {
-    func fetchUserInfo() -> Single<User>
+public protocol GetInfoTableViewItemsUseCase {
     func getInfoTableViewItems() -> [String]
 }
