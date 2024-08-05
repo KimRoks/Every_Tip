@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Constraint {
+public struct Constants {
     public struct Presentation {
         //MARK: TableViewItmes
         public struct TableViewItems{

@@ -14,7 +14,7 @@ import RxSwift
 
 final class DefaultUserInfoRepository: UserInfoRepository {
     func getInfoTableViewItems() -> [String] {
-        Constraint.Presentation.TableViewItems.infoTableViewItems
+        Constants.Presentation.TableViewItems.infoTableViewItems
     }
     
     // TODO: dummy Data -> api를 통한 실질적 Data
