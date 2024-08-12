@@ -13,9 +13,6 @@ import EveryTipDomain
 import RxSwift
 
 final class DefaultUserInfoRepository: UserInfoRepository {
-    func getInfoTableViewItems() -> [String] {
-        Constants.Presentation.TableViewItems.infoTableViewItems
-    }
     
     // TODO: dummy Data -> api를 통한 실질적 Data
 
@@ -27,7 +24,7 @@ final class DefaultUserInfoRepository: UserInfoRepository {
             subscribersCount: 123,
             postedTipCount: 456,
             savedTipCount: 452,
-            postedTip: PostedTip(postedTip:[
+            postedTip: [
                 Tip(
                     category: "Health",
                     title: "Stay Hydrated",
@@ -46,9 +43,9 @@ final class DefaultUserInfoRepository: UserInfoRepository {
                     viewCount: 120,
                     likeCount: 40
                 )
-            ])
+            ]
             ,
-            savedTip: SavedTip(savedTip: [Tip(
+            savedTip:  [Tip(
                 category: "Diet",
                 title: "Healthy Breakfast",
                 mainText: "Have a balanced breakfast with protein and fruits.",
@@ -58,7 +55,6 @@ final class DefaultUserInfoRepository: UserInfoRepository {
                 likeCount: 50
             )
             ])
-        )
     )
     
     func fetchUserInfo() -> Single<User> {

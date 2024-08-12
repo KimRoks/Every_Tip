@@ -31,8 +31,8 @@ public struct UserStatistics: Decodable {
         subscribersCount: Int,
         postedTipCount: Int,
         savedTipCount: Int,
-        postedTip: PostedTip,
-        savedTip: SavedTip
+        postedTip: [Tip],
+        savedTip: [Tip]
     ) {
         self.id = id
         self.subscribersCount = subscribersCount
@@ -47,20 +47,6 @@ public struct UserStatistics: Decodable {
     public let postedTipCount: Int
     public let savedTipCount: Int
     
-    public let postedTip: PostedTip
-    public let savedTip: SavedTip
-}
-
-public struct PostedTip: Decodable {
-    public init(postedTip: [Tip]) {
-        self.postedTip = postedTip
-    }
     public let postedTip: [Tip]
-}
-
-public struct SavedTip: Decodable {
-    public init(savedTip: [Tip]) {
-        self.savedTip = savedTip
-    }
-    let savedTip: [Tip]
+    public let savedTip: [Tip]
 }
