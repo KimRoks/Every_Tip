@@ -10,7 +10,7 @@ import Foundation
 
 import RxSwift
 
-public protocol UserInfoUseCase: FetchUserInfoUseCase, GetInfoTableViewItemsUseCase{ }
+public protocol UserInfoUseCase: FetchUserInfoUseCase { }
 
 final class DefaultUserInfoUseCase: UserInfoUseCase {
     
@@ -22,9 +22,5 @@ final class DefaultUserInfoUseCase: UserInfoUseCase {
     
     public func fetchUserInfo() -> RxSwift.Single<User> {
         userRepository.fetchUserInfo()
-    }
-    
-    func getInfoTableViewItems() -> [String] {
-        return userRepository.getInfoTableViewItems()
     }
 }

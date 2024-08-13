@@ -12,5 +12,4 @@ import RxSwift
 
 public protocol UserInfoRepository {
     func fetchUserInfo() -> Single<User>
-    func getInfoTableViewItems() -> [String]
 }
