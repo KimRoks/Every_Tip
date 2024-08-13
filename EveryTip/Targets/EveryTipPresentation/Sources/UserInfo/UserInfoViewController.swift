@@ -16,10 +16,10 @@ import RxSwift
 import SnapKit
 
 final class UserInfoViewController: BaseViewController {
-
+    
     weak var coordinator: Coordinator?
     var disposeBag = DisposeBag()
-        
+    
     private let roundedBackgroundView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
@@ -279,22 +279,6 @@ final class UserInfoViewController: BaseViewController {
     private func navigationToDetailInfoView() {
         print(reactor?.currentState.userInfo)
     }
-    
-    // TODO: 공용 메서드? 위치 고민하기
-    private func formatNumber(_ number: Int?) -> String {
-        guard let number = number else { return "0" }
-
-        switch number {
-        case 1_000_000_000...:
-            return String(format: "%.1fB", Double(number) / 1_000_000_000.0)
-        case 1_000_000...:
-            return String(format: "%.1fM", Double(number) / 1_000_000.0)
-        case 1_000...:
-            return String(format: "%.1fk", Double(number) / 1_000.0)
-        default:
-            return "\(number)"
-        }
-    }
 }
 
 extension UserInfoViewController: UITableViewDelegate {
@@ -304,7 +288,7 @@ extension UserInfoViewController: UITableViewDelegate {
 extension UserInfoViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let reactor = reactor else { return 0 }
-
+        
         return reactor.getInfoTableViewItems().count
     }
     
@@ -352,18 +336,15 @@ extension UserInfoViewController: View {
             .bind(to: userNameLable.rx.text)
             .disposed(by: disposeBag)
         
-        reactor.state.map { [weak self] in self?.formatNumber($0.subscribersCount)
-        }
+        reactor.state.map { $0.subscribersCount }
         .bind(to: subscribersCountLabel.rx.text)
         .disposed(by: disposeBag)
         
-        reactor.state.map { [weak self] in self?.formatNumber($0.postedTipCount)
-        }
+        reactor.state.map { $0.postedTipCount }
         .bind(to: postedTipCountLabel.rx.text)
         .disposed(by: disposeBag)
         
-        reactor.state.map { [weak self] in self?.formatNumber($0.savedTipCount)
-        }
+        reactor.state.map { $0.savedTipCount }
         .bind(to: savedTipCountLabel.rx.text)
         .disposed(by: disposeBag)
     }

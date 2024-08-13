@@ -23,15 +23,14 @@ class UserInfoReactor: Reactor {
         //viewDidLoad 시
         case setUserData(User)
         case setError(Error)
-        
     }
     
     struct State {
         var userInfo: User?
         var userName: String?
-        var subscribersCount: Int?
-        var postedTipCount: Int?
-        var savedTipCount: Int?
+        var subscribersCount: String?
+        var postedTipCount: String?
+        var savedTipCount: String?
         
         var fetchError: Error?
     }
@@ -44,6 +43,7 @@ class UserInfoReactor: Reactor {
         self.userInfoUserCase = userInfoUserCase
         self.initialState = State()
     }
+    
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .viewDidLoad:
@@ -63,9 +63,9 @@ class UserInfoReactor: Reactor {
         case .setUserData(let userInfo):
             newState.userInfo = userInfo
             newState.userName = userInfo.userName
-            newState.subscribersCount =  userInfo.userStatistics.subscribersCount
-            newState.postedTipCount = userInfo.userStatistics.postedTipCount
-            newState.savedTipCount = userInfo.userStatistics.savedTipCount
+            newState.subscribersCount = formatNumber(userInfo.userStatistics.subscribersCount)
+            newState.postedTipCount = formatNumber(userInfo.userStatistics.postedTipCount)
+            newState.savedTipCount = formatNumber(userInfo.userStatistics.savedTipCount)
         case .setError(let error):
             newState.fetchError = error
         }
@@ -74,6 +74,8 @@ class UserInfoReactor: Reactor {
     }
     
     func getInfoTableViewItems() -> [String] {
-        userInfoUserCase.getInfoTableViewItems()
+        Constants.TableViewItems.infoTableViewItems
     }
 }
+
+extension UserInfoReactor: NumberFormatable { }
