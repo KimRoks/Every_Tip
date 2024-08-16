@@ -74,7 +74,7 @@ class UserInfoReactor: Reactor {
     }
     
     func getInfoTableViewItems() -> [String] {
-        Constants.TableViewItems.infoTableViewItems
+        Constants.UserInfo.tableViewItems
     }
 }
 

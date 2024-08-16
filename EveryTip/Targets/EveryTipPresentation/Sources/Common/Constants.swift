@@ -10,8 +10,8 @@ import Foundation
 
 public struct Constants {
     //MARK: TableViewItmes
-    public struct TableViewItems{
-        public static let infoTableViewItems: [String] = [
+    public struct UserInfo{
+        public static let tableViewItems: [String] = [
             "공지사항",
             "고객센터",
             "구독 설정",
