@@ -9,9 +9,13 @@
 import UIKit
 
 public enum FontStyle {
+    ///weight: 600
     case bold
+    ///weight: 800
     case extraBold
+    ///weight: 500
     case medium
+    ///weight: 700
     case semiBold
 }
 
