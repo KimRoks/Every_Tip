@@ -20,24 +20,17 @@ final class UserInfoViewController: BaseViewController {
     weak var coordinator: Coordinator?
     var disposeBag = DisposeBag()
     
-    private let roundedBackgroundView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .white
-        view.layer.cornerRadius = 15
-        view.layer.maskedCorners = [
-            .layerMinXMinYCorner,
-            .layerMaxXMinYCorner
-        ]
+    private let roundedBackgroundView: RoundedBackGroundView = {
+        let roundedView = RoundedBackGroundView()
         
-        return view
+        return roundedView
     }()
     
     // TODO: 이미지 뷰 둥글게
     
-    private let userImageView: UIImageView = {
-        let imageView = UIImageView()
+    private let userImageView: RoundedProfileImageView = {
+        let imageView = RoundedProfileImageView(frame: .zero)
         imageView.backgroundColor = .gray
-        imageView.clipsToBounds = true
         
         return imageView
     }()

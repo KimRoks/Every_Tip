@@ -69,7 +69,7 @@ final class PostTipViewController: BaseViewController {
         return DetailDisclosureView(title: "카테고리 선택")
     }()
     
-    private let categoryUnderLine: UIView = {
+    private let categoryUnderLine: StraightLineView = {
         return StraightLineView(color: .et_brandColor4)
     }()
     
@@ -116,7 +116,7 @@ final class PostTipViewController: BaseViewController {
         )
     }()
     
-    private let bodyUnderLine: UIView = {
+    private let bodyUnderLine: StraightLineView = {
         return StraightLineView(color: .et_brandColor4)
     }()
     

@@ -63,19 +63,15 @@ final class HomeViewController: BaseViewController {
     
     //MARK: Search View Items
     
-    private let searchView: UIView = {
-        let view = UIView()
-        view.layer.cornerRadius = 15
-        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        view.backgroundColor = .white
-        
-        return view
+    private let searchView: RoundedBackGroundView = {
+        let roundedView = RoundedBackGroundView()
+    
+        return roundedView
     }()
     
     private let searchBar: UIButton = {
         let searchBar = UIButton()
         searchBar.backgroundColor = UIColor(red: 0.96, green: 0.96, blue: 0.96, alpha: 1.00)
-        
         searchBar.layer.cornerRadius = 10
         searchBar.layer.masksToBounds = true
         
