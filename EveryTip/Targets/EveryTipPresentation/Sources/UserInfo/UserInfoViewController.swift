@@ -31,6 +31,7 @@ final class UserInfoViewController: BaseViewController {
     private let userImageView: RoundedProfileImageView = {
         let imageView = RoundedProfileImageView(frame: .zero)
         imageView.backgroundColor = .gray
+        imageView.image = UIImage.et_getImage(for: .blankImage)
         
         return imageView
     }()

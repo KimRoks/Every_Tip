@@ -55,12 +55,12 @@ final class PostListCell: UITableViewCell, Reusable {
         return label
     }()
     
-    // TODO: 현재 기본 이미지, 추후 서버 이미지로 처리 시 적절한 cornerRadius 설정 필요
-    let userImageView: UIImageView = {
-        let imageView = UIImageView()
+    // TODO: 현재 기본 이미지, 추후 네트워킹으로 받으면 레이아웃 수정 필요할듯
+    let userImageView: RoundedProfileImageView = {
+        let imageView = RoundedProfileImageView(frame: .zero)
         imageView.image = UIImage(systemName: "person.circle.fill")
         imageView.tintColor = .gray
-        
+        imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
@@ -141,8 +141,9 @@ final class PostListCell: UITableViewCell, Reusable {
     
     let thumbnailImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.backgroundColor = .gray
+        imageView.image = UIImage.et_getImage(for: .blankImage)
         imageView.contentMode = .scaleAspectFit
+        imageView.layer.cornerRadius = 10
         
         return imageView
     }()
