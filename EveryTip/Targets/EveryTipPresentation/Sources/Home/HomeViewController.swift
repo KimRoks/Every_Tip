@@ -363,8 +363,8 @@ extension HomeViewController: View {
                 cell.titleLabel.text = "\(self.addSpace(forTitleLength: post.category.count) + post.title)  "
                 cell.mainTextLabel.text = post.mainText
                 cell.userNameLabel.text = post.userName
-                cell.likeCountLabel.text = post.likeCount.formatNumber()
-                cell.viewCountLabel.text = post.viewCount.formatNumber()
+                cell.likeCountLabel.text = post.likeCount.toAbbreviatedString()
+                cell.viewCountLabel.text = post.viewCount.toAbbreviatedString()
                 //            // TODO: 이미지 url을 통한 패칭 적용
                 //            //            cell.thumbnailImageView.image = UIImage(data: <#T##Data#>)
                 

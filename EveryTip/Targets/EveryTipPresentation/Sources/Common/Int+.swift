@@ -9,7 +9,8 @@
 import Foundation
 
 extension Int {
-    public func formatNumber() -> String {
+    /// 숫자가 일정 범위를 넘어가면 k,m,b 등의 단위로 단축시킵니다.
+    public func toAbbreviatedString() -> String {
         switch self {
         case 1_000_000_000...:
             return String(format: "%.1fB", Double(self) / 1_000_000_000.0)

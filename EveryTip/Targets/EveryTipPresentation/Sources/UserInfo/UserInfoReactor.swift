@@ -63,9 +63,9 @@ class UserInfoReactor: Reactor {
         case .setUserData(let userInfo):
             newState.userInfo = userInfo
             newState.userName = userInfo.userName
-            newState.subscribersCount = userInfo.userStatistics.subscribersCount.formatNumber()
-            newState.postedTipCount = userInfo.userStatistics.postedTipCount.formatNumber()
-            newState.savedTipCount = userInfo.userStatistics.savedTipCount.formatNumber()
+            newState.subscribersCount = userInfo.userStatistics.subscribersCount.toAbbreviatedString()
+            newState.postedTipCount = userInfo.userStatistics.postedTipCount.toAbbreviatedString()
+            newState.savedTipCount = userInfo.userStatistics.savedTipCount.toAbbreviatedString()
         case .setError(let error):
             newState.fetchError = error
         }
