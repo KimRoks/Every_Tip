@@ -56,8 +56,8 @@ final class PostListCell: UITableViewCell, Reusable {
     }()
     
     // TODO: 현재 기본 이미지, 추후 네트워킹으로 받으면 레이아웃 수정 필요할듯
-    let userImageView: RoundedProfileImageView = {
-        let imageView = RoundedProfileImageView(frame: .zero)
+    let userImageView: UIImageView = {
+        let imageView = UIImageView()
         imageView.image = UIImage(systemName: "person.circle.fill")
         imageView.tintColor = .gray
         imageView.contentMode = .scaleAspectFit

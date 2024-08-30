@@ -20,18 +20,21 @@ final class UserInfoViewController: BaseViewController {
     weak var coordinator: Coordinator?
     var disposeBag = DisposeBag()
     
-    private let roundedBackgroundView: RoundedBackGroundView = {
-        let roundedView = RoundedBackGroundView()
+    private let roundedBackgroundView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.setRoundedCorners(
+            radius: 15,
+            corners: .layerMinXMinYCorner, .layerMaxXMinYCorner
+        )
         
-        return roundedView
+        return view
     }()
-    
-    // TODO: 이미지 뷰 둥글게
-    
-    private let userImageView: RoundedProfileImageView = {
-        let imageView = RoundedProfileImageView(frame: .zero)
-        imageView.backgroundColor = .gray
+        
+    private let userImageView: UIImageView = {
+        let imageView = UIImageView()
         imageView.image = UIImage.et_getImage(for: .blankImage)
+        imageView.backgroundColor = .gray
         
         return imageView
     }()
@@ -157,6 +160,7 @@ final class UserInfoViewController: BaseViewController {
         )
         button.backgroundColor = UIColor.et_lineGray20
         button.tintColor = UIColor.et_textColorBlack50
+        button.layer.cornerRadius = 5
         
         return button
     }()
@@ -174,6 +178,10 @@ final class UserInfoViewController: BaseViewController {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLayoutSubviews() {
+        userImageView.makeCircular()
     }
     
     //MARK: View Life Cycle

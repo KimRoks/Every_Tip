@@ -50,12 +50,17 @@ final class CategoryViewController: BaseViewController {
         return imageView
     }()
     
-    private let tableViewBackGroundView: RoundedBackGroundView = {
-        let roundedView = RoundedBackGroundView()
-       
-        return roundedView
+    private let tableViewBackGroundView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.setRoundedCorners(
+            radius: 15,
+            corners: .layerMinXMinYCorner, .layerMaxXMinYCorner
+        )
+        
+        return view
     }()
-    
+       
     private let categoryTableView: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = .white
@@ -70,6 +75,7 @@ final class CategoryViewController: BaseViewController {
         setupConstraints()
         setupTableView()
     }
+    
     
     private func setupTableView() {
         categoryTableView.register(

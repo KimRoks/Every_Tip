@@ -104,12 +104,12 @@ final class PostTipViewController: BaseViewController {
         return textView
     }()
     
-    private let addedImageView: RoundedButton = {
-        return RoundedButton(
-            cornerRadius: 10,
-            backgroundColor: .black,
-            image: nil
-        )
+    private let addedImageView: UIButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = .black
+        button.layer.cornerRadius = 10
+    
+        return button
     }()
     
     private let bodyUnderLine: StraightLineView = StraightLineView(color: .et_brandColor4)
