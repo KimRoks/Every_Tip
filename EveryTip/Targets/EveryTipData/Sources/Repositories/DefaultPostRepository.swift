@@ -22,9 +22,8 @@ final class DefaultPostRepository: PostRepository {
             mainText: "프랑스에서는 빵을 전혀 다른 요리로 만들었다는 뜻에서 프렌치토스트를 ‘잃어버린 빵’이라고 부른다고 해요. 달걀과 우유를 섞은 물에 퐁당 빠졌다가 나왔을 뿐인데 정말 색다른 맛으로 변신하지요. 바삭하게 구워내는 토스트도 좋지만, 폭신폭신하고 부드러운 프렌치토스트는 아침에 까끌까끌한 입을 달래준답니다. 노릇노릇 구워진 빵위에 달콤한 시럽과 과일을 곁들여 근사한 아침 식사를 만들어보세요.",
             thumbnailImageURL: "swift.png",
             userName: "JohJohnDoe",
-            viewCount: 252562525625256,
-            
-            likeCount: 2131412421314124
+            viewCount: 14444,
+            likeCount: 23532
         ),
         Tip(
             category: "생활",

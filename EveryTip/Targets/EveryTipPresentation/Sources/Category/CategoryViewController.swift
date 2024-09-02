@@ -16,18 +16,7 @@ final class CategoryViewController: BaseViewController {
     
     weak var coordinator: CategoryViewCoordinator?
     
-    // TODO: 상수 파일로 분리
-    
-    private let categories: [TipCategory] = [
-        .hobby,
-        .it,
-        .health,
-        .finance,
-        .entertainment,
-        .sports,
-        .games,
-        .social
-    ]
+    private let categories = Constants.Category.tableViewItems
     
     private let bannerTitleLabel: UILabel = {
         let label = UILabel()
@@ -63,13 +52,15 @@ final class CategoryViewController: BaseViewController {
     
     private let tableViewBackGroundView: UIView = {
         let view = UIView()
-        view.layer.cornerRadius = 15
-        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         view.backgroundColor = .white
+        view.setRoundedCorners(
+            radius: 15,
+            corners: .layerMinXMinYCorner, .layerMaxXMinYCorner
+        )
         
         return view
     }()
-    
+       
     private let categoryTableView: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = .white
@@ -85,10 +76,12 @@ final class CategoryViewController: BaseViewController {
         setupTableView()
     }
     
+    
     private func setupTableView() {
         categoryTableView.register(
             CategoryCell.self,
-            forCellReuseIdentifier: CategoryCell.reuseIdentifier)
+            forCellReuseIdentifier: CategoryCell.reuseIdentifier
+        )
         
         categoryTableView.dataSource = self
         categoryTableView.delegate = self

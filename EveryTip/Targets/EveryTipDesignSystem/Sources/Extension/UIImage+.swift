@@ -11,16 +11,16 @@ import UIKit
 public enum ImageAssetType {
     case homeViewEmoji
     case categoryViewBanner
+    case blankImage
 }
 
 extension UIImage {
     public static func et_getImage(for imageAsset: ImageAssetType) -> UIImage {
         
         switch imageAsset {
-        case .homeViewEmoji:  EveryTipDesignSystemAsset.homeViewEmoji.image
-            
-        case.categoryViewBanner:
-            EveryTipDesignSystemAsset.categoryViewBanner.image
+        case .homeViewEmoji: EveryTipDesignSystemAsset.homeViewEmoji.image
+        case .categoryViewBanner: EveryTipDesignSystemAsset.categoryViewBanner.image
+        case .blankImage: EveryTipDesignSystemAsset.blankImage.image
         }
     }
 }

@@ -65,17 +65,18 @@ final class HomeViewController: BaseViewController {
     
     private let searchView: UIView = {
         let view = UIView()
-        view.layer.cornerRadius = 15
-        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         view.backgroundColor = .white
-        
+        view.setRoundedCorners(
+            radius: 15,
+            corners: .layerMinXMinYCorner, .layerMaxXMinYCorner
+        )
+    
         return view
     }()
     
     private let searchBar: UIButton = {
         let searchBar = UIButton()
         searchBar.backgroundColor = UIColor(red: 0.96, green: 0.96, blue: 0.96, alpha: 1.00)
-        
         searchBar.layer.cornerRadius = 10
         searchBar.layer.masksToBounds = true
         
@@ -367,8 +368,8 @@ extension HomeViewController: View {
                 cell.titleLabel.text = "\(self.addSpace(forTitleLength: post.category.count) + post.title)  "
                 cell.mainTextLabel.text = post.mainText
                 cell.userNameLabel.text = post.userName
-                cell.likeCountLabel.text = "\(post.likeCount)"
-                cell.viewCountLabel.text = "\(post.viewCount)"
+                cell.likeCountLabel.text = post.likeCount.toAbbreviatedString()
+                cell.viewCountLabel.text = post.viewCount.toAbbreviatedString()
                 //            // TODO: 이미지 url을 통한 패칭 적용
                 //            //            cell.thumbnailImageView.image = UIImage(data: <#T##Data#>)
                 

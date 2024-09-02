@@ -16,6 +16,13 @@ extension UIView {
         layer.shadowRadius = radius
     }
     
+    public func setRoundedCorners(radius: CGFloat, corners: CACornerMask...) {
+        
+        self.layer.cornerRadius = radius
+        self.layer.maskedCorners = CACornerMask(corners)
+    }
+    
+    /// this method must call in "LayoutSubViews()"
     public func makeCircular() {
         self.layer.cornerRadius = self.frame.size.width / 2
         self.clipsToBounds = true
