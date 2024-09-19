@@ -24,5 +24,9 @@ public struct DomainAssembly: Assembly {
         container.register(UserInfoUseCase.self) { _ in
             DefaultUserInfoUseCase(userRepository: container.resolve(UserInfoRepository.self)!)
         }
+        
+        container.register(AgreementUseCase.self) { _ in
+            DefaultAgreementUseCase(agreementsRepository: container.resolve(AgreementsRepository.self)!)
+        }
     }
 }
