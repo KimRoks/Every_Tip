@@ -47,7 +47,7 @@ extension AuthTarget: TargetType {
         switch self {
         case .getAgreements:
             return nil
-        case .requestEmailCode(email: let email):
+        case .requestEmailCode:
             return ["Content-Type": "application/json"]
         }
     }
