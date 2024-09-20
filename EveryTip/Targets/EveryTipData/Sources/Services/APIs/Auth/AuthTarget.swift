@@ -16,7 +16,7 @@ enum AuthTarget {
 }
 
 extension AuthTarget: TargetType {
-    var method: Alamofire.HTTPMethod {
+    var method: HTTPMethods {
         switch self {
         case .getAgreements:
                 .get
@@ -28,20 +28,27 @@ extension AuthTarget: TargetType {
     var path: String {
         switch self {
         case .getAgreements:
-            return Paths.agreements.description
+            return "/auth/agreements"
         case .requestEmailCode:
-            return Paths.requestEmail.description
+            return "/auth/verification/email"
         }
     }
-
-    var parameters: Alamofire.Parameters? {
-        get {
-            switch self {
-            case .getAgreements:
-                return nil
-            case .requestEmailCode(let email):
-                return ["email": email]
-            }
+    
+    var parameters: [String : Any]? {
+        switch self {
+        case .getAgreements:
+            return nil
+        case .requestEmailCode(let email):
+            return ["email": email]
+        }
+    }
+    
+    var headers: [String : String]? {
+        switch self {
+        case .getAgreements:
+            return nil
+        case .requestEmailCode(email: let email):
+            return ["Content-Type": "application/json"]
         }
     }
 }

@@ -28,7 +28,7 @@ public struct DefaultAgreementsRepository: AgreementsRepository  {
                     }
                 }
         } catch {
-            print(AFError.createURLRequestFailed(error: error))
+            print(NetworkError.invalidURLError)
         }
     }
 }

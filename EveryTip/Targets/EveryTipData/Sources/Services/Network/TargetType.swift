@@ -9,11 +9,12 @@ import Foundation
 
 import Alamofire
 
-protocol TargetType: URLRequestConvertible {
+protocol TargetType {
     var baseURL: String { get }
-    var method: HTTPMethod { get }
+    var method: HTTPMethods { get }
     var path: String { get }
-    var parameters: Parameters? { get }
+    var headers: [String: String]? { get }
+    var parameters: [String: Any]? { get }
 }
 
 extension TargetType {
@@ -27,12 +28,18 @@ extension TargetType {
     }
     
     func asURLRequest() throws -> URLRequest {
-        let fullUrl = try (baseURL + path).asURL()
+        guard let fullUrl = try? (baseURL + path).asURL() else {
+            throw NetworkError.invalidURLError
+        }
         
-        var urlRequest = try URLRequest(
-            url: fullUrl,
-            method: method
-        )
+        var urlRequest = URLRequest(url: fullUrl)
+        urlRequest.httpMethod = method.rawValue
+        
+        if let headers = headers {
+            for (key, value) in headers {
+                urlRequest.addValue(value,forHTTPHeaderField: key)
+            }
+        }
         
         switch method {
         case .get: urlRequest = try
@@ -46,4 +53,3 @@ extension TargetType {
         return urlRequest
     }
 }
-
