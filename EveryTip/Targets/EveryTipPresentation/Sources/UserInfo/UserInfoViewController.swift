@@ -17,7 +17,7 @@ import SnapKit
 
 final class UserInfoViewController: BaseViewController {
     
-    weak var coordinator: Coordinator?
+    weak var coordinator: UserInfoViewCoordinator?
     var disposeBag = DisposeBag()
     
     private let roundedBackgroundView: UIView = {
@@ -281,10 +281,20 @@ final class UserInfoViewController: BaseViewController {
     private func navigationToDetailInfoView() {
         print(reactor?.currentState.userInfo)
     }
+    
+    private func navigationToAgreementView() {
+        coordinator?.pushToAgreementViewcontroller()
+    }
 }
 
 extension UserInfoViewController: UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath.row {
+        case 4: navigationToAgreementView()
+        default:
+            return
+        }
+    }
 }
 
 extension UserInfoViewController: UITableViewDataSource {

@@ -27,5 +27,9 @@ public struct DataAssembly: Assembly {
         container.register(UserInfoRepository.self) { _ in
             return DefaultUserInfoRepository()
         }
+        
+        container.register(AgreementsRepository.self) { _ in
+            return DefaultAgreementsRepository()
+        }
     }
 }

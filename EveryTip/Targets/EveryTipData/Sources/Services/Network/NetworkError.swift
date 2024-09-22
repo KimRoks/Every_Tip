@@ -1,21 +1,44 @@
 //
 //  NetworkError.swift
-//  EveryTip
+//  EveryTipData
 //
-//  Created by 손대홍 on 6/7/24.
+//  Created by 김경록 on 9/19/24.
 //  Copyright © 2024 EveryTip. All rights reserved.
 //
 
 import Foundation
 
-// 에러 정의 필요
 enum NetworkError: LocalizedError {
-    case invalid
+    case httpError(code: Int)
+    case invalidURLError
+    case sessionError(Error)
+    case responseSerializationError(Error)
+    case responseValidationError(Error)
+    case serverTrustError(Error)
+    case requestAdaptationError(Error)
+    case requestRetryError(Error)
+    case baseURLError
     
     var errorDescription: String? {
         switch self {
-        case .invalid:
-            return "유효하지 않은 요청 또는 응답이에요"
+        case .httpError(let code):
+            return "HTTP 오류: 코드 \(code))"
+        case .invalidURLError:
+            return "잘못된 URL입니다."
+        case .sessionError(let error):
+            return "세션 오류: \(error.localizedDescription)"
+        case .responseSerializationError(let error):
+            return "응답 직렬화 오류: \(error.localizedDescription)"
+        case .responseValidationError(let error):
+            return "응답 검증 오류: \(error.localizedDescription)"
+        case .serverTrustError(let error):
+            return "서버 신뢰성 평가 오류: \(error.localizedDescription)"
+        case .requestAdaptationError(let error):
+            return "요청 적응 오류: \(error.localizedDescription)"
+        case .requestRetryError(let error):
+            return "요청 재시도 오류: \(error.localizedDescription)"
+        case .baseURLError:
+            return "plist에서 BaseURL을 가져오는데에 실패했어요"
         }
     }
 }

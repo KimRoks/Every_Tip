@@ -126,7 +126,10 @@ func makeEveryTipAppTarget(
         "UISupportedInterfaceOrientations": ["UIInterfaceOrientationPortrait"],
         "BASE_URL": "${BASE_URL}",
         "SHARED_CONSTANT": "${SHARED_CONSTANT}",
-        "ENVIRONMENT_CONSTANT": "${ENVIRONMENT_CONSTANT}"
+        "ENVIRONMENT_CONSTANT": "${ENVIRONMENT_CONSTANT}",
+        "NSAppTransportSecurity": [
+                "NSAllowsArbitraryLoads": true
+            ]
     ]
     return .init(
         name: appName,
