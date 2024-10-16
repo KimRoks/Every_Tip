@@ -7,3 +7,22 @@
 //
 
 import UIKit
+
+import RxSwift
+import SnapKit
+
+enum EveryTipTextFieldStatus {
+    case normal
+    case editing
+    case success
+    case error
+    case notEnabled
+}
+
+enum EveryTipTextFieldAction {
+    case editingDidBegin
+    case editingDidEnd
+    case editingDidEndOnExit
+    case clearButtonDidTapped
+    case textChanged(text: String)
+}
