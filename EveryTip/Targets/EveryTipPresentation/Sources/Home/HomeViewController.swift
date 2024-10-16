@@ -348,7 +348,10 @@ extension HomeViewController: View {
     }
     
     private func bindInputs(to reactor: HomeReactor) {
-        self.reactor?.action.onNext(.viewDidLoad)
+        self.rx.viewDidLoad
+            .map { _ in Reactor.Action.viewDidLoad }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
         
         postListTableView.rx.itemSelected
             .map{Reactor.Action.itemSeleted($0)}
