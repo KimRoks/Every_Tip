@@ -7,9 +7,18 @@ import ProjectDescription
 let packageSettings = PackageSettings(
     // Customize the product types for specific package product
     // Default is .staticFramework
-    //     productTypes: [
-    //        "Alamofire": .framework,
-    //     ]
+    productTypes: [
+        "RxSwift": .framework,
+        "RxCocoa": .framework,
+        "RxCocoaRuntime": .framework,
+        "RxRelay": .framework,
+        "RxBlocking": .framework,
+        "RxTest": .framework,
+        "Swinject": .framework,
+        "Alamofire": .framework,
+        "ReactorKit": .framework,
+        "SnapKit": .framework
+    ]
 )
 #endif
 let package = Package(
