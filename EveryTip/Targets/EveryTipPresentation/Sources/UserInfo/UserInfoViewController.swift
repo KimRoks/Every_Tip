@@ -285,12 +285,18 @@ final class UserInfoViewController: BaseViewController {
     private func navigationToAgreementView() {
         coordinator?.pushToAgreementViewcontroller()
     }
+    
+    private func toTestSignInView() {
+        let testSignInVC = TestSignInViewController()
+        coordinator?.navigationController.pushViewController(testSignInVC, animated: true)
+    }
 }
 
 extension UserInfoViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.row {
         case 4: navigationToAgreementView()
+        case 6: toTestSignInView()
         default:
             return
         }
@@ -359,5 +365,161 @@ extension UserInfoViewController: View {
         reactor.state.map { $0.savedTipCount }
         .bind(to: savedTipCountLabel.rx.text)
         .disposed(by: disposeBag)
+    }
+}
+
+// MARK: - Text Field 테스트
+
+import RxSwift
+
+class TestSignInViewController: UIViewController, View {
+    
+    var disposeBag: DisposeBag = .init()
+    
+    let nameTextFieldView = EveryTipTextFieldView(hasClearButton: true)
+    
+    let loginButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("로그인", for: .normal)
+        button.titleLabel?.font = UIFont.et_pretendard(
+            style: .bold,
+            size: 14
+        )
+        return button
+    }()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        reactor = TestSignInReactor()
+        let testLabel = UILabel()
+        testLabel.font = UIFont.systemFont(ofSize: 18)
+        testLabel.text = "TEST"
+
+        view.addSubViews(
+            testLabel,
+            nameTextFieldView,
+            loginButton
+        )
+        
+        testLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
+        
+        nameTextFieldView.snp.makeConstraints {
+            $0.top.equalTo(testLabel.snp.bottom).offset(10)
+            $0.left.right.equalToSuperview().inset(10)
+        }
+        
+        loginButton.snp.makeConstraints {
+            $0.top.equalTo(nameTextFieldView.snp.bottom).offset(30)
+            $0.left.right.equalToSuperview().inset(10)
+            $0.height.equalTo(60)
+        }
+        
+        nameTextFieldView.textField.tintColor = .purple
+        
+        // text field text 인풋 시, 이전값과 입력값 비교하여 공백이 없고 최대 길이를 유지하도록 함
+        nameTextFieldView.textField.rx.text
+            .orEmpty
+            .scan(nameTextFieldView.textField.text) { prevText, newText -> String? in
+                guard newText.count == newText.trimmingCharacters(in: .whitespacesAndNewlines).count
+                else { return prevText }
+                let maxLength = 6
+                guard newText.count <= maxLength else { return prevText }
+                return newText
+            }.bind(to: nameTextFieldView.textField.rx.text)
+            .disposed(by: disposeBag)
+        
+        // text field 의 입력 시 상태 처리와 메시지 표시
+        nameTextFieldView.action
+            .bind { [weak self] action in
+                switch action {
+                case .editingDidBegin:
+                    self?.nameTextFieldView.status.onNext(.editing)
+                    
+                case .editingDidEnd, .editingDidEndOnExit, .textChanged:
+                    let text = self?.nameTextFieldView.textField.text ?? ""
+                    if text.isEmpty {
+                        self?.nameTextFieldView.status.onNext(.normal)
+                        print("text is empty")
+                        return
+                    }
+                    let minLength = 2
+                    guard text.count >= minLength else {
+                        let errorMessage = "최소 2자 이상 입력"
+                        self?.nameTextFieldView.guideMessageLabel.text = errorMessage
+                        self?.nameTextFieldView.status.onNext(.error)
+                        return
+                    }
+                    let successMessage = "성궁"
+                    self?.nameTextFieldView.guideMessageLabel.text = successMessage
+                    self?.nameTextFieldView.status.onNext(.success)
+                }
+            }.disposed(by: disposeBag)
+    }
+    
+    func bind(reactor: TestSignInReactor) {
+        reactor.state.map { $0.resultMessage }
+            .compactMap { $0 }
+            .bind { [weak self] in
+                self?.showAlert(titile: "로그인 결과", message: $0)
+            }.disposed(by: disposeBag)
+        
+        loginButton.rx.tap
+            .withLatestFrom(nameTextFieldView.textField.rx.text)
+            .compactMap { $0 }
+            .map { Reactor.Action.didTapLoginButton($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+    }
+    
+    func showAlert(titile : String , message : String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let alertAction = UIAlertAction(title: "확인", style: .default, handler: nil)
+        alert.addAction(alertAction)
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+}
+
+// MARK: Text Field 테스트 reactor
+
+final class TestSignInReactor: Reactor {
+    typealias EmailText = String
+    enum Action {
+        case didTapLoginButton(EmailText)
+    }
+    
+    enum Mutation {
+        case login(Bool)
+    }
+    
+    struct State {
+        var resultMessage: String?
+    }
+    
+    let initialState: State
+    
+    init() {
+        self.initialState = State()
+    }
+    
+    func mutate(action: Action) -> Observable<Mutation> {
+        switch action {
+        case .didTapLoginButton(let email):
+            print("try login \(email)")
+            return Observable.just(Mutation.login(true))
+        }
+    }
+    
+    func reduce(state: State, mutation: Mutation) -> State {
+        var newState = state
+        
+        switch mutation {
+        case .login(let result):
+            newState.resultMessage = result ? "로그인 성공" : "로그인 실패"
+        }
+        
+        return newState
     }
 }
