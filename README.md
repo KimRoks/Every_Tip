@@ -9,9 +9,15 @@ $ curl -Ls https://install.tuist.io | bash
 
 이하의 작업들은 Project.swift 파일이 위치한 프로젝트 폴더에서 터미널로 진행합니다.
 
+### mise를 통해 tuist 사용, tuist version 4.30.0
+
+```swift
+mise use tuist@4.30.0
+```
+
 ### Tuist 의존성 설치
 ```swift
-$ tuist fetch
+$ tuist install
 ```
 
 ### Tuist 프로젝트 생성
