@@ -1,5 +1,5 @@
 import ProjectDescription
-import ProjectDescriptionHelpers
+//import ProjectDescriptionHelpers
 import MyPlugin
 
 
@@ -7,7 +7,7 @@ import MyPlugin
 
 private let appName = "EveryTip"
 
-private let deploymentTarget: DeploymentTarget = .iOS(targetVersion: "15.0", devices: [.iphone])
+private let deploymentTarget: DeploymentTargets = .iOS("15.0")
 
 private enum Layer: CaseIterable {
     case core
@@ -32,12 +32,14 @@ func makeEveryTipFrameworkTargets(
     platform: Platform,
     dependencies: [TargetDependency]
 ) -> [Target] {
-    let sourceTarget = Target(
+    
+    let sourceTarget = Target.target(
         name: name,
-        platform: platform,
+        destinations: .iOS,
         product: .framework,
         bundleId: "com.sonmoham.\(name)",
-        deploymentTarget: deploymentTarget,
+        
+        deploymentTargets: deploymentTarget,
         infoPlist: .default,
         sources: ["Targets/\(name)/Sources/**"],
         resources: [],
@@ -46,12 +48,12 @@ func makeEveryTipFrameworkTargets(
             base: .init().swiftCompilationMode(.wholemodule)
         )
     )
-    let testTarget = Target(
+    let testTarget = Target.target(
         name: "\(name)Tests",
-        platform: platform,
+        destinations: .iOS  ,
         product: .unitTests,
         bundleId: "com.sonmoham.\(name)Tests",
-        deploymentTarget: deploymentTarget,
+        deploymentTargets: deploymentTarget,
         infoPlist: .default,
         sources: ["Targets/\(name)/Tests/**"],
         resources: [],
@@ -76,17 +78,18 @@ func makeEveryTipDesignSystemTarget(
         "Pretendard-Medium.otf",
         "Pretendard-SemiBold.otf",
     ]
-   
+    
     let infoPlist: [String: Plist.Value] = [
         "Fonts provided by application": .array(fonts.map { .string($0) })
     ]
     
-    let sourceTarget = Target(
+    let sourceTarget = Target.target(
         name: name,
-        platform: platform,
+        destinations: .iOS,
+        
         product: .framework,
         bundleId: "com.sonmoham.\(name)",
-        deploymentTarget: deploymentTarget,
+        deploymentTargets: deploymentTarget,
         infoPlist: .extendingDefault(with: infoPlist),
         sources: ["Targets/\(name)/Sources/**"],
         resources: ["Targets/\(name)/Resources/**"],
@@ -96,12 +99,12 @@ func makeEveryTipDesignSystemTarget(
         )
     )
     
-    let testTarget = Target(
+    let testTarget = Target.target(
         name: "\(name)Tests",
-        platform: platform,
+        destinations: .iOS,
         product: .unitTests,
         bundleId: "com.sonmoham.\(name)Tests",
-        deploymentTarget: deploymentTarget,
+        deploymentTargets: deploymentTarget,
         infoPlist: .default,
         sources: ["Targets/\(name)/Tests/**"],
         resources: [],
@@ -117,7 +120,7 @@ func makeEveryTipAppTarget(
     platform: Platform,
     dependencies: [TargetDependency]
 ) -> Target {
-    let infoPlist: [String: InfoPlist.Value] = [
+    let infoPlist: [String: Plist.Value] = [
         "CFBundleShortVersionString": "1.0.1",
         "CFBundleVersion": "1",
         "CFBundleDisplayName": "${APP_DISPLAY_NAME}",
@@ -128,15 +131,15 @@ func makeEveryTipAppTarget(
         "SHARED_CONSTANT": "${SHARED_CONSTANT}",
         "ENVIRONMENT_CONSTANT": "${ENVIRONMENT_CONSTANT}",
         "NSAppTransportSecurity": [
-                "NSAllowsArbitraryLoads": true
-            ]
+            "NSAllowsArbitraryLoads": true
+        ]
     ]
-    return .init(
+    return Target.target(
         name: appName,
-        platform: platform,
+        destinations: .iOS,
         product: .app,
         bundleId: "com.sonmoham.\(appName)",
-        deploymentTarget: deploymentTarget,
+        deploymentTargets: deploymentTarget,
         infoPlist: .extendingDefault(with: infoPlist),
         sources: ["Targets/\(appName)/Sources/**"],
         resources: ["Targets/\(appName)/Resources/**"],
@@ -201,8 +204,7 @@ let project = Project(
             platform: .iOS,
             dependencies: [
                 .target(name: Layer.domain.layerName),
-                .external(name: "Moya"),
-                .external(name: "ReactiveMoya")
+                .external(name: "Alamofire")
             ]
         ),
         // domain layer
