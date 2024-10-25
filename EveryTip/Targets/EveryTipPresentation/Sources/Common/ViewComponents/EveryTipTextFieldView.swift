@@ -11,6 +11,9 @@ import UIKit
 import RxSwift
 import SnapKit
 
+/**
+ 커스텀 텍스트 필드 상태값
+ */
 enum EveryTipTextFieldStatus {
     case normal
     case editing
@@ -19,6 +22,9 @@ enum EveryTipTextFieldStatus {
     case notEnabled
 }
 
+/**
+ 커스텀 텍스트 필드 방출값
+ */
 enum EveryTipTextFieldAction {
     case editingDidBegin
     case editingDidEnd
@@ -26,38 +32,55 @@ enum EveryTipTextFieldAction {
     case textChanged(text: String)
 }
 
+/**
+ 커스텀 텍스트 필드
+ 
+ - 상태값과 방출값을 rx subject 형식으로 지님
+ 
+ - 생성 시 파라미터로 text field 의 inset 받음 유의
+ 
+ - not enabled 처리 시 user interaction 과 bg color 만을 변경하고 있으며, text field 의 상태와 값 등은 외부에서 다뤄줘야 함.
+ */
 final class EveryTipTextFieldView: UIView {
-    var borderColorWhenNormal = UIColor.yellow
-    var borderColorWhenEditing = UIColor.black
-    var borderColorWhenSuccess = UIColor.blue
-    var borderColorWhenError = UIColor.red
-    var borderColorWhenNotEnabled = UIColor.gray
+    var borderColorWhenNormal = UIColor.et_lineGray40
+    var borderColorWhenEditing = UIColor.et_brandColor2
+    var borderColorWhenSuccess = UIColor.et_brandColor2
+    var borderColorWhenError = UIColor(hex: "e84d65")
+    var borderColorWhenNotEnabled = UIColor.et_lineGray40
+    
+    var isEnabled: Bool = true {
+        didSet {
+            borderView.isUserInteractionEnabled = isEnabled
+            borderView.backgroundColor = isEnabled ? UIColor.white : UIColor.et_lineGray20
+        }
+    }
+    
+    var action: PublishSubject<EveryTipTextFieldAction> = .init()
+    var status: BehaviorSubject<EveryTipTextFieldStatus> = .init(value: .normal)
     
     let borderView: UIView = {
         let view = UIView()
-        view.layer.cornerRadius = 0
+        view.layer.cornerRadius = 10
         view.layer.borderWidth = 1
-        view.layer.borderColor = UIColor.red.cgColor
         return view
     }()
     
     let textField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "플레이스 홀더"
-//        textField.font = nil
+        textField.tintColor = .et_brandColor2
+        textField.font = .et_pretendard(style: .medium, size: 16)
        return textField
     }()
     
     let guideMessageLabel: UILabel = {
        let label = UILabel()
         label.text = "안내 메시지"
-//        label.font = nil
+        label.font = .et_pretendard(style: .medium, size: 14)
         return label
     }()
     
-    var action: PublishSubject<EveryTipTextFieldAction> = .init()
-    var status: BehaviorSubject<EveryTipTextFieldStatus> = .init(value: .normal)
-    
+    // 내부적으로 guide message 를 감싸 표시 처리 등에 사용
     private let containerStackView: UIStackView = {
        let stackView = UIStackView()
         stackView.axis = .vertical
@@ -65,15 +88,22 @@ final class EveryTipTextFieldView: UIView {
         return stackView
     }()
     
+    private let textFieldRightInset: CGFloat
+    
     private let guideMessageView = UIView()
     
     private let disposeBag = DisposeBag()
     
     // MARK: -
     
-    init(hasClearButton: Bool, hasSecureTextButton: Bool = false) {
+    init(
+        hasClearButton: Bool,
+        hasSecureTextButton: Bool = false,
+        textFieldRightInset: CGFloat = 16
+    ) {
         textField.clearButtonMode = hasClearButton ? .always : .never
         textField.isSecureTextEntry = hasSecureTextButton
+        self.textFieldRightInset = textFieldRightInset
         super.init(frame: .zero)
         setupLayout()
         setupConstraints()
@@ -111,7 +141,8 @@ final class EveryTipTextFieldView: UIView {
         
         textField.snp.makeConstraints {
             $0.top.bottom.equalToSuperview()
-            $0.left.right.equalToSuperview().inset(16)
+            $0.left.equalToSuperview().inset(16)
+            $0.right.equalToSuperview().inset(textFieldRightInset)
         }
         
         guideMessageLabel.snp.makeConstraints {
@@ -147,7 +178,7 @@ final class EveryTipTextFieldView: UIView {
             switch status {
             case .normal:
                 view.borderView.layer.borderColor = view.borderColorWhenNormal.cgColor
-                view.guideMessageView.isHidden = true
+                view.setGuideMessageViewIsHiddenWithAnimate(isHidden: true)
                 
             case .editing:
                 view.borderView.layer.borderColor = view.borderColorWhenEditing.cgColor
@@ -155,21 +186,36 @@ final class EveryTipTextFieldView: UIView {
             case .success:
                 view.borderView.layer.borderColor = view.borderColorWhenSuccess.cgColor
                 view.guideMessageLabel.textColor = view.borderColorWhenSuccess
-                view.guideMessageView.isHidden = view.guideMessageLabel.text == nil
+                let isHidden = view.guideMessageLabel.text == nil
+                view.setGuideMessageViewIsHiddenWithAnimate(isHidden: isHidden)
                 
             case .error:
                 view.borderView.layer.borderColor = view.borderColorWhenError.cgColor
                 view.guideMessageLabel.textColor = view.borderColorWhenError
-                view.guideMessageView.isHidden = false
+                view.setGuideMessageViewIsHiddenWithAnimate(isHidden: false)
                 
             case .notEnabled:
                 view.borderView.layer.borderColor = view.borderColorWhenNotEnabled.cgColor
-                view.guideMessageView.isHidden = true
+                view.setGuideMessageViewIsHiddenWithAnimate(isHidden: true)
             }
         }
         
         status
             .bind(to: statusBinder)
             .disposed(by: disposeBag)
+    }
+    
+    // 내부 애니메이션 전용 메서드
+    private func setGuideMessageViewIsHiddenWithAnimate(isHidden: Bool) {
+        UIView.animate(
+            withDuration: 0.5,
+            delay: 0,
+            usingSpringWithDamping: 0.9,
+            initialSpringVelocity: 1,
+            animations: {
+                self.guideMessageView.isHidden = isHidden
+                self.layoutIfNeeded()
+            }
+        )
     }
 }
