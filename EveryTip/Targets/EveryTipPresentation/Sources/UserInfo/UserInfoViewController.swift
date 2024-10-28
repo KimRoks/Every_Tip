@@ -285,12 +285,18 @@ final class UserInfoViewController: BaseViewController {
     private func navigationToAgreementView() {
         coordinator?.pushToAgreementViewcontroller()
     }
+    
+    private func toTestSignInView() {
+        let testSignInVC = TestSignInViewController()
+        coordinator?.navigationController.pushViewController(testSignInVC, animated: true)
+    }
 }
 
 extension UserInfoViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.row {
         case 4: navigationToAgreementView()
+        case 6: toTestSignInView()
         default:
             return
         }
