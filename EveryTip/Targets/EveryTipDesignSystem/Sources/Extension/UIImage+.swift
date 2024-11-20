@@ -12,6 +12,7 @@ public enum ImageAssetType {
     case homeViewEmoji
     case categoryViewBanner
     case blankImage
+    case everyTipLogoimage
 }
 
 extension UIImage {
@@ -21,6 +22,7 @@ extension UIImage {
         case .homeViewEmoji: EveryTipDesignSystemAsset.homeViewEmoji.image
         case .categoryViewBanner: EveryTipDesignSystemAsset.categoryViewBanner.image
         case .blankImage: EveryTipDesignSystemAsset.blankImage.image
+        case .everyTipLogoimage: EveryTipDesignSystemAsset.everyTipLogo.image
         }
     }
 }
