@@ -271,14 +271,15 @@ final class UserInfoViewController: BaseViewController {
     private func setUserInteraction() {
         let tapGesture = UITapGestureRecognizer(
             target: self,
-            action: #selector(navigationToDetailInfoView)
+            action: #selector(navigationToUserHistoryView)
         )
         touchableStackView.addGestureRecognizer(tapGesture)
     }
     
-    // TODO: 구독자 리스트로 이동
+    // TODO: 리액터로 처리하도록 변경
     @objc
-    private func navigationToDetailInfoView() {
+    private func navigationToUserHistoryView() {
+        coordinator?.pushToUserHistoryListView()
         print(reactor?.currentState.userInfo)
     }
     

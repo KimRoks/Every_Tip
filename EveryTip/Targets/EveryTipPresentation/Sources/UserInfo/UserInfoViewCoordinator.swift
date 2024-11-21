@@ -15,6 +15,7 @@ import EveryTipDomain
 protocol UserInfoViewCoordinator: Coordinator {
     func start() -> UIViewController
     func pushToAgreementViewcontroller()
+    func pushToUserHistoryListView()
 }
 
 final class DefaultUserInfoViewCoordinator: UserInfoViewCoordinator {
@@ -51,5 +52,11 @@ final class DefaultUserInfoViewCoordinator: UserInfoViewCoordinator {
         let agreementCoordinator = DefaultAgreementCoordinator(navigationController: navigationController)
         self.childCoordinators.append(agreementCoordinator)
         agreementCoordinator.start()
+    }
+    
+    func pushToUserHistoryListView() {
+        let userHistoryCoordinator = DefaultUserContentsCoordinator(navigationController: navigationController)
+        self.append(child: userHistoryCoordinator)
+        userHistoryCoordinator.start()
     }
 }
