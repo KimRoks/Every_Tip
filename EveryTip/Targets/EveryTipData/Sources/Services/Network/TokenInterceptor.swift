@@ -18,7 +18,7 @@ final class TokenInterceptor: RequestInterceptor {
     weak var delegate: TokenSessionDelegate?
     
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, any Error>) -> Void) {
-        guard let aceessToken = TokenManager.shared.getToken(type:  .access) else {
+        guard let aceessToken = TokenKeyChainManager.shared.getToken(type:  .access) else {
             completion(.success(urlRequest))
             return
         }
