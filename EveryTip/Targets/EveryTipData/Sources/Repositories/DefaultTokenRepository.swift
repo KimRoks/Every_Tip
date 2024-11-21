@@ -19,7 +19,7 @@ final class DefaultTokenRepository: TokenRepository {
             do {
                 let request = try AuthTarget.requestToken(email: email, password: password).asURLRequest()
                 
-                AF.request(request, interceptor: TokenInterceptor())
+                AF.request(request, interceptor: nil)
                     .validate(statusCode: 200..<300)
                     .responseDecodable(of: TokenResponse.self) { response in
                         switch response.result {
