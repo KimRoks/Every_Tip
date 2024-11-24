@@ -8,6 +8,7 @@
 
 import Foundation
 
+// TODO: 키체인 매니저가 독립적으로 작동할 수 있도록 변경
 public final class TokenKeyChainManager {
     
     public static let shared = TokenKeyChainManager()
