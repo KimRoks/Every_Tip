@@ -12,8 +12,8 @@ import Alamofire
 
 enum AuthTarget {
     case getAgreements
-    case requestEmailCode(email: String)
-    case requestToken(email: String, password: String)
+    case postEmailCode(email: String)
+    case postToken(email: String, password: String)
 }
 
 extension AuthTarget: TargetType {
@@ -21,9 +21,9 @@ extension AuthTarget: TargetType {
         switch self {
         case .getAgreements:
                 .get
-        case .requestEmailCode:
+        case .postEmailCode:
                 .post
-        case .requestToken:
+        case .postToken:
                 .post
         }
     }
@@ -32,9 +32,9 @@ extension AuthTarget: TargetType {
         switch self {
         case .getAgreements:
             return "/auth/agreements"
-        case .requestEmailCode:
+        case .postEmailCode:
             return "/auth/verification/email"
-        case .requestToken:
+        case .postToken:
             return "/auth/sign-in"
         }
     }
@@ -43,9 +43,9 @@ extension AuthTarget: TargetType {
         switch self {
         case .getAgreements:
             return nil
-        case .requestEmailCode(let email):
+        case .postEmailCode(let email):
             return ["email": email]
-        case .requestToken(email: let email, password: let password):
+        case .postToken(email: let email, password: let password):
             return ["email": email, "password": password]
         }
     }
@@ -54,9 +54,9 @@ extension AuthTarget: TargetType {
         switch self {
         case .getAgreements:
             return nil
-        case .requestEmailCode:
+        case .postEmailCode:
             return ["Content-Type": "application/json"]
-        case .requestToken:
+        case .postToken:
             return ["Content-Type": "application/json"]
         }
     }
