@@ -15,9 +15,9 @@ public protocol RequestTokenUseCase {
 }
 
 final public class DefaultRequestTokenUseCase: RequestTokenUseCase {
-    private let tokenRepository: TokenRepository
+    private let tokenRepository: UserLoginRepository
     
-    init(tokenRepository: TokenRepository) {
+    init(tokenRepository: UserLoginRepository) {
         self.tokenRepository = tokenRepository
     }
     

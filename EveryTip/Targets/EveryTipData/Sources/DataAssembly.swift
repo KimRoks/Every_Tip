@@ -32,8 +32,8 @@ public struct DataAssembly: Assembly {
             return DefaultAgreementsRepository()
         }
         
-        container.register(TokenRepository.self) { _ in
-            return DefaultTokenRepository()
+        container.register(UserLoginRepository.self) { _ in
+            return DefaultUserLoginRepository()
         }
     }
 }

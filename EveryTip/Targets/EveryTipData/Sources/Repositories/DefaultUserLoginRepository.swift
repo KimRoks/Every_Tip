@@ -1,5 +1,5 @@
 //
-//  DefaultTokenRepository.swift
+//  DefaultUserLoginRepository.swift
 //  EveryTipData
 //
 //  Created by 김경록 on 10/29/24.
@@ -13,11 +13,11 @@ import EveryTipDomain
 import Alamofire
 import RxSwift
 
-final class DefaultTokenRepository: TokenRepository {
+final class DefaultUserLoginRepository: UserLoginRepository {
     func requestToken(email: String, password: String) -> Single<TokenResponse> {
         return Single.create { single in
             do {
-                let request = try AuthTarget.requestToken(email: email, password: password).asURLRequest()
+                let request = try AuthTarget.postToken(email: email, password: password).asURLRequest()
                 
                 AF.request(request, interceptor: nil)
                     .validate(statusCode: 200..<300)

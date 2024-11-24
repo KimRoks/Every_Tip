@@ -30,7 +30,7 @@ public struct DomainAssembly: Assembly {
         }
         
         container.register(RequestTokenUseCase.self) { _ in
-            DefaultRequestTokenUseCase(tokenRepository: container.resolve(TokenRepository.self)!)
+            DefaultRequestTokenUseCase(tokenRepository: container.resolve(UserLoginRepository.self)!)
         }
     }
 }

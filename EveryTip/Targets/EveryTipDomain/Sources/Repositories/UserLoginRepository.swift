@@ -1,5 +1,5 @@
 //
-//  TokenRepository.swift
+//  UserLoginRepository.swift
 //  EveryTipDomain
 //
 //  Created by 김경록 on 10/28/24.
@@ -10,6 +10,6 @@ import Foundation
 
 import RxSwift
 
-public protocol TokenRepository {
+public protocol UserLoginRepository {
     func requestToken(email: String, password: String) -> Single<TokenResponse>
 }
