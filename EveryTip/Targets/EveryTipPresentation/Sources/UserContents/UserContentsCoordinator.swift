@@ -11,40 +11,47 @@ import UIKit
 import EveryTipDomain
 import EveryTipCore
 
-protocol UserContentsCoordinator: TokenCoordinator{ }
+protocol UserContentsCoordinator: Coordinator {
+    func pushToLoginView()
+}
 
 final class DefaultUserContentsCoordinator: UserContentsCoordinator {
-    
     var parentCoordinator: (any Coordinator)?
     
     var childCoordinators: [any Coordinator] = []
     
     var navigationController: UINavigationController
     
-    var isLogined: Bool = false
-    
-    var tokenManager: EveryTipCore.TokenKeyChainManager = TokenKeyChainManager.shared
-    
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
     
-    func start() {
-        checkToken(tokenManager)
-        if isLogined == true {
-            let userHistoryViewController = UserContentsViewController()
-            userHistoryViewController.coordinator = self
-            navigationController.pushViewController(userHistoryViewController, animated: true)
-        } else {
-            pushToLoginView()
-        }
-    }
+    let keychainManager: TokenKeyChainManager = TokenKeyChainManager.shared
+    let userContentsViewController: UserContentsViewController = UserContentsViewController()
     
-    func refreshTokenDidExpire(error: any Error) {
-        isLogined = false
+    func start() {
+        if keychainManager.isLogined {
+            userContentsViewController.coordinator = self
+            navigationController.pushViewController(
+                userContentsViewController,
+                animated: true
+            )
+        } else {
+            userContentsViewController.coordinator = self
+            navigationController.pushViewController(
+                userContentsViewController,
+                animated: true
+            )
+//            pushToLoginView()
+        }
     }
     
     func didFinish() {
         remove(child: self)
+    }
+    
+    func pushToLoginView() {
+        let loginCoordinator: LoginCoordinator = DefaultLoginCoordinator(navigationController: navigationController)
+        loginCoordinator.start()
     }
 }
