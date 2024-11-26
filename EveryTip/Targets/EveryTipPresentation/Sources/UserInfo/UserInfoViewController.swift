@@ -8,6 +8,7 @@
 
 import UIKit
 
+import EveryTipCore
 import EveryTipDesignSystem
 
 import ReactorKit
@@ -279,12 +280,27 @@ final class UserInfoViewController: BaseViewController {
     // TODO: 리액터로 처리하도록 변경
     @objc
     private func navigationToUserHistoryView() {
-        coordinator?.pushToUserContentsView()
+        let isLogined = TokenKeyChainManager.shared.isLogined
+        if isLogined {
+            coordinator?.pushToUserContentsView()
+        } else {
+            presentAlertForLogin()
+        }
+        
         print(reactor?.currentState.userInfo)
     }
     
     private func navigationToAgreementView() {
         coordinator?.pushToAgreementViewcontroller()
+    }
+    
+    private func presentAlertForLogin() {
+        let alertController = UIAlertController(title: "로그인이 필요한 서비스입니다", message: "로그인을 위해 이동할까요?", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "고고싱", style: .default) {
+            [weak self] _ in
+            self?.coordinator?.pushToUserContentsView()
+        }
+        let cancelAction = UIAlertAction(title: "아뇨", style: .cancel)
     }
     
     private func toTestSignInView() {
