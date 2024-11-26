@@ -14,8 +14,14 @@ public final class TokenKeyChainManager {
     public static let shared = TokenKeyChainManager()
     private init() {}
     
-    let serviceName = "com.everytip.service.jwt"
+    public var isLogined: Bool {
+        get {
+            return getToken(type: .access) != nil
+        }
+    }
     
+    let serviceName = "com.everytip.service.jwt"
+    // KeyChain Type으로 분리
     public enum TokenType {
         case access
         case refresh
