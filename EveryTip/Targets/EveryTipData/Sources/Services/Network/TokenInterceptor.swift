@@ -14,9 +14,7 @@ import EveryTipCore
 import Alamofire
 
 final class TokenInterceptor: RequestInterceptor {
-    
-    weak var delegate: TokenSessionDelegate?
-    
+        
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, any Error>) -> Void) {
         guard let aceessToken = TokenKeyChainManager.shared.getToken(type:  .access) else {
             completion(.success(urlRequest))
@@ -49,7 +47,10 @@ final class TokenInterceptor: RequestInterceptor {
             completion(.retryWithDelay(1))
         } else {
             //리프레쉬 토큰마저 만료되었다는 서버의 응답을 받았다
-            delegate?.refreshTokenDidExpire(error: error)
+            NotificationCenter.default.post(
+                name: .refreshTokenExpired,
+                object: nil
+            )
             completion(.doNotRetryWithError(error))
         }
     }
