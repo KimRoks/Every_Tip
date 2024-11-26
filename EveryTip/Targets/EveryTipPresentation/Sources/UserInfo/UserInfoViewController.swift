@@ -279,7 +279,7 @@ final class UserInfoViewController: BaseViewController {
     // TODO: 리액터로 처리하도록 변경
     @objc
     private func navigationToUserHistoryView() {
-        coordinator?.pushToUserHistoryListView()
+        coordinator?.pushToUserContentsView()
         print(reactor?.currentState.userInfo)
     }
     
