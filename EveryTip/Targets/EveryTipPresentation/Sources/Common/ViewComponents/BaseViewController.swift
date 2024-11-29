@@ -18,6 +18,7 @@ class BaseViewController: UIViewController {
         super.viewDidLoad()
         
         setupViews()
+        setupKeyboardDismissGesture()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -36,5 +37,18 @@ class BaseViewController: UIViewController {
     
     func setupViews() {
         view.backgroundColor = .white
+    }
+    
+    private func setupKeyboardDismissGesture() {
+        let tapGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(dismissKeyboard)
+        )
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
 }
