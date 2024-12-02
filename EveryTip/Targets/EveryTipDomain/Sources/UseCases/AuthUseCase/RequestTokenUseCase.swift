@@ -15,13 +15,13 @@ public protocol RequestTokenUseCase {
 }
 
 final public class DefaultRequestTokenUseCase: RequestTokenUseCase {
-    private let tokenRepository: UserLoginRepository
+    private let loginRepository: UserLoginRepository
     
-    init(tokenRepository: UserLoginRepository) {
-        self.tokenRepository = tokenRepository
+    init(loginRepository: UserLoginRepository) {
+        self.loginRepository = loginRepository
     }
     
     public func excute(email: String, password: String) -> Single<TokenResponse> {
-        return tokenRepository.requestToken(email: email, password: password)
+        return loginRepository.login(with: email, password: password)
     }
 }

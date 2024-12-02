@@ -14,10 +14,10 @@ import Alamofire
 import RxSwift
 
 final class DefaultUserLoginRepository: UserLoginRepository {
-    func requestToken(email: String, password: String) -> Single<TokenResponse> {
+    func login(with email: String, password: String) -> Single<TokenResponse> {
         return Single.create { single in
             do {
-                let request = try AuthTarget.postToken(email: email, password: password).asURLRequest()
+                let request = try AuthTarget.postUserLogin(email: email, password: password).asURLRequest()
                 
                 AF.request(request, interceptor: nil)
                     .validate(statusCode: 200..<300)
