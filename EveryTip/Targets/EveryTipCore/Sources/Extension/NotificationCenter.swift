@@ -9,5 +9,5 @@
 import Foundation
 
 public extension Notification.Name {
-    static let refreshTokenExpired = Notification.Name("Refresh Token did expired")
+    static let refreshTokenExpired = Notification.Name("RefreshTokenDidExpired")
 }
