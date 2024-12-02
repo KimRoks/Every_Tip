@@ -22,6 +22,6 @@ final public class DefaultRequestTokenUseCase: RequestTokenUseCase {
     }
     
     public func excute(email: String, password: String) -> Single<TokenResponse> {
-            return tokenRepository.requestToken(email: email, password: password)
+        return tokenRepository.requestToken(email: email, password: password)
     }
 }
