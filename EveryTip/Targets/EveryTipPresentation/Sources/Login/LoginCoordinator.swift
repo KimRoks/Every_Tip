@@ -53,6 +53,6 @@ final class DefaultLoginCoordinator: LoginCoordinator {
     }
     
     func didFinish() {
-        remove(child: self)
+        parentCoordinator?.remove(child: self)
     }
 }
