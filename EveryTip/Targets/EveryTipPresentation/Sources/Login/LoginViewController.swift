@@ -103,6 +103,10 @@ final class LoginViewController: BaseViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        coordinator?.didFinish()
+    }
+    
     private func setupLayout() {
         view.addSubViews(
             logoImageView,
