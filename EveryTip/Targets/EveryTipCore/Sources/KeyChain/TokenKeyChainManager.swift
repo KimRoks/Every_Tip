@@ -14,7 +14,7 @@ public final class TokenKeyChainManager {
     public static let shared = TokenKeyChainManager()
     private init() {}
     
-    public var isLogined: Bool {
+    public var isLoggedIn: Bool {
         get {
             return getToken(type: .access) != nil
         }
