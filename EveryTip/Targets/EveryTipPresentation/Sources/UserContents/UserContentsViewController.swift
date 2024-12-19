@@ -46,7 +46,7 @@ final class UserContentsViewController: BaseViewController {
     
     @objc
     private func pushToOnlyUserView() {
-        coordinator?.checkLoginBeforePush(actionIfLoggedIn: { [weak self] in
+        coordinator?.checkLoginBeforeAction(onLoggedIn: { [weak self] in
             self?.coordinator?.pushToOnlyUserView()
         })
     }

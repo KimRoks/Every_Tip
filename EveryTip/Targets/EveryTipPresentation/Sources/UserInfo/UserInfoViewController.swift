@@ -279,7 +279,7 @@ final class UserInfoViewController: BaseViewController {
     // TODO: 리액터로 처리하도록 변경
     @objc
     private func navigationToUserContentsView() {
-        coordinator?.checkLoginBeforePush(actionIfLoggedIn: { [weak self] in
+        coordinator?.checkLoginBeforeAction(onLoggedIn: { [weak self] in
             self?.coordinator?.pushToUserContentsView()
         })
         

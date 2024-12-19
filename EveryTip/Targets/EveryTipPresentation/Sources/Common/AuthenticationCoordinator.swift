@@ -13,20 +13,20 @@ import EveryTipCore
 import RxSwift
 
 protocol AuthenticationCoordinator: Coordinator {
-    func checkLoginBeforePush(actionIfLoggedIn: @escaping () -> Void)
+    func checkLoginBeforeAction(onLoggedIn: @escaping () -> Void)
     func pushToLoginView()
     func presentLoginAlert()
 }
 
 extension AuthenticationCoordinator {
     /// 로그인 뷰로의 이동은 가급적 알럿을 통해 진행 할 것
-    func checkLoginBeforePush(actionIfLoggedIn: @escaping () -> Void) {
-        let isLoggedIn = TokenKeyChainManager.shared.isLogined
+    func checkLoginBeforeAction(onLoggedIn: @escaping () -> Void) {
+        let isLoggedIn = TokenKeyChainManager.shared.isLoggedIn
         
         if !isLoggedIn {
             presentLoginAlert()
         } else {
-            actionIfLoggedIn()
+            onLoggedIn()
         }
     }
     
