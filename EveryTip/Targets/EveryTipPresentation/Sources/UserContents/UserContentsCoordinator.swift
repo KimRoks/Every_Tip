@@ -11,8 +11,10 @@ import UIKit
 import EveryTipDomain
 import EveryTipCore
 
-protocol UserContentsCoordinator: Coordinator {
-    func pushToLoginView()
+import RxSwift
+
+protocol UserContentsCoordinator: AuthenticationCoordinator {
+    func pushToOnlyUserView()
 }
 
 final class DefaultUserContentsCoordinator: UserContentsCoordinator {
@@ -25,33 +27,21 @@ final class DefaultUserContentsCoordinator: UserContentsCoordinator {
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
-    
-    let keychainManager: TokenKeyChainManager = TokenKeyChainManager.shared
-    let userContentsViewController: UserContentsViewController = UserContentsViewController()
-    
+        
     func start() {
-        if keychainManager.isLogined {
-            userContentsViewController.coordinator = self
-            navigationController.pushViewController(
-                userContentsViewController,
-                animated: true
-            )
-        } else {
-            userContentsViewController.coordinator = self
-            navigationController.pushViewController(
-                userContentsViewController,
-                animated: true
-            )
-//            pushToLoginView()
-        }
+        let userContentsViewController: UserContentsViewController = UserContentsViewController()
+        userContentsViewController.coordinator = self
+        navigationController.pushViewController(
+            userContentsViewController,
+            animated: true
+        )
+    }
+    
+    func pushToOnlyUserView() {
+        print("온리유저뷰 이동시켜줘잉")
     }
     
     func didFinish() {
-        remove(child: self)
-    }
-    
-    func pushToLoginView() {
-        let loginCoordinator: LoginCoordinator = DefaultLoginCoordinator(navigationController: navigationController)
-        loginCoordinator.start()
+        parentCoordinator?.remove(child: self)
     }
 }
