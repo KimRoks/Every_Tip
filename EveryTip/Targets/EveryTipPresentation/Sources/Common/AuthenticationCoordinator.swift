@@ -15,6 +15,7 @@ import RxSwift
 protocol AuthenticationCoordinator: Coordinator {
     func checkLoginBeforeAction(onLoggedIn: @escaping () -> Void)
     func pushToLoginView()
+    // TODO: 고민해보고 분리해도 좋을듯
     func presentLoginAlert()
 }
 
