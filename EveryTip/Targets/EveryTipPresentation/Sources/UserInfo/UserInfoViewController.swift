@@ -8,7 +8,6 @@
 
 import UIKit
 
-import EveryTipCore
 import EveryTipDesignSystem
 
 import ReactorKit
@@ -272,37 +271,25 @@ final class UserInfoViewController: BaseViewController {
     private func setUserInteraction() {
         let tapGesture = UITapGestureRecognizer(
             target: self,
-            action: #selector(navigationToUserHistoryView)
+            action: #selector(navigationToUserContentsView)
         )
         touchableStackView.addGestureRecognizer(tapGesture)
     }
     
     // TODO: 리액터로 처리하도록 변경
     @objc
-    private func navigationToUserHistoryView() {
-        let isLogined = TokenKeyChainManager.shared.isLogined
-        if isLogined {
-            coordinator?.pushToUserContentsView()
-        } else {
-            presentAlertForLogin()
-        }
+    private func navigationToUserContentsView() {
+        coordinator?.checkLoginBeforePush(actionIfLoggedIn: { [weak self] in
+            self?.coordinator?.pushToUserContentsView()
+        })
         
-        print(reactor?.currentState.userInfo)
+//        print(reactor?.currentState.userInfo)
     }
     
     private func navigationToAgreementView() {
         coordinator?.pushToAgreementViewcontroller()
     }
-    
-    private func presentAlertForLogin() {
-        let alertController = UIAlertController(title: "로그인이 필요한 서비스입니다", message: "로그인을 위해 이동할까요?", preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "고고싱", style: .default) {
-            [weak self] _ in
-            self?.coordinator?.pushToUserContentsView()
-        }
-        let cancelAction = UIAlertAction(title: "아뇨", style: .cancel)
-    }
-    
+ 
     private func toTestSignInView() {
         let testSignInVC = TestSignInViewController()
         coordinator?.navigationController.pushViewController(testSignInVC, animated: true)
