@@ -20,7 +20,7 @@ protocol AuthenticationCoordinator: Coordinator {
 }
 
 extension AuthenticationCoordinator {
-    /// 로그인 뷰로의 이동은 가급적 알럿을 통해 진행 할 것
+    /// 로그인이 필요한 작업은 해당 메서드를 거쳐 로그인 여부를 확인합니다.
     func checkLoginBeforeAction(onLoggedIn: @escaping () -> Void) {
         let isLoggedIn = TokenKeyChainManager.shared.isLoggedIn
         
