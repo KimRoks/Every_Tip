@@ -47,10 +47,10 @@ final class TokenInterceptor: RequestInterceptor {
             completion(.retryWithDelay(1))
         } else {
             //리프레쉬 토큰마저 만료되었다는 서버의 응답을 받았다
-            NotificationCenter.default.post(
-                name: .refreshTokenExpired,
-                object: nil
-            )
+            let tokenManager = TokenKeyChainManager.shared
+            tokenManager.deleteToken(type: .access)
+            tokenManager.deleteToken(type: .refresh)
+            
             completion(.doNotRetryWithError(error))
         }
     }
