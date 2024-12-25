@@ -16,7 +16,7 @@ protocol AuthenticationCoordinator: Coordinator {
     func checkLoginBeforeAction(onLoggedIn: @escaping () -> Void)
     func pushToLoginView()
     // TODO: 고민해보고 분리해도 좋을듯
-    func presentLoginAlert()
+    func presentLoginRequiredAlert()
 }
 
 extension AuthenticationCoordinator {
@@ -25,7 +25,7 @@ extension AuthenticationCoordinator {
         let isLoggedIn = TokenKeyChainManager.shared.isLoggedIn
         
         if !isLoggedIn {
-            presentLoginAlert()
+            presentLoginRequiredAlert()
         } else {
             onLoggedIn()
         }
@@ -37,7 +37,7 @@ extension AuthenticationCoordinator {
         loginCoordinator.start()
     }
     
-    func presentLoginAlert() {
+    func presentLoginRequiredAlert() {
         let loginAlertController: UIAlertController = UIAlertController(
             title: "로그인이 필요한 서비스 입니다.",
             message: "로그인을 하러 이동할까요?",
