@@ -367,14 +367,10 @@ extension HomeViewController: View {
                     cellType: PostListCell.self
                 )
             ) { index, post, cell in
-                cell.categoryLabel.text = " \(post.category) "
-                cell.titleLabel.text = "\(self.addSpace(forTitleLength: post.category.count) + post.title)  "
                 cell.mainTextLabel.text = post.mainText
-                cell.userNameLabel.text = post.userName
-                cell.likeCountLabel.text = post.likeCount.toAbbreviatedString()
-                cell.viewCountLabel.text = post.viewCount.toAbbreviatedString()
-                //            // TODO: 이미지 url을 통한 패칭 적용
-                //            //            cell.thumbnailImageView.image = UIImage(data: <#T##Data#>)
+                cell.userNameLabel.text = "by \(post.userName)"
+                cell.configureCategoryLabel(with: .financial)
+                cell.configureTitleLabelText(post.title)
                 
             }.disposed(by: disposeBag)
         
