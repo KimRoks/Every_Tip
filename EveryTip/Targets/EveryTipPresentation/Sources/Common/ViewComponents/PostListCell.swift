@@ -13,7 +13,7 @@ import EveryTipDesignSystem
 
 final class PostListCell: UITableViewCell, Reusable {
     
-    let categoryLabel: UILabel = {
+    private let categoryLabel: UILabel = {
         let label = UILabel()
         label.layer.cornerRadius = 4
         label.layer.masksToBounds = true
@@ -21,7 +21,7 @@ final class PostListCell: UITableViewCell, Reusable {
         return label
     }()
     
-    lazy var titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 2
         label.font = UIFont.et_pretendard(style: .bold, size: 16)
@@ -35,7 +35,6 @@ final class PostListCell: UITableViewCell, Reusable {
             style: .medium,
             size: 14
         )
-        label.text = "방청소 물걸레질 꿀팁은 일단 쿠팡에서 밀대 걸레를 사고 다이소에 가면 베이킹 티슈를..."
         label.numberOfLines = 2
         label.textColor = UIColor.et_textColorBlack50
         
@@ -51,7 +50,6 @@ final class PostListCell: UITableViewCell, Reusable {
     
     let userNameLabel: UILabel = {
         let label = UILabel()
-        label.text = "by 김경록"
         label.textAlignment = .right
         label.font = UIFont.et_pretendard(
             style: .medium,
@@ -62,7 +60,7 @@ final class PostListCell: UITableViewCell, Reusable {
         return label
     }()
     
-    let viewsImage: UIImageView = {
+    private let viewsImage: UIImageView = {
         let imageview = UIImageView()
         imageview.image = UIImage.et_getImage(for: .viewsImage)
         
@@ -78,7 +76,7 @@ final class PostListCell: UITableViewCell, Reusable {
         return label
     }()
     
-    let commentsImage: UIImageView = {
+    private let commentsImage: UIImageView = {
         let imageview = UIImageView()
         imageview.image = UIImage.et_getImage(for: .commentImage)
         
@@ -133,8 +131,8 @@ final class PostListCell: UITableViewCell, Reusable {
         titleLabel.text = space + titleText
     }
     
-    func configureCategoryLabel(with category: categorys) {
-        categoryLabel.setCategoryLabel(category: category)
+    func configureCategoryLabel(id: Int) {
+        categoryLabel.setCategory(with: id)
     }
     
     // MARK: Private Methods

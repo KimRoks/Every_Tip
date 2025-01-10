@@ -369,8 +369,16 @@ extension HomeViewController: View {
             ) { index, post, cell in
                 cell.mainTextLabel.text = post.mainText
                 cell.userNameLabel.text = "by \(post.userName)"
-                cell.configureCategoryLabel(with: .financial)
+                // TODO: API 확정시 entity 변경후 수정
+                // categoryLabel, titleLabel 의 경우 configure 메서드로 호출 및 순서 준수 필요
+                cell.configureCategoryLabel(id: 1)
                 cell.configureTitleLabelText(post.title)
+                
+                // 각 count 계수는 toAbbreviatedString로 파싱해서 사용 할 것
+                cell.viewsCountLabel.text = "\(post.viewCount.toAbbreviatedString())"
+                // TODO: API에 코멘트 개수 추가 필요
+                // cell.commentsCountLabel.text = "\(post.viewCount.toAbbreviatedString())"
+                cell.likesCountLabel.text = "\(post.likeCount.toAbbreviatedString())"
                 
             }.disposed(by: disposeBag)
         
