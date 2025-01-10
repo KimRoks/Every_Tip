@@ -10,10 +10,8 @@ import UIKit
 
 import EveryTipDesignSystem
 
-// TODO: 추후 api가 카테고리를 어떻게 뱉어주냐에 따라 Int등 rawValue갖게끔 변경할수도 있음
-enum categorys {
-    case hobby
-    case life
+enum categorys: Int {
+    case hobby = 1
     case it
     case health
     case financial
@@ -25,19 +23,18 @@ enum categorys {
 }
 
 extension UILabel {
-    func setCategoryLabel(category: categorys) {
+    func setCategory(with id: Int) {
         applyCommonStyle()
-        
+        guard let category = categorys(rawValue: id) else {
+            print("Invalid category value")
+            return
+        }
         switch category {
-        //Text 뒤 문자는 일괄적이고 자연스러운 공백을 위한 유니코드임
+            //Text 뒤 문자는 일괄적이고 자연스러운 공백을 위한 유니코드임
         case .hobby:
             text = "취미\u{2003}"
             backgroundColor = UIColor(hex: "#E5F7F4")
             textColor = UIColor(hex: "#179780")
-        case .life:
-            text = "생활\u{2003}"
-            backgroundColor = UIColor(hex: "#ECF9F2")
-            textColor = UIColor(hex: "#26BA6C")
         case .it:
             text = "IT\u{2003}"
             backgroundColor = UIColor(hex: "#F1F6FF")
@@ -83,5 +80,3 @@ extension UILabel {
         textAlignment = .center
     }
 }
-
-
