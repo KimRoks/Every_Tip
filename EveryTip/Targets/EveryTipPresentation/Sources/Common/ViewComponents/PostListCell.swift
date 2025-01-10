@@ -69,7 +69,7 @@ final class PostListCell: UITableViewCell, Reusable {
     
     let viewsCountLabel: UILabel = {
         let label = UILabel()
-        label.text = "123"
+        label.text = "0"
         label.font = UIFont.et_pretendard(style: .medium, size: 12)
         label.textColor = UIColor(hex: "#777777")
         
@@ -86,8 +86,7 @@ final class PostListCell: UITableViewCell, Reusable {
     let commentsCountLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.et_pretendard(style: .medium, size: 12)
-        label.text = "452"
-        label.font = UIFont.et_pretendard(style: .medium, size: 12)
+        label.text = "0"
         label.textColor = UIColor(hex: "#777777")
         
         return label
@@ -103,7 +102,7 @@ final class PostListCell: UITableViewCell, Reusable {
     
     let likesCountLabel: UILabel = {
         let label = UILabel()
-        label.text = "7763"
+        label.text = "0"
         label.font = UIFont.et_pretendard(style: .medium, size: 12)
         label.textColor = UIColor(hex: "#777777")
         
