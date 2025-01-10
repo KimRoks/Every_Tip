@@ -17,6 +17,7 @@ public enum ImageAssetType {
     case likeImage_fill
     case viewsImage
     case commentImage
+    case searchBarIcon
 }
 
 extension UIImage {
@@ -35,6 +36,8 @@ extension UIImage {
             EveryTipDesignSystemAsset.viewsImage.image
         case .commentImage:
             EveryTipDesignSystemAsset.commentImage.image
+        case .searchBarIcon:
+            EveryTipDesignSystemAsset.searchBarIcon.image
         }
     }
 }
