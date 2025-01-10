@@ -171,25 +171,25 @@ final class PostListCell: UITableViewCell, Reusable {
     private func setupConstraints() {
         categoryLabel.snp.makeConstraints {
             $0.top.equalTo(contentView.snp.top).offset(10)
-            $0.leading.equalTo(contentView.snp.leading).offset(10)
+            $0.leading.equalTo(contentView.snp.leading)
             $0.height.equalTo(18)
         }
         
         titleLabel.snp.makeConstraints {
             $0.top.equalTo(contentView.snp.top).offset(10)
-            $0.leading.equalTo(contentView.snp.leading).offset(10)
+            $0.leading.equalTo(contentView.snp.leading)
             $0.trailing.equalTo(thumnailImageView.snp.leading).offset(-20)
         }
         
         mainTextLabel.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(10)
-            $0.leading.equalTo(contentView.snp.leading).offset(10)
+            $0.leading.equalTo(contentView.snp.leading)
             $0.trailing.equalTo(thumnailImageView.snp.leading).offset(-10)
-            $0.bottom.equalTo(contentView.snp.bottom).offset(-40)
+            $0.height.equalTo(40)
         }
         
         viewsImage.snp.makeConstraints {
-            $0.leading.equalTo(contentView.snp.leading).offset(10)
+            $0.leading.equalTo(contentView.snp.leading)
             $0.bottom.equalTo(contentView.snp.bottom).offset(-10)
             $0.width.height.equalTo(14)
         }
@@ -224,13 +224,14 @@ final class PostListCell: UITableViewCell, Reusable {
     
         thumnailImageView.snp.makeConstraints{
             $0.top.equalTo(contentView.snp.top).offset(10)
-            $0.trailing.equalTo(contentView.snp.trailing).offset(-10)
+            $0.trailing.equalTo(contentView.snp.trailing)
             $0.height.equalTo(90)
             $0.width.equalTo(90)
         }
         
         userNameLabel.snp.makeConstraints {
-            $0.trailing.equalTo(contentView.snp.trailing).offset(-10)
+            $0.top.greaterThanOrEqualTo(thumnailImageView.snp.bottom).offset(10)
+            $0.trailing.equalTo(contentView.snp.trailing)
             $0.bottom.equalTo(contentView.snp.bottom).offset(-10)
         }
     }
