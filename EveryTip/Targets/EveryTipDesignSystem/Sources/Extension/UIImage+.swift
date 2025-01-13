@@ -13,6 +13,11 @@ public enum ImageAssetType {
     case categoryViewBanner
     case blankImage
     case everyTipLogoimage
+    case likeImage_empty
+    case likeImage_fill
+    case viewsImage
+    case commentImage
+    case searchIcon
 }
 
 extension UIImage {
@@ -23,6 +28,16 @@ extension UIImage {
         case .categoryViewBanner: EveryTipDesignSystemAsset.categoryViewBanner.image
         case .blankImage: EveryTipDesignSystemAsset.blankImage.image
         case .everyTipLogoimage: EveryTipDesignSystemAsset.everyTipLogo.image
+        case .likeImage_empty:
+            EveryTipDesignSystemAsset.likeImageEmpty.image
+        case .likeImage_fill:
+            EveryTipDesignSystemAsset.likeImageFill.image
+        case .viewsImage:
+            EveryTipDesignSystemAsset.viewsImage.image
+        case .commentImage:
+            EveryTipDesignSystemAsset.commentImage.image
+        case .searchIcon:
+            EveryTipDesignSystemAsset.searchIcon.image
         }
     }
 }
