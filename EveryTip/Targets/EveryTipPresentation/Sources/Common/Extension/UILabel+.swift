@@ -10,7 +10,7 @@ import UIKit
 
 import EveryTipDesignSystem
 
-enum categorys: Int {
+enum categories: Int {
     case hobby = 1
     case it
     case health
@@ -25,7 +25,7 @@ enum categorys: Int {
 extension UILabel {
     func setCategory(with id: Int) {
         applyCommonStyle()
-        guard let category = categorys(rawValue: id) else {
+        guard let category = categories(rawValue: id) else {
             print("Invalid category value")
             return
         }
