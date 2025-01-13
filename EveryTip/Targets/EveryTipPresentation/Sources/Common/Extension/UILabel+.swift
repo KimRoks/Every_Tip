@@ -24,6 +24,7 @@ enum categories: Int {
 
 extension UILabel {
     // TODO: 구체적 디자인 요소는 분리 고려
+    // TODO: 파라미터 타입 고민 필요, 도메인단에서도 int로 관리할것인지
     func setCategory(with id: Int) {
         applyCommonStyle()
         guard let category = categories(rawValue: id) else {
