@@ -23,6 +23,7 @@ enum categories: Int {
 }
 
 extension UILabel {
+    // TODO: 구체적 디자인 요소는 분리 고려
     func setCategory(with id: Int) {
         applyCommonStyle()
         guard let category = categories(rawValue: id) else {
