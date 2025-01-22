@@ -72,8 +72,8 @@ final class ExploreViewController: BaseViewController, View {
         return collectionView
     }()
     
-    private let sortButton: UIButton = {
-        let button = UIButton(type: .system)
+    private let sortButton: SortButton = {
+        let button = SortButton()
         
         return button
     }()
@@ -211,7 +211,7 @@ final class ExploreViewController: BaseViewController, View {
             .distinctUntilChanged()
             .bind { [weak self] sortOption in
                 guard let self = self else { return }
-                self.sortButton.configureAttributedForSort(with: sortOption)
+                self.sortButton.configureButtonStyle(with: sortOption)
             }
             .disposed(by: disposeBag)
         
