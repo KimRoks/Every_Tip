@@ -43,5 +43,6 @@ let package = Package(
         .package(url: "https://github.com/ReactorKit/ReactorKit.git",
                  .upToNextMajor(from: "3.0.0")
         ),
+        .package(url: "https://github.com/RxSwiftCommunity/RxDataSources.git", from: "5.0.0")
     ]
 )
