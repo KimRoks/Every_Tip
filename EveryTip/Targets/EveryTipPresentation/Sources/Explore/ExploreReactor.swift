@@ -37,10 +37,7 @@ final class ExploreReactor: Reactor {
     // ID 0번의 전체팁을 기본으로 가짐
     var initialStory: [DummyStory] = [
         DummyStory(
-            user: DummyUser(userID: 0),
-            userName: "전체팁",
-            userProfileIamge: UIImage.et_getImage(for: .everyTipLogo_story)
-                .withAlignmentRectInsets(UIEdgeInsets(top: -14.4, left: -14.4, bottom: -14.4, right: -14.4))
+            type: .everyTip
         )
     ]
     

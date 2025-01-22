@@ -221,10 +221,16 @@ final class ExploreViewController: BaseViewController, View {
                 cellIdentifier: StoryCollectionViewCell.reuseIdentifier,
                 cellType: StoryCollectionViewCell.self)
             ) { index, data, cell in
-                cell.userNameLabel.text = data.userName
-                cell.profileImageView.image = data.userProfileIamge
+                if data.type == .everyTip {
+                    cell.userNameLabel.text = "전체팁"
+                    cell.profileImageView.image = UIImage.et_getImage(for: .everyTipLogo_story)
+                        .withAlignmentRectInsets(UIEdgeInsets(top: -14.4, left: -14.4, bottom: -14.4, right: -14.4))
+                } else {
+                    cell.userNameLabel.text = data.userData?.userName
+                    cell.profileImageView.image = data.userData?.userProfileImage
+                }
                 
-                let isSelected = data.user.userID == reactor.currentState.selectedStory.user.userID
+                let isSelected = data.userData?.userID == reactor.currentState.selectedStory.userData?.userID
                 cell.setSelected(isSelected)
             }
             .disposed(by: disposeBag)
@@ -232,10 +238,10 @@ final class ExploreViewController: BaseViewController, View {
         reactor.state.map { $0.selectedStory }
             .bind { [weak self] selectedStory in
                 guard let self = self else { return }
-                if selectedStory.user.userID == 0 {
+                if selectedStory.type == .everyTip {
                     self.exploreTitleLabel.text = "전체 팁 목록 👀"
                 } else {
-                    self.exploreTitleLabel.text = "\(selectedStory.userName)님 팁 목록 👀"
+                    self.exploreTitleLabel.text = "\(selectedStory.userData?.userName ?? "unknown")님 팁 목록 👀"
                 }
             }
             .disposed(by: disposeBag)
