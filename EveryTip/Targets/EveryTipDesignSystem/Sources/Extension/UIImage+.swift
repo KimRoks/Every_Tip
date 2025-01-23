@@ -18,6 +18,14 @@ public enum ImageAssetType {
     case viewsImage
     case commentImage
     case searchIcon
+    case categoryIcon_hobby
+    case categoryIcon_it
+    case categoryIcon_health
+    case categoryIcon_finance
+    case categoryIcon_entertainment
+    case categoryIcon_sports
+    case categoryIcon_games
+    case categoryIcon_social
 }
 
 extension UIImage {
@@ -38,6 +46,23 @@ extension UIImage {
             EveryTipDesignSystemAsset.commentImage.image
         case .searchIcon:
             EveryTipDesignSystemAsset.searchIcon.image
+        
+        case .categoryIcon_hobby:
+            EveryTipDesignSystemAsset.categoryIconHobby.image
+        case .categoryIcon_it:
+            EveryTipDesignSystemAsset.categoryIconIT.image
+        case .categoryIcon_health:
+            EveryTipDesignSystemAsset.categoryIconHealth.image
+        case .categoryIcon_finance:
+            EveryTipDesignSystemAsset.categoryIconFinance.image
+        case .categoryIcon_entertainment:
+            EveryTipDesignSystemAsset.categoryIconEntertainment.image
+        case .categoryIcon_sports:
+            EveryTipDesignSystemAsset.categoryIconSports.image
+        case .categoryIcon_games:
+            EveryTipDesignSystemAsset.categoryIconGames.image
+        case .categoryIcon_social:
+            EveryTipDesignSystemAsset.categoryIconSocial.image
         }
     }
 }
