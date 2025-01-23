@@ -100,6 +100,7 @@ final class HomeViewController: BaseViewController {
         return tableView
     }()
     
+    
     //MARK: ViewLifeCycle
     
     override func viewDidLoad() {
@@ -249,6 +250,7 @@ extension HomeViewController: View {
 
 extension HomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
         guard let headerView = tableView.dequeueReusableHeaderFooterView(
             withIdentifier: HomeSectionHeaderView.reuseIdentifier
         ) as? HomeSectionHeaderView else { return UIView() }
@@ -269,12 +271,21 @@ extension HomeViewController: UITableViewDelegate {
             return footerView
         }
         
+        if dataSource.sectionModels[section].isNeedLogin == true {
+            let footerView = InterestSuggestFooterView()
+            return footerView
+        }
+        
         return nil
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         if dataSource.sectionModels[section].footer == true {
             return 50
+        }
+        
+        if dataSource.sectionModels[section].isNeedLogin == true {
+            return 250
         }
         
         return 0

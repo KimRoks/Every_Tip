@@ -51,21 +51,25 @@ class HomeReactor: Reactor {
             return postUseCase.fetchPosts()
                 .asObservable()
                 .map { posts in
-                    let sortedTopThree = posts.sorted { $0.likeCount > $1.likeCount }.prefix(3)
+                    let sortedTopThreeByLikeCount = posts.sorted { $0.likeCount > $1.likeCount }.prefix(3)
                     let sortedByCategory = posts.filter { $0.category == "레시피" || $0.category == "스포츠" }
+                    
+                    let empty: [Tip] = []
                     
                     let sections = [
                         SectionOfHomeView(
                             header: "인기 팁 모아보기 🔥",
-                            items: Array(sortedTopThree),
-                            footer: true
+                            items: Array(sortedTopThreeByLikeCount),
+                            footer: true,
+                            isNeedLogin: false
                         ),
                         SectionOfHomeView(
                             header: "관심 카테고리~ 추천 팁 영역 🔍",
-                            items: Array(sortedByCategory)
+                            items: Array(empty),
+                            isNeedLogin: true
                         )
                     ]
-                    return [.setPosts(Array(sortedTopThree)),
+                    return [.setPosts(Array(sortedTopThreeByLikeCount)),
                             .setSections(sections)]
                 }
                 .catch { error in
@@ -104,6 +108,7 @@ struct SectionOfHomeView {
     var header: String
     var items: [Tip]
     var footer: Bool?
+    var isNeedLogin: Bool
 }
 
 extension SectionOfHomeView: SectionModelType {
