@@ -95,6 +95,6 @@ public struct Constants {
         
         public static let tableViewItems: [Category] = Category.allCases
         
-        public static let suggestInterestItems: [Category] = [.hobby, .it, .health, .finance, .entertainment, .games]
+        public static let interestSuggestItems: [Category] = [.hobby, .it, .health, .finance, .entertainment, .games]
     }
 }
