@@ -9,13 +9,17 @@
 import UIKit
 
 import EveryTipDesignSystem
+import EveryTipDomain
+
 
 import ReactorKit
 import RxCocoa
+import RxDataSources
 import RxSwift
 import SnapKit
 
 final class HomeViewController: BaseViewController {
+    
     
     weak var coordinator: HomeViewCoordinator?
     
@@ -87,40 +91,12 @@ final class HomeViewController: BaseViewController {
         return imageView
     }()
     
-    // TODO: 추가 Section 정의
-    
-    private let headerView: UIView = {
-        let view = UIView()
-        
-        return view
-    }()
-    
-    private let popularTipLabel: UILabel = {
-        let label = UILabel()
-        label.text = "인기 팁 모아보기 🔥"
-        label.font = UIFont.et_pretendard(
-            style: .bold,
-            size: 18
-        )
-        
-        return label
-    }()
-    
-    private let popularTipLearnMoreButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("더보기", for: .normal)
-        button.setTitleColor(.et_textColorBlack10, for: .normal)
-        button.titleLabel?.font = UIFont.et_pretendard(
-            style: .bold,
-            size: 14
-        )
-        return button
-    }()
-    
     private let postListTableView: UITableView = {
-        let tableView = UITableView()
+        let tableView = UITableView(
+            frame: .zero,
+            style: .grouped
+        )
         tableView.backgroundColor = .white
-        
         return tableView
     }()
     
@@ -139,8 +115,6 @@ final class HomeViewController: BaseViewController {
         view.addSubview(weeklyTipLearnMoreButton)
         view.addSubview(roundedBackgroundView)
         
-        headerView.addSubview(popularTipLabel)
-        headerView.addSubview(popularTipLearnMoreButton)
         roundedBackgroundView.addSubview(searchBarButton)
         searchBarButton.addSubview(searchIcon)
         roundedBackgroundView.addSubview(postListTableView)
@@ -169,16 +143,6 @@ final class HomeViewController: BaseViewController {
             $0.height.equalTo(weeklyTipImageView.snp.width).multipliedBy(0.955)
         }
         
-        popularTipLabel.snp.makeConstraints {
-            $0.leading.equalTo(headerView)
-            $0.centerY.equalToSuperview()
-        }
-        
-        popularTipLearnMoreButton.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
-            $0.trailing.equalTo(headerView)
-        }
-        
         searchBarButton.snp.makeConstraints {
             $0.top.equalTo(roundedBackgroundView.snp.top).offset(12)
             $0.leading.equalTo(roundedBackgroundView).offset(15)
@@ -194,19 +158,43 @@ final class HomeViewController: BaseViewController {
         
         postListTableView.snp.makeConstraints {
             $0.top.equalTo(searchBarButton.snp.bottom).offset(20)
-            $0.leading.equalTo(roundedBackgroundView).offset(15)
-            $0.trailing.equalTo(roundedBackgroundView).offset(-15)
+            $0.leading.equalTo(roundedBackgroundView)
+            $0.trailing.equalTo(roundedBackgroundView)
             $0.bottom.equalTo(roundedBackgroundView)
         }
     }
     
     private func setupTableView() {
-        postListTableView.register(PostListCell.self, forCellReuseIdentifier: PostListCell.reuseIdentifier)
-        headerView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 40)
-        postListTableView.tableHeaderView = headerView
+        postListTableView.register(
+            PostListCell.self,
+            forCellReuseIdentifier: PostListCell.reuseIdentifier
+        )
+        postListTableView.register(
+            HomeSectionHeaderView.self,
+            forHeaderFooterViewReuseIdentifier: HomeSectionHeaderView.reuseIdentifier
+        )
+        postListTableView.indicatorStyle = .white
+        postListTableView.separatorStyle = .none
         postListTableView.rowHeight = UITableView.automaticDimension
         postListTableView.estimatedRowHeight = 130
     }
+    
+    let dataSource = RxTableViewSectionedReloadDataSource<SectionOfHomeView>(
+        configureCell: { dataSource, tableView, indexPath, item in
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: PostListCell.reuseIdentifier,
+                for: indexPath
+            ) as? PostListCell else { return UITableViewCell() }
+            
+            cell.configureCategoryLabel(id: 1)
+            cell.configureTitleLabelText(item.title)
+            cell.userNameLabel.text = item.userName
+            cell.viewsCountLabel.text = "\(item.viewCount)"
+            cell.likesCountLabel.text = "\(item.likeCount)"
+            cell.mainTextLabel.text = item.mainText
+            return cell
+        }
+    )
 }
 
 //MARK: Reactor
@@ -227,30 +215,12 @@ extension HomeViewController: View {
             .map{Reactor.Action.itemSeleted($0)}
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+        
+        postListTableView.rx.setDelegate(self)
+            .disposed(by: disposeBag)
     }
     
     private func bindOutputs(to reactor: HomeReactor) {
-        reactor.state.map { $0.posts }
-            .bind(
-                to: postListTableView.rx.items(
-                    cellIdentifier: PostListCell.reuseIdentifier,
-                    cellType: PostListCell.self
-                )
-            ) { index, post, cell in
-                cell.mainTextLabel.text = post.mainText
-                cell.userNameLabel.text = "by \(post.userName)"
-                // TODO: API 확정시 entity 변경후 수정
-                // categoryLabel, titleLabel 의 경우 configure 메서드로 호출 및 순서 준수 필요
-                cell.configureCategoryLabel(id: 1)
-                cell.configureTitleLabelText(post.title)
-                
-                // 각 count 계수는 toAbbreviatedString로 파싱해서 사용 할 것
-                cell.viewsCountLabel.text = "\(post.viewCount.toAbbreviatedString())"
-                // TODO: API에 코멘트 개수 추가 필요
-                // cell.commentsCountLabel.text = "\(post.viewCount.toAbbreviatedString())"
-                cell.likesCountLabel.text = "\(post.likeCount.toAbbreviatedString())"
-                
-            }.disposed(by: disposeBag)
         
         reactor.state
             .map { $0.fetchError }
@@ -269,5 +239,44 @@ extension HomeViewController: View {
                 self?.coordinator?.navigateToTestView(with: tip)
             })
             .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.postListSections }
+            .bind(to: postListTableView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
+    }
+}
+
+extension HomeViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(
+            withIdentifier: HomeSectionHeaderView.reuseIdentifier
+        ) as? HomeSectionHeaderView else { return UIView() }
+        
+        let headerTitle = dataSource.sectionModels[section].header
+        headerView.setTitleLabel(headerTitle)
+        
+        return headerView
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 40
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        if dataSource.sectionModels[section].footer == true {
+            let footerView = HomeSectionFooterView()
+            return footerView
+        }
+        
+        return nil
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        if dataSource.sectionModels[section].footer == true {
+            return 50
+        }
+        
+        return 0
     }
 }
