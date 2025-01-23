@@ -34,21 +34,20 @@ public struct Constants {
         var image: UIImage? {
             switch self {
             case .hobby:
-                return UIImage(systemName: "house.fill")
+                return UIImage.et_getImage(for: .categoryIcon_hobby)
             case .it:
-                return UIImage(systemName: "globe")
+                return UIImage.et_getImage(for: .categoryIcon_it)
             case .health:
-                return UIImage(systemName: "heart.fill")
+                return UIImage.et_getImage(for: .categoryIcon_health)
             case .finance:
-                return UIImage(systemName: "creditcard.fill")
+                return UIImage.et_getImage(for: .categoryIcon_finance)
             case .entertainment:
-                return UIImage(systemName: "play.square.fill")
+                return UIImage.et_getImage(for: .categoryIcon_entertainment)
             case .sports:
-                return UIImage(systemName: "dumbbell.fill")
+                return UIImage.et_getImage(for: .categoryIcon_sports)
             case .games:
-                return UIImage(systemName: "gamecontroller.fill")
-            case .social:
-                return UIImage(systemName: "antenna.radiowaves.left.and.right")
+                return UIImage.et_getImage(for: .categoryIcon_games)            case .social:
+                return UIImage.et_getImage(for: .categoryIcon_social)
             }
         }
         
@@ -95,5 +94,7 @@ public struct Constants {
         }
         
         public static let tableViewItems: [Category] = Category.allCases
+        
+        public static let suggestInterestItems: [Category] = [.hobby, .it, .health, .finance, .entertainment, .games]
     }
 }
