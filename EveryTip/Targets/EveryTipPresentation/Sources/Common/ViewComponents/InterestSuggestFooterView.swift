@@ -54,7 +54,6 @@ final class InterestSuggestFooterView: UITableViewHeaderFooterView {
         return stackview
     }()
 
-    
     let moveToSetInterestButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("관심사 설정하러 가기", for: .normal)
@@ -77,10 +76,9 @@ final class InterestSuggestFooterView: UITableViewHeaderFooterView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    let const = Constants.Category.interestSuggestItems
-    
-    func setStackView() {
-        for item in const {
+    private func setStackView() {
+        let interestImages = Constants.Category.interestSuggestItems
+        for item in interestImages {
             let imageView = UIImageView()
             imageView.image = item.image
             
@@ -100,7 +98,6 @@ final class InterestSuggestFooterView: UITableViewHeaderFooterView {
             moveToSetInterestButton
         )
     }
-    let categoryData = Constants.Category.interestSuggestItems
 
     private func setupConstraints() {
         roundedBackgroundView.snp.makeConstraints {
