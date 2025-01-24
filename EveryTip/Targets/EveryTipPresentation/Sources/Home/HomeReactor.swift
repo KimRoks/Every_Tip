@@ -26,14 +26,14 @@ class HomeReactor: Reactor {
         case setError(Error)
         
         case pushToItemView(Tip)
-        case setSections([SectionOfHomeView])
+        case setSections([HomeTableViewSection])
     }
     
     struct State {
         var posts: [Tip] = []
         var fetchError: Error?
         var selectedItem: Tip?
-        var postListSections: [SectionOfHomeView] = []
+        var postListSections: [HomeTableViewSection] = []
     }
     
     let initialState: State
@@ -51,22 +51,19 @@ class HomeReactor: Reactor {
             return postUseCase.fetchPosts()
                 .asObservable()
                 .map { posts in
-                    let sortedTopThreeByLikeCount = posts.sorted { $0.likeCount > $1.likeCount }.prefix(3)
-                    let sortedByCategory = posts.filter { $0.category == "레시피" || $0.category == "스포츠" }
+                    let sortedTopThreeByLikeCount = Array(posts.sorted { $0.likeCount > $1.likeCount }.prefix(3))
                     
+                    // 로그인이 되어있지않았거나 선택된 카테고리가 없어 빈 배열을 받았다는 가정
                     let empty: [Tip] = []
                     
                     let sections = [
-                        SectionOfHomeView(
-                            header: "인기 팁 모아보기 🔥",
-                            items: Array(sortedTopThreeByLikeCount),
-                            footer: true,
-                            isNeedLogin: false
+                        HomeTableViewSection(
+                            sectionType: .popular,
+                            items: sortedTopThreeByLikeCount
                         ),
-                        SectionOfHomeView(
-                            header: "관심 카테고리~ 추천 팁 영역 🔍",
-                            items: Array(empty),
-                            isNeedLogin: true
+                        HomeTableViewSection(
+                            sectionType: .interestCategory,
+                            items: empty
                         )
                     ]
                     return [.setPosts(Array(sortedTopThreeByLikeCount)),
@@ -101,21 +98,5 @@ class HomeReactor: Reactor {
         }
         
         return newState
-    }
-}
-
-struct SectionOfHomeView {
-    var header: String
-    var items: [Tip]
-    var footer: Bool?
-    var isNeedLogin: Bool
-}
-
-extension SectionOfHomeView: SectionModelType {
-    typealias Item = Tip
-    
-    init(original: SectionOfHomeView, items: [Item]) {
-        self = original
-        self.items = items
     }
 }
