@@ -12,7 +12,7 @@ import UIKit
 
 import Swinject
 
-protocol HomeViewCoordinator: Coordinator {
+protocol HomeViewCoordinator: AuthenticationCoordinator {
     func start() -> UIViewController
     func navigateToTestView(with data: Tip)
 }
