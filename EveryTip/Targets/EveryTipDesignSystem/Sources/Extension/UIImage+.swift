@@ -50,7 +50,7 @@ extension UIImage {
         case .categoryIcon_hobby:
             EveryTipDesignSystemAsset.categoryIconHobby.image
         case .categoryIcon_it:
-            EveryTipDesignSystemAsset.categoryIconIT.image
+            EveryTipDesignSystemAsset.categoryIconIt.image
         case .categoryIcon_health:
             EveryTipDesignSystemAsset.categoryIconHealth.image
         case .categoryIcon_finance:
