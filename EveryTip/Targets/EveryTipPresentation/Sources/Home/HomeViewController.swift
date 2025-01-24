@@ -33,9 +33,7 @@ final class HomeViewController: BaseViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    //MARK: WeeklyTip Items
-    
+        
     private let roundedBackgroundView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
@@ -100,6 +98,25 @@ final class HomeViewController: BaseViewController {
         return tableView
     }()
     
+    // MARK: TableViewDataSource
+    
+    private let dataSource = RxTableViewSectionedReloadDataSource<HomeTableViewSection>(
+        configureCell: { dataSource, tableView, indexPath, item in
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: PostListCell.reuseIdentifier,
+                for: indexPath
+            ) as? PostListCell else { return UITableViewCell() }
+            
+            cell.configureCategoryLabel(id: 1)
+            cell.configureTitleLabelText(item.title)
+            cell.userNameLabel.text = item.userName
+            cell.viewsCountLabel.text = "\(item.viewCount)"
+            cell.likesCountLabel.text = "\(item.likeCount)"
+            cell.mainTextLabel.text = item.mainText
+            
+            return cell
+        }
+    )
     
     //MARK: ViewLifeCycle
     
@@ -109,6 +126,8 @@ final class HomeViewController: BaseViewController {
         setupConstraints()
         setupTableView()
     }
+    
+    // MARK: Private Methods
     
     private func setupLayout() {
         view.addSubview(weeklyTipLabel)
@@ -179,23 +198,6 @@ final class HomeViewController: BaseViewController {
         postListTableView.rowHeight = UITableView.automaticDimension
         postListTableView.estimatedRowHeight = 130
     }
-    
-    let dataSource = RxTableViewSectionedReloadDataSource<SectionOfHomeView>(
-        configureCell: { dataSource, tableView, indexPath, item in
-            guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: PostListCell.reuseIdentifier,
-                for: indexPath
-            ) as? PostListCell else { return UITableViewCell() }
-            
-            cell.configureCategoryLabel(id: 1)
-            cell.configureTitleLabelText(item.title)
-            cell.userNameLabel.text = item.userName
-            cell.viewsCountLabel.text = "\(item.viewCount)"
-            cell.likesCountLabel.text = "\(item.likeCount)"
-            cell.mainTextLabel.text = item.mainText
-            return cell
-        }
-    )
 }
 
 //MARK: Reactor
@@ -248,14 +250,15 @@ extension HomeViewController: View {
     }
 }
 
+// MARK: TableView Delegate
+
 extension HomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        
         guard let headerView = tableView.dequeueReusableHeaderFooterView(
             withIdentifier: HomeSectionHeaderView.reuseIdentifier
         ) as? HomeSectionHeaderView else { return UIView() }
         
-        let headerTitle = dataSource.sectionModels[section].header
+        let headerTitle = dataSource.sectionModels[section].sectionType.hederTitle
         headerView.setTitleLabel(headerTitle)
         
         return headerView
@@ -266,28 +269,30 @@ extension HomeViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        if dataSource.sectionModels[section].footer == true {
-            let footerView = HomeSectionFooterView()
-            return footerView
+        switch dataSource.sectionModels[section].sectionType {
+        case .popular:
+            return SeparatorStyleFooterView()
+            
+        case .interestCategory:
+            let suggestView = InterestSuggestFooterView()
+            suggestView.delegate = self
+            
+            return suggestView
         }
-        
-        if dataSource.sectionModels[section].isNeedLogin == true {
-            let footerView = InterestSuggestFooterView()
-            return footerView
-        }
-        
-        return nil
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        if dataSource.sectionModels[section].footer == true {
+        switch dataSource.sectionModels[section].sectionType {
+        case .popular:
             return 50
+            
+        case .interestCategory:
+            if coordinator?.checkIsLoggedin() == false
+            /*|| 선택된 카테고리가 없다면.. */ {
+                return 250
+            } else {
+                return 0
+            }
         }
-        
-        if dataSource.sectionModels[section].isNeedLogin == true {
-            return 250
-        }
-        
-        return 0
     }
 }
