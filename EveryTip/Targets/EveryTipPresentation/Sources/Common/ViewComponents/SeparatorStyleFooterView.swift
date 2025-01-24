@@ -10,15 +10,15 @@ import UIKit
 
 import SnapKit
 
-final class HomeSectionFooterView: UIView {
+final class SeparatorStyleFooterView: UITableViewHeaderFooterView {
     private let colorView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.et_lineGray20
         return view
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init(reuseIdentifier: String?) {
+        super.init(reuseIdentifier: reuseIdentifier)
         setupLayout()
         setupConstraints()
     }
