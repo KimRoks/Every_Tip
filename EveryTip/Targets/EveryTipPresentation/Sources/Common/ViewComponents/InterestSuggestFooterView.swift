@@ -12,8 +12,8 @@ import SnapKit
 
 final class InterestSuggestFooterView: UITableViewHeaderFooterView {
     
-    private let roundedBackgroundView: UIImageView = {
-        let view = UIImageView()
+    private let roundedBackgroundView: UIView = {
+        let view = UIView()
         view.layer.cornerRadius = 10
         view.backgroundColor = UIColor(hex: "#F6F6F6")
         
@@ -45,7 +45,7 @@ final class InterestSuggestFooterView: UITableViewHeaderFooterView {
         return label
     }()
 
-    let testStackView: UIStackView = {
+    private let categoryImageStackView: UIStackView = {
         let stackview = UIStackView()
         stackview.axis = .horizontal
         stackview.spacing = 20
@@ -82,7 +82,7 @@ final class InterestSuggestFooterView: UITableViewHeaderFooterView {
             let imageView = UIImageView()
             imageView.image = item.image
             
-            testStackView.addArrangedSubview(imageView)
+            categoryImageStackView.addArrangedSubview(imageView)
         }
     }
     
@@ -94,7 +94,7 @@ final class InterestSuggestFooterView: UITableViewHeaderFooterView {
         roundedBackgroundView.addSubViews(
             titleLabel,
             subTitleLabel,
-            testStackView,
+            categoryImageStackView,
             moveToSetInterestButton
         )
     }
@@ -117,13 +117,14 @@ final class InterestSuggestFooterView: UITableViewHeaderFooterView {
             $0.centerX.equalTo(roundedBackgroundView.snp.centerX)
         }
     
-        testStackView.snp.makeConstraints {
+        categoryImageStackView.snp.makeConstraints {
             $0.top.equalTo(subTitleLabel.snp.bottom).offset(20)
             $0.leading.equalTo(roundedBackgroundView).offset(27)
             $0.trailing.equalTo(roundedBackgroundView).offset(-27)
         }
         
         moveToSetInterestButton.snp.makeConstraints {
+            $0.top.equalTo(categoryImageStackView.snp.bottom).offset(20)
             $0.leading.trailing.equalTo(roundedBackgroundView).inset(18)
             $0.height.equalTo(roundedBackgroundView.snp.height).multipliedBy(0.21)
             $0.bottomMargin.equalTo(roundedBackgroundView.snp.bottom).offset(-18)
