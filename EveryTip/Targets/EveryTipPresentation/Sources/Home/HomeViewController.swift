@@ -296,3 +296,13 @@ extension HomeViewController: UITableViewDelegate {
         }
     }
 }
+
+// MARK: Button Delegate
+extension HomeViewController: FooterDelegate {
+    func buttonTapped() {
+        coordinator?.checkLoginBeforeAction(onLoggedIn: {
+            // TODO: 실제 코디네이터 동작 삽임 필요
+            print("coordinator.moveToSetCategoryView")
+        })
+    }
+}

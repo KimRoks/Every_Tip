@@ -10,7 +10,12 @@ import UIKit
 
 import SnapKit
 
+protocol FooterDelegate: AnyObject {
+    func buttonTapped()
+}
+
 final class InterestSuggestFooterView: UITableViewHeaderFooterView {
+    weak var delegate: FooterDelegate?
     
     private let roundedBackgroundView: UIView = {
         let view = UIView()
@@ -54,7 +59,7 @@ final class InterestSuggestFooterView: UITableViewHeaderFooterView {
         return stackview
     }()
 
-    let moveToSetInterestButton: UIButton = {
+    let interestsSetupButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("관심사 설정하러 가기", for: .normal)
         button.titleLabel?.font = UIFont.et_pretendard(style: .bold, size: 16)
@@ -70,10 +75,20 @@ final class InterestSuggestFooterView: UITableViewHeaderFooterView {
         setStackView()
         setupLayout()
         setupConstraints()
+        interestsSetupButton.addTarget(
+            self,
+            action: #selector(interestsSetupButtonTapped),
+            for: .touchUpInside
+        )
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc
+    private func interestsSetupButtonTapped() {
+        delegate?.buttonTapped()
     }
     
     private func setStackView() {
@@ -95,7 +110,7 @@ final class InterestSuggestFooterView: UITableViewHeaderFooterView {
             titleLabel,
             subTitleLabel,
             categoryImageStackView,
-            moveToSetInterestButton
+            interestsSetupButton
         )
     }
 
@@ -123,7 +138,7 @@ final class InterestSuggestFooterView: UITableViewHeaderFooterView {
             $0.trailing.equalTo(roundedBackgroundView).offset(-27)
         }
         
-        moveToSetInterestButton.snp.makeConstraints {
+        interestsSetupButton.snp.makeConstraints {
             $0.top.equalTo(categoryImageStackView.snp.bottom).offset(20)
             $0.leading.trailing.equalTo(roundedBackgroundView).inset(18)
             $0.height.equalTo(roundedBackgroundView.snp.height).multipliedBy(0.21)
