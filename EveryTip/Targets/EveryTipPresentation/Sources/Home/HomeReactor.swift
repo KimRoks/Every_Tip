@@ -5,13 +5,11 @@
 //  Created by 김경록 on 7/19/24.
 //  Copyright © 2024 EveryTip. All rights reserved.
 //
-
 import Foundation
 
 import EveryTipDomain
 
 import ReactorKit
-import RxDataSources
 import RxSwift
 
 class HomeReactor: Reactor {
@@ -21,23 +19,18 @@ class HomeReactor: Reactor {
     }
     
     enum Mutation {
-        //viewDidLoad 시
         case setPosts([Tip])
         case setError(Error)
-        
         case pushToItemView(Tip)
-        case setSections([HomeTableViewSection])
     }
     
     struct State {
         var posts: [Tip] = []
         var fetchError: Error?
         var selectedItem: Tip?
-        var postListSections: [HomeTableViewSection] = []
     }
     
     let initialState: State
-    
     private let postUseCase: PostListUseCase
     
     init(postUseCase: PostListUseCase) {
@@ -53,29 +46,14 @@ class HomeReactor: Reactor {
                 .map { posts in
                     let sortedTopThreeByLikeCount = Array(posts.sorted { $0.likeCount > $1.likeCount }.prefix(3))
                     
-                    // 로그인이 되어있지않았거나 선택된 카테고리가 없어 빈 배열을 받았다는 가정
-                    let empty: [Tip] = []
-                    
-                    let sections = [
-                        HomeTableViewSection(
-                            sectionType: .popular,
-                            items: sortedTopThreeByLikeCount
-                        ),
-                        HomeTableViewSection(
-                            sectionType: .interestCategory,
-                            items: empty
-                        )
-                    ]
-                    return [.setPosts(Array(sortedTopThreeByLikeCount)),
-                            .setSections(sections)]
+                    return Mutation.setPosts(sortedTopThreeByLikeCount)
                 }
                 .catch { error in
-                    Observable.just([.setError(error)])
+                    Observable.just(Mutation.setError(error))
                 }
-                .flatMap { Observable.from($0) }
-            
-            
+        
         case .itemSeleted(let indexPath):
+            guard indexPath.row < currentState.posts.count else { return .empty() }
             let tip = currentState.posts[indexPath.row]
             return .just(Mutation.pushToItemView(tip))
         }
@@ -93,8 +71,6 @@ class HomeReactor: Reactor {
             
         case .pushToItemView(let tip):
             newState.selectedItem = tip
-        case .setSections(let section):
-            newState.postListSections = section
         }
         
         return newState

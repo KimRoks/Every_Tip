@@ -243,8 +243,21 @@ extension HomeViewController: View {
             })
             .disposed(by: disposeBag)
         
-        reactor.state
-            .map { $0.postListSections }
+        reactor.state.map { $0.posts }
+            .map { posts in
+                // TODO: api 출시후 리액터 재정의 필요
+                let empty: [Tip] = []
+                return [
+                    HomeTableViewSection(
+                        sectionType: .popular,
+                        items: posts
+                    ),
+                    HomeTableViewSection(
+                        sectionType: .interestCategory,
+                        items: empty
+                    )
+                ]
+            }
             .bind(to: postListTableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
     }
