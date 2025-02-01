@@ -16,7 +16,7 @@ final class CategoryViewController: BaseViewController {
     
     weak var coordinator: CategoryViewCoordinator?
     
-    private let categories = Constants.Category.tableViewItems
+    private let categories = Constants.Category.allCategoriesItems
     
     private let bannerTitleLabel: UILabel = {
         let label = UILabel()

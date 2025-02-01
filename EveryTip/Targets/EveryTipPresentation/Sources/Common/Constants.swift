@@ -46,7 +46,8 @@ public struct Constants {
             case .sports:
                 return UIImage.et_getImage(for: .categoryIcon_sports)
             case .games:
-                return UIImage.et_getImage(for: .categoryIcon_games)            case .social:
+                return UIImage.et_getImage(for: .categoryIcon_games)
+            case .social:
                 return UIImage.et_getImage(for: .categoryIcon_social)
             }
         }
@@ -72,28 +73,7 @@ public struct Constants {
             }
         }
         
-        var color: UIColor {
-            switch self {
-            case .hobby:
-                return UIColor(red: 0.59, green: 0.74, blue: 0.35, alpha: 1.00)
-            case .it:
-                return UIColor(red: 0.31, green: 0.51, blue: 0.90, alpha: 1.00)
-            case .health:
-                return UIColor(red: 0.87, green: 0.39, blue: 0.36, alpha: 1.00)
-            case .finance:
-                return UIColor(red: 0.96, green: 0.79, blue: 0.52, alpha: 1.00)
-            case .entertainment:
-                return UIColor(red: 0.88, green: 0.53, blue: 0.66, alpha: 1.00)
-            case .sports:
-                return UIColor(red: 0.34, green: 0.40, blue: 0.53, alpha: 1.00)
-            case .games:
-                return UIColor(red: 0.67, green: 0.67, blue: 0.67, alpha: 1.00)
-            case .social:
-                return UIColor(red: 0.58, green: 0.54, blue: 0.69, alpha: 1.00)
-            }
-        }
-        
-        public static let tableViewItems: [Category] = Category.allCases
+        public static let allCategoriesItems: [Category] = Category.allCases
         
         public static let interestSuggestItems: [Category] = [.hobby, .it, .health, .finance, .entertainment, .games]
     }

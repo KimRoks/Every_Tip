@@ -66,10 +66,9 @@ final class CategoryCell: UITableViewCell, Reusable {
             $0.trailing.equalTo(contentView).offset(-10)
         }
     }
-
-    func configure(image: UIImage?, color: UIColor ,title: String) {
+    
+    func configure(image: UIImage?, title: String) {
         categoryImageView.image = image
-        categoryImageBackgroundView.backgroundColor = color
         categoryLabel.text = title
     }
 }
