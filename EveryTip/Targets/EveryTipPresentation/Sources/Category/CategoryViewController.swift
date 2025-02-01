@@ -107,13 +107,13 @@ final class CategoryViewController: BaseViewController {
     private func setupConstraints() {
         bannerTitleLabel.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(20)
-            $0.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
+            $0.leading.equalTo(view.safeAreaLayoutGuide).offset(20)
             $0.trailing.equalTo(bannerImageView.snp.leading)
         }
         
         bannerDescriptionLabel.snp.makeConstraints {
-            $0.top.equalTo(bannerTitleLabel.snp.bottom).offset(5)
-            $0.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
+            $0.top.equalTo(bannerTitleLabel.snp.bottom).offset(8)
+            $0.leading.equalTo(view.safeAreaLayoutGuide).offset(20)
             $0.trailing.equalTo(bannerImageView.snp.leading)
         }
         
@@ -126,7 +126,7 @@ final class CategoryViewController: BaseViewController {
         }
         
         tableViewBackGroundView.snp.makeConstraints {
-            $0.top.equalTo(bannerDescriptionLabel.snp.bottom).offset(20)
+            $0.top.equalTo(bannerDescriptionLabel.snp.bottom).offset(21)
             $0.leading.trailing.bottom.equalTo(view)
         }
         
