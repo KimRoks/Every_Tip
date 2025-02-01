@@ -109,6 +109,13 @@ final class PostListCell: UITableViewCell, Reusable {
         return label
     }()
     
+    private let separatorView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(hex: "#F1F1F1")
+        
+        return view
+    }()
+    
     // MARK: init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -163,75 +170,82 @@ final class PostListCell: UITableViewCell, Reusable {
             likesImage,
             likesCountLabel,
             thumnailImageView,
-            userNameLabel
+            userNameLabel,
+            separatorView
         )
     }
     
     private func setupConstraints() {
         categoryLabel.snp.makeConstraints {
-            $0.top.equalTo(contentView.snp.top).offset(10)
-            $0.leading.equalTo(contentView.snp.leading)
+            $0.top.equalTo(contentView.snp.top).offset(20)
+            $0.leading.equalTo(contentView.snp.leading).offset(20)
             $0.height.equalTo(18)
         }
         
         titleLabel.snp.makeConstraints {
-            $0.top.equalTo(contentView.snp.top).offset(10)
-            $0.leading.equalTo(contentView.snp.leading)
+            $0.top.equalTo(contentView.snp.top).offset(20)
+            $0.leading.equalTo(contentView.snp.leading).offset(20)
             $0.trailing.equalTo(thumnailImageView.snp.leading).offset(-20)
         }
         
         mainTextLabel.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(10)
-            $0.leading.equalTo(contentView.snp.leading)
+            $0.leading.equalTo(contentView.snp.leading).offset(20)
             $0.trailing.equalTo(thumnailImageView.snp.leading).offset(-10)
             $0.height.equalTo(40)
         }
         
         viewsImage.snp.makeConstraints {
-            $0.leading.equalTo(contentView.snp.leading)
-            $0.bottom.equalTo(contentView.snp.bottom).offset(-10)
+            $0.leading.equalTo(contentView.snp.leading).offset(20)
+            $0.bottom.equalTo(contentView.snp.bottom).offset(-15)
             $0.width.height.equalTo(14)
         }
         
         viewsCountLabel.snp.makeConstraints {
             $0.leading.equalTo(viewsImage.snp.trailing).offset(4)
-            $0.bottom.equalTo(contentView.snp.bottom).offset(-10)
+            $0.bottom.equalTo(contentView.snp.bottom).offset(-15)
         }
         
         commentsImage.snp.makeConstraints {
             $0.leading.equalTo(viewsCountLabel.snp.trailing).offset(8)
-            $0.bottom.equalTo(contentView.snp.bottom).offset(-10)
+            $0.bottom.equalTo(contentView.snp.bottom).offset(-15)
             $0.width.height.equalTo(14)
         }
         
         commentsCountLabel.snp.makeConstraints {
             $0.leading.equalTo(commentsImage.snp.trailing).offset(4)
-            $0.bottom.equalTo(contentView.snp.bottom).offset(-10)
+            $0.bottom.equalTo(contentView.snp.bottom).offset(-15)
         }
         
         likesImage.snp.makeConstraints {
             $0.leading.equalTo(commentsCountLabel.snp.trailing).offset(8)
-            $0.bottom.equalTo(contentView.snp.bottom).offset(-10)
+            $0.bottom.equalTo(contentView.snp.bottom).offset(-15)
             $0.width.equalTo(12)
             $0.height.equalTo(12)
         }
         
         likesCountLabel.snp.makeConstraints {
             $0.leading.equalTo(likesImage.snp.trailing).offset(4)
-            $0.bottom.equalTo(contentView.snp.bottom).offset(-10)
+            $0.bottom.equalTo(contentView.snp.bottom).offset(-15)
         }
     
         thumnailImageView.snp.makeConstraints{
-            $0.top.equalTo(contentView.snp.top).offset(10)
-            $0.trailing.equalTo(contentView.snp.trailing)
+            $0.top.equalTo(contentView.snp.top).offset(20)
+            $0.trailing.equalTo(contentView.snp.trailing).offset(-20)
             $0.height.equalTo(90)
             $0.width.equalTo(90)
         }
         
         userNameLabel.snp.makeConstraints {
             $0.top.greaterThanOrEqualTo(thumnailImageView.snp.bottom).offset(10)
-            $0.trailing.equalTo(contentView.snp.trailing)
-            $0.bottom.equalTo(contentView.snp.bottom).offset(-10)
+            $0.trailing.equalTo(contentView.snp.trailing).offset(-20)
+            $0.bottom.equalTo(contentView.snp.bottom).offset(-15)
+        }
+        
+        separatorView.snp.makeConstraints {
+            $0.bottom.equalTo(contentView.snp.bottom)
+            $0.leading.trailing.equalTo(contentView).inset(20)
+            $0.height.equalTo(1)
         }
     }
 }

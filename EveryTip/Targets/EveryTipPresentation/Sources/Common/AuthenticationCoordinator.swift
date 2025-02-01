@@ -17,6 +17,7 @@ protocol AuthenticationCoordinator: Coordinator {
     func pushToLoginView()
     // TODO: 고민해보고 분리해도 좋을듯
     func presentLoginRequiredAlert()
+    func checkIsLoggedin() -> Bool
 }
 
 extension AuthenticationCoordinator {
@@ -63,5 +64,10 @@ extension AuthenticationCoordinator {
             loginAlertController,
             animated: true
         )
+    }
+    
+    func checkIsLoggedin() -> Bool {
+        let isLoggedIn = TokenKeyChainManager.shared.isLoggedIn
+        return isLoggedIn ? true : false
     }
 }

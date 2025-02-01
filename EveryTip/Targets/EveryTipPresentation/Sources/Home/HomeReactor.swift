@@ -5,7 +5,6 @@
 //  Created by 김경록 on 7/19/24.
 //  Copyright © 2024 EveryTip. All rights reserved.
 //
-
 import Foundation
 
 import EveryTipDomain
@@ -20,10 +19,8 @@ class HomeReactor: Reactor {
     }
     
     enum Mutation {
-        //viewDidLoad 시
         case setPosts([Tip])
         case setError(Error)
-        
         case pushToItemView(Tip)
     }
     
@@ -34,7 +31,6 @@ class HomeReactor: Reactor {
     }
     
     let initialState: State
-    
     private let postUseCase: PostListUseCase
     
     init(postUseCase: PostListUseCase) {
@@ -47,12 +43,17 @@ class HomeReactor: Reactor {
         case .viewDidLoad:
             return postUseCase.fetchPosts()
                 .asObservable()
-                .map(Mutation.setPosts)
+                .map { posts in
+                    let sortedTopThreeByLikeCount = Array(posts.sorted { $0.likeCount > $1.likeCount }.prefix(3))
+                    
+                    return Mutation.setPosts(sortedTopThreeByLikeCount)
+                }
                 .catch { error in
                     Observable.just(Mutation.setError(error))
                 }
-            
+        
         case .itemSeleted(let indexPath):
+            guard indexPath.row < currentState.posts.count else { return .empty() }
             let tip = currentState.posts[indexPath.row]
             return .just(Mutation.pushToItemView(tip))
         }
@@ -75,4 +76,3 @@ class HomeReactor: Reactor {
         return newState
     }
 }
-
