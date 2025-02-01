@@ -97,6 +97,10 @@ final class InterestSuggestFooterView: UITableViewHeaderFooterView {
             let imageView = UIImageView()
             imageView.image = item.image
             
+            if [.it, .finance, .games].contains(item) {
+                imageView.alpha = 0.3
+            }
+            
             categoryImageStackView.addArrangedSubview(imageView)
         }
     }
