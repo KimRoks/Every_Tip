@@ -14,15 +14,8 @@ import SnapKit
 
 final class CategoryCell: UITableViewCell, Reusable {
 
-    private let categoryImageBackgroundView: UIView = {
-        let view = UIView()
-
-        return view
-    }()
-
     private let categoryImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.tintColor = .white
         imageView.contentMode = .scaleAspectFit
 
         return imageView
@@ -51,41 +44,31 @@ final class CategoryCell: UITableViewCell, Reusable {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func layoutSubviews() {
-        categoryImageBackgroundView.makeCircular()
-    }
-
     private func setupLayout() {
-        categoryImageBackgroundView.addSubview(categoryImageView)
-        contentView.addSubview(categoryImageBackgroundView)
-
-        contentView.addSubview(categoryLabel)
+        contentView.addSubViews(
+            categoryImageView,
+            categoryLabel
+        )
     }
 
     private func setupConstraints() {
-        categoryImageBackgroundView.snp.makeConstraints {
-            $0.top.equalTo(contentView).offset(15)
-            $0.leading.equalTo(contentView).offset(10)
-            $0.bottom.lessThanOrEqualTo(contentView).offset(-10)
-            $0.width.equalTo(contentView).multipliedBy(0.1)
-            $0.height.equalTo(categoryImageBackgroundView.snp.width)
-        }
-
         categoryImageView.snp.makeConstraints {
-            $0.edges.equalTo(categoryImageBackgroundView).inset(6)
+            $0.top.equalTo(contentView).offset(16)
+            $0.leading.equalTo(contentView).offset(20)
+            $0.bottom.equalTo(contentView).offset(-16)
+            $0.width.equalTo(contentView).multipliedBy(0.1)
         }
-
+        
         categoryLabel.snp.makeConstraints {
             $0.top.equalTo(contentView).offset(10)
             $0.bottom.equalTo(contentView).offset(-10)
-            $0.leading.equalTo(categoryImageBackgroundView.snp.trailing).offset(10)
+            $0.leading.equalTo(categoryImageView.snp.trailing).offset(11)
             $0.trailing.equalTo(contentView).offset(-10)
         }
     }
-
-    func configure(image: UIImage?, color: UIColor ,title: String) {
+    
+    func configure(image: UIImage?, title: String) {
         categoryImageView.image = image
-        categoryImageBackgroundView.backgroundColor = color
         categoryLabel.text = title
     }
 }

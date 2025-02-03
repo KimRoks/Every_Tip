@@ -16,7 +16,7 @@ final class CategoryViewController: BaseViewController {
     
     weak var coordinator: CategoryViewCoordinator?
     
-    private let categories = Constants.Category.tableViewItems
+    private let categories = Constants.Category.allCategoriesItems
     
     private let bannerTitleLabel: UILabel = {
         let label = UILabel()
@@ -78,6 +78,14 @@ final class CategoryViewController: BaseViewController {
     
     
     private func setupTableView() {
+        let separatorInset = UIEdgeInsets(
+            top: 0,
+            left: 20,
+            bottom: 0,
+            right: 20
+        )
+        categoryTableView.separatorInset = separatorInset
+        
         categoryTableView.register(
             CategoryCell.self,
             forCellReuseIdentifier: CategoryCell.reuseIdentifier
@@ -99,13 +107,13 @@ final class CategoryViewController: BaseViewController {
     private func setupConstraints() {
         bannerTitleLabel.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(20)
-            $0.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
+            $0.leading.equalTo(view.safeAreaLayoutGuide).offset(20)
             $0.trailing.equalTo(bannerImageView.snp.leading)
         }
         
         bannerDescriptionLabel.snp.makeConstraints {
-            $0.top.equalTo(bannerTitleLabel.snp.bottom).offset(5)
-            $0.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
+            $0.top.equalTo(bannerTitleLabel.snp.bottom).offset(8)
+            $0.leading.equalTo(view.safeAreaLayoutGuide).offset(20)
             $0.trailing.equalTo(bannerImageView.snp.leading)
         }
         
@@ -118,13 +126,14 @@ final class CategoryViewController: BaseViewController {
         }
         
         tableViewBackGroundView.snp.makeConstraints {
-            $0.top.equalTo(bannerDescriptionLabel.snp.bottom).offset(20)
-            $0.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
+            $0.top.equalTo(bannerDescriptionLabel.snp.bottom).offset(21)
+            $0.leading.trailing.bottom.equalTo(view)
         }
         
         categoryTableView.snp.makeConstraints {
-            $0.top.equalTo(tableViewBackGroundView.snp.top).offset(10)
-            $0.leading.trailing.equalTo(tableViewBackGroundView).inset(10)
+            $0.top.equalTo(tableViewBackGroundView.snp.top).offset(16)
+            $0.leading.equalTo(tableViewBackGroundView)
+            $0.trailing.equalTo(tableViewBackGroundView)
             $0.bottom.equalTo(tableViewBackGroundView.snp.bottom)
         }
     }
@@ -146,7 +155,6 @@ extension CategoryViewController: UITableViewDataSource {
         let category = categories[indexPath.row]
         cell.configure(
             image: category.image,
-            color: category.color,
             title: category.title
         )
         return cell
