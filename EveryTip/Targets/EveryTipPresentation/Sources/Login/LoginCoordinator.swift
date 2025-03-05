@@ -13,10 +13,10 @@ import Swinject
 
 protocol LoginCoordinator: Coordinator {
     func startAndReturnViewController() -> UIViewController
+    func pushToSignUpView()
 }
 
 final class DefaultLoginCoordinator: LoginCoordinator {
-   
     let container = Container.shared
     var parentCoordinator: (any Coordinator)?
     
@@ -35,7 +35,7 @@ final class DefaultLoginCoordinator: LoginCoordinator {
         let reactor = LoginReactor(loginUseCase: useCase)
         let loginViewController = LoginViewController(reactor: reactor)
         loginViewController.coordinator = self
-        
+
         navigationController.pushViewController(
             loginViewController,
             animated: true
@@ -50,6 +50,13 @@ final class DefaultLoginCoordinator: LoginCoordinator {
         let loginViewController = LoginViewController(reactor: reactor)
         loginViewController.coordinator = self
         return loginViewController
+    }
+    
+    func pushToSignUpView() {
+        let signUpCoordinator = DefaultSignUpCoordinator(navigationController: navigationController)
+        signUpCoordinator.parentCoordinator = self
+        self.append(child: signUpCoordinator)
+        signUpCoordinator.start()
     }
     
     func didFinish() {
