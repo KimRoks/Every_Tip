@@ -32,5 +32,10 @@ public struct DomainAssembly: Assembly {
         container.register(RequestTokenUseCase.self) { _ in
             DefaultRequestTokenUseCase(loginRepository: container.resolve(UserLoginRepository.self)!)
         }
+        
+        container.register(AuthUseCase.self) { _ in
+            DefaultAuthUseCase(
+                verificationCodeRepository: container.resolve(VerificationCodeRepository.self)!)
+        }
     }
 }
