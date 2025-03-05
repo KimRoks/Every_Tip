@@ -263,3 +263,170 @@ final class SignUpViewController: BaseViewController {
         }
     }
 }
+
+extension SignUpViewController: View {
+    func bind(reactor: SignUpReactor) {
+        bindInput(to: reactor)
+        bindOutput(to: reactor)
+    }
+    
+    func bindInput(to reactor: SignUpReactor) {
+        rx.viewDidLoad
+            .map { Reactor.Action.viewDidLoad }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        verifyButton.rx.tap
+            .map { [weak self] in
+                let emailInput = self?.emailTextFieldView.textField.text ?? ""
+                return Reactor.Action.verifyButtonTapped(email: emailInput)
+            }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        emailTextFieldView.action
+            .map { Reactor.Action.textFieldAction(type: .email, action: $0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        verificationCodeTextFieldView.action
+            .map { Reactor.Action.textFieldAction(type: .VerificationCode, action: $0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        // 최대 4글자로 제한
+        verificationCodeTextFieldView.textField.rx.text
+            .orEmpty
+            .map { String($0.prefix(4)) }
+            .bind(to: verificationCodeTextFieldView.textField.rx.text)
+            .disposed(by: disposeBag)
+        
+        passwordTextFieldView.action
+            .map { Reactor.Action.textFieldAction(
+                type: .password,
+                action: $0)
+            }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        confirmPasswordTextFieldView.action
+            .map { Reactor.Action.textFieldAction(
+                type: .confirmPassword,
+                action: $0)
+            }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        submitButton.rx.tap
+            .map { Reactor.Action.submitButtonTapped }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+    }
+    
+    func bindOutput(to reactor: SignUpReactor) {
+        reactor.state.map { $0.remainingTime }
+            .bind { [weak self] timerText in
+                
+                let minutes = timerText / 60
+                let seconds = timerText % 60
+                let timerString = String(format: "%d:%02d", minutes, seconds)
+                
+                self?.timerLabel.text = timerString
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.state.map { $0.isTimerHidden }
+            .bind { [weak self] bool in
+                self?.timerLabel.isHidden = bool
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .compactMap { $0.textFieldStatus[.email]?.status }
+            .distinctUntilChanged()
+            .bind { [weak self] status in
+                self?.emailTextFieldView.status.onNext(status)
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .compactMap { $0.textFieldStatus[.email]?.errorMessage }
+            .distinctUntilChanged()
+            .bind(to: self.emailTextFieldView.guideMessageLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .compactMap { $0.textFieldStatus[.VerificationCode]?.status }
+            .distinctUntilChanged()
+            .bind { [weak self] status in
+                self?.verificationCodeTextFieldView.status.onNext(status)
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .compactMap { $0.textFieldStatus[.VerificationCode]?.errorMessage }
+            .distinctUntilChanged()
+            .bind(to: self.verificationCodeTextFieldView.guideMessageLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .compactMap { $0.textFieldStatus[.password]?.status }
+            .distinctUntilChanged()
+            .bind { [weak self] status in
+                self?.passwordTextFieldView.status.onNext(status)
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .compactMap { $0.textFieldStatus[.password]?.errorMessage }
+            .distinctUntilChanged()
+            .bind(to: self.passwordTextFieldView.guideMessageLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .compactMap { $0.textFieldStatus[.confirmPassword]?.status }
+            .distinctUntilChanged()
+            .bind { [weak self] status in
+                self?.confirmPasswordTextFieldView.status.onNext(status)
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .compactMap { $0.textFieldStatus[.confirmPassword]?.errorMessage }
+            .distinctUntilChanged()
+            .bind(to: self.confirmPasswordTextFieldView.guideMessageLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.isVerificationCompletedLabelHidden }
+            .bind(to: verificationCompletedLabel.rx.isHidden)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.isSubmitButtonEnabled }
+            .distinctUntilChanged()
+            .bind(to: submitButton.rx.isEnabled)
+            .disposed(by: disposeBag)
+        
+        reactor.state.map {
+            $0.isSubmitButtonEnabled ? .et_brandColor2 : .et_textColor5
+        }
+        .bind(to: submitButton.rx.backgroundColor )
+        .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.checkEmailButtonState }
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] in
+                switch $0 {
+                case .beforeSending:
+                    self?.verifyButton.setTitle("인증하기", for: .normal)
+                case .afterSent:
+                    self?.verifyButton.setTitle("재전송", for: .normal)
+                case .afterVerified:
+                    self?.verifyButton.isHidden = true
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+}
