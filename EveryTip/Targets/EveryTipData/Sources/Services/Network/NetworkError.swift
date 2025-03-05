@@ -18,7 +18,8 @@ enum NetworkError: LocalizedError {
     case requestAdaptationError(Error)
     case requestRetryError(Error)
     case baseURLError
-    
+    case invalidEmail
+
     var errorDescription: String? {
         switch self {
         case .httpError(let code):
@@ -39,6 +40,8 @@ enum NetworkError: LocalizedError {
             return "요청 재시도 오류: \(error.localizedDescription)"
         case .baseURLError:
             return "plist에서 BaseURL을 가져오는데에 실패했어요"
+        case .invalidEmail:
+            return "사용 불가능하거나 형식이 잘못된 이메일이에요"
         }
     }
 }
