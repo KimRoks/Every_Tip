@@ -12,8 +12,9 @@ import Alamofire
 
 enum AuthTarget {
     case getAgreements
-    case postEmailCode(email: String)
+    case postRequestVerificationCode(email: String)
     case postUserLogin(email: String, password: String)
+    case getCheckVerificationCode(code: String)
 }
 
 extension AuthTarget: TargetType {
@@ -21,10 +22,12 @@ extension AuthTarget: TargetType {
         switch self {
         case .getAgreements:
                 .get
-        case .postEmailCode:
+        case .postRequestVerificationCode:
                 .post
         case .postUserLogin:
                 .post
+        case .getCheckVerificationCode:
+                .get
         }
     }
     
@@ -32,10 +35,12 @@ extension AuthTarget: TargetType {
         switch self {
         case .getAgreements:
             return "/auth/agreements"
-        case .postEmailCode:
+        case .postRequestVerificationCode:
             return "/auth/verification/email"
         case .postUserLogin:
             return "/auth/sign-in"
+        case .getCheckVerificationCode(let code):
+            return "/auth/verification?code=\(code)"
         }
     }
     
@@ -43,10 +48,12 @@ extension AuthTarget: TargetType {
         switch self {
         case .getAgreements:
             return nil
-        case .postEmailCode(let email):
+        case .postRequestVerificationCode(let email):
             return ["email": email]
         case .postUserLogin(email: let email, password: let password):
             return ["email": email, "password": password]
+        case .getCheckVerificationCode:
+           return nil
         }
     }
     
@@ -54,10 +61,12 @@ extension AuthTarget: TargetType {
         switch self {
         case .getAgreements:
             return nil
-        case .postEmailCode:
+        case .postRequestVerificationCode:
             return ["Content-Type": "application/json"]
         case .postUserLogin:
             return ["Content-Type": "application/json"]
+        case .getCheckVerificationCode:
+            return nil
         }
     }
 }
