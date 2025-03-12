@@ -16,3 +16,22 @@ public protocol AuthUseCase {
     func requestEmailCode(email: String) -> Single<VerificationCodeResponse>
     func checkEmailCode(code: String) -> Single<Data>
 }
+
+public final class DefaultAuthUseCase: AuthUseCase {
+    
+    private let verificationCodeRepository: VerificationCodeRepository
+    
+    init(
+        verificationCodeRepository: VerificationCodeRepository
+    ) {
+        self.verificationCodeRepository = verificationCodeRepository
+    }
+    
+    public func requestEmailCode(email: String) -> RxSwift.Single<VerificationCodeResponse> {
+        verificationCodeRepository.requestCode(with: email)
+    }
+    
+    public func checkEmailCode(code: String) -> RxSwift.Single<Data> {
+        verificationCodeRepository.checkCode(with: code)
+    }
+}
