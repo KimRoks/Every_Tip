@@ -13,8 +13,3 @@ import RxSwift
 public protocol AgreementsRepository {
     func fetchAgreements()
 }
-
-
-public protocol EmailRepository {
-    func requestEmailCode(with email: String)
-}
