@@ -11,6 +11,6 @@ import Foundation
 import RxSwift
 
 public protocol VerificationCodeRepository {
-    func requestCode(with email: String) -> Single<VerificationCodeResponse>
-    func checkCode(with code: String) -> Single<Data>
+    func requestCode(with email: String) -> Completable
+    func checkCode(with code: String) -> Completable
 }

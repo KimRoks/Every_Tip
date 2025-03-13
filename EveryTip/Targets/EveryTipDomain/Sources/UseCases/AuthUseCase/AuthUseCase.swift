@@ -13,8 +13,8 @@ import Foundation
 // TODO: 각 Auth관련 UseCase 통합
 
 public protocol AuthUseCase {
-    func requestEmailCode(email: String) -> Single<VerificationCodeResponse>
-    func checkEmailCode(code: String) -> Single<Data>
+    func requestEmailCode(email: String) -> Completable
+    func checkEmailCode(code: String) -> Completable
 }
 
 public final class DefaultAuthUseCase: AuthUseCase {
@@ -27,11 +27,11 @@ public final class DefaultAuthUseCase: AuthUseCase {
         self.verificationCodeRepository = verificationCodeRepository
     }
     
-    public func requestEmailCode(email: String) -> RxSwift.Single<VerificationCodeResponse> {
+    public func requestEmailCode(email: String) -> Completable {
         verificationCodeRepository.requestCode(with: email)
     }
     
-    public func checkEmailCode(code: String) -> RxSwift.Single<Data> {
+    public func checkEmailCode(code: String) -> Completable {
         verificationCodeRepository.checkCode(with: code)
     }
 }
