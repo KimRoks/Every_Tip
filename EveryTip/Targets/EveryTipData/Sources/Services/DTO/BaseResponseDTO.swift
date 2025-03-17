@@ -9,12 +9,10 @@
 import Foundation
 
 public struct BaseResponseDTO: Decodable {
-    public let statusCode: Int
     public let code: String?
     public let message: String
     
-    public init(statusCode: Int ,code: String? = nil, message: String) {
-        self.statusCode = statusCode
+    public init(code: String? = nil, message: String) {
         self.code = code
         self.message = message
     }
