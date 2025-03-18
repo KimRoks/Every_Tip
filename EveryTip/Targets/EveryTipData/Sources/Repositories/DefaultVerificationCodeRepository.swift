@@ -32,11 +32,9 @@ struct DefaultVerificationCodeRepository: VerificationCodeRepository {
                 .responseDecodable(of: BaseResponseDTO.self) { response in
                     switch response.result {
                     case .success(let result):
-                        // 통신 자체는 성공했으나 이메일 사용 불가등의 경우로 API가 Code를 Fail로 반환하는 경우를 처리
-                        if result.code == "FAIL" {
-                            completable(.error(NetworkError.invalidEmail))
+                        if result.code == "SUCCESS" {
+                            completable(.completed)
                         }
-                        completable(.completed)
                     case .failure(let error):
                         completable(.error(error))
                     }
