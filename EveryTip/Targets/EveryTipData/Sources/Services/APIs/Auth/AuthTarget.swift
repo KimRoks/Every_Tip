@@ -39,8 +39,8 @@ extension AuthTarget: TargetType {
             return "/auth/sign-in"
         case .postVerificationEmail:
             return "/auth/verification/email"
-        case .getCheckVerificationCode(let code):
-            return "/auth/verification?code=\(code)"
+        case .getCheckVerificationCode:
+            return "/auth/verification"
         }
     }
     
@@ -52,8 +52,8 @@ extension AuthTarget: TargetType {
             return ["email": email, "password": password]
         case .postVerificationEmail(email: let email):
             return ["email": email]
-        case .getCheckVerificationCode:
-            return nil
+        case .getCheckVerificationCode(let code):
+            return ["code": code]
         }
     }
     
