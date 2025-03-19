@@ -12,6 +12,8 @@ import EveryTipDomain
 
 import SnapKit
 
+// TODO: isHidden 될 뷰 묶고 SortedPostTableView만들기
+
 final class TestView: UIViewController {
     weak var coordinator: TestViewCoordinator?
     
