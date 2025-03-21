@@ -148,7 +148,7 @@ final class TestView: UIViewController {
         searchStyleNavigationView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
-            $0.height.equalTo(view.snp.height).multipliedBy(0.075)
+            $0.height.equalTo(60)
         }
         
         previousButton.snp.makeConstraints {
