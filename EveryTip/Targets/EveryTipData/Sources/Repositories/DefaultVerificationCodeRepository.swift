@@ -32,8 +32,10 @@ struct DefaultVerificationCodeRepository: VerificationCodeRepository {
                 .responseDecodable(of: BaseResponseDTO.self) { response in
                     switch response.result {
                     case .success(let result):
-                        if result.code == "SUCCESS" {
+                        if result.isSuccess() {
                             completable(.completed)
+                        } else {
+                            completable(.error(NetworkError.invalidEmail))
                         }
                     case .failure(let error):
                         completable(.error(error))
