@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct BaseResponseDTO: Decodable {
+public struct BaseResponseDTO: Decodable, CodeCheckable {
     public let code: String?
     public let message: String
     
