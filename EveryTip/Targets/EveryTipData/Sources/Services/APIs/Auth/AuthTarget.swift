@@ -12,8 +12,9 @@ import Alamofire
 
 enum AuthTarget {
     case getAgreements
-    case postEmailCode(email: String)
     case postUserLogin(email: String, password: String)
+    case postVerificationEmail(email: String)
+    case getCheckVerificationCode(code: String)
 }
 
 extension AuthTarget: TargetType {
@@ -21,10 +22,12 @@ extension AuthTarget: TargetType {
         switch self {
         case .getAgreements:
                 .get
-        case .postEmailCode:
-                .post
         case .postUserLogin:
                 .post
+        case .postVerificationEmail:
+                .post
+        case .getCheckVerificationCode:
+                .get
         }
     }
     
@@ -32,10 +35,12 @@ extension AuthTarget: TargetType {
         switch self {
         case .getAgreements:
             return "/auth/agreements"
-        case .postEmailCode:
-            return "/auth/verification/email"
         case .postUserLogin:
             return "/auth/sign-in"
+        case .postVerificationEmail:
+            return "/auth/verification/email"
+        case .getCheckVerificationCode:
+            return "/auth/verification"
         }
     }
     
@@ -43,10 +48,12 @@ extension AuthTarget: TargetType {
         switch self {
         case .getAgreements:
             return nil
-        case .postEmailCode(let email):
-            return ["email": email]
         case .postUserLogin(email: let email, password: let password):
             return ["email": email, "password": password]
+        case .postVerificationEmail(email: let email):
+            return ["email": email]
+        case .getCheckVerificationCode(let code):
+            return ["code": code]
         }
     }
     
@@ -54,10 +61,12 @@ extension AuthTarget: TargetType {
         switch self {
         case .getAgreements:
             return nil
-        case .postEmailCode:
-            return ["Content-Type": "application/json"]
         case .postUserLogin:
             return ["Content-Type": "application/json"]
+        case .postVerificationEmail:
+            return ["Content-Type": "application/json"]
+        case .getCheckVerificationCode:
+            return nil
         }
     }
 }
