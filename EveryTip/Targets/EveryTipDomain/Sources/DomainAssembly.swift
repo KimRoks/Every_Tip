@@ -32,7 +32,8 @@ public struct DomainAssembly: Assembly {
         container.register(AuthUseCase.self) { _ in
             DefaultAuthUseCase(
                 verificationCodeRepository: container.resolve(VerificationCodeRepository.self)!,
-                agreementsRepository: container.resolve(AgreementsRepository.self)!
+                agreementsRepository: container.resolve(AgreementsRepository.self)!,
+                accountRepository: container.resolve(AccountRepository.self)!
             )
         }
     }
