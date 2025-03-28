@@ -28,5 +28,13 @@ public struct DomainAssembly: Assembly {
                 accountRepository: container.resolve(AccountRepository.self)!
             )
         }
+        
+        container.register(UserUseCase.self) { _ in
+            DefaultUserUseCase(
+                profileRepository: container.resolve(ProfileRepository.self)!,
+                nickNameRepository: container.resolve(NickNameRepository.self)!,
+                categoryRepository: container.resolve(CategoryRepository.self)!
+            )
+        }
     }
 }
