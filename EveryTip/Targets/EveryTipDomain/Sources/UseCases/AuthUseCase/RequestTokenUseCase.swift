@@ -11,7 +11,7 @@ import Foundation
 import RxSwift
 
 public protocol RequestTokenUseCase {
-    func excute(email: String, password: String) -> Single<TokenResponse>
+    func excute(email: String, password: String) -> Single<AccountResponse>
 }
 
 final public class DefaultRequestTokenUseCase: RequestTokenUseCase {
@@ -21,7 +21,7 @@ final public class DefaultRequestTokenUseCase: RequestTokenUseCase {
         self.loginRepository = loginRepository
     }
     
-    public func excute(email: String, password: String) -> Single<TokenResponse> {
+    public func excute(email: String, password: String) -> Single<AccountResponse> {
         return loginRepository.login(with: email, password: password)
     }
 }

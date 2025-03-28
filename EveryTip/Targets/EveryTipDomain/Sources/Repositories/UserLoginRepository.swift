@@ -11,5 +11,5 @@ import Foundation
 import RxSwift
 
 public protocol UserLoginRepository {
-    func login(with email: String, password: String) -> Single<TokenResponse>
+    func login(with email: String, password: String) -> Single<AccountResponse>
 }
