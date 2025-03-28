@@ -25,17 +25,15 @@ public struct DomainAssembly: Assembly {
             DefaultUserInfoUseCase(userRepository: container.resolve(UserInfoRepository.self)!)
         }
         
-        container.register(AgreementUseCase.self) { _ in
-            DefaultAgreementUseCase(agreementsRepository: container.resolve(AgreementsRepository.self)!)
-        }
-        
         container.register(RequestTokenUseCase.self) { _ in
             DefaultRequestTokenUseCase(loginRepository: container.resolve(UserLoginRepository.self)!)
         }
         
         container.register(AuthUseCase.self) { _ in
             DefaultAuthUseCase(
-                verificationCodeRepository: container.resolve(VerificationCodeRepository.self)!)
+                verificationCodeRepository: container.resolve(VerificationCodeRepository.self)!,
+                agreementsRepository: container.resolve(AgreementsRepository.self)!
+            )
         }
     }
 }
