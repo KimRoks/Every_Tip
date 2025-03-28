@@ -16,6 +16,14 @@ public protocol AuthUseCase {
     func requestEmailCode(email: String) -> Completable
     func checkEmailCode(code: String) -> Completable
     func getAgreements() -> Single<Agreements>
+    func loginIn(email: String, password: String) -> Single<AccountResponse>
+    func signUp(
+        email: String,
+        passwrod: String,
+        agreementsIds: [Int],
+        nickName: String
+    ) -> Single<AccountResponse>
+    func checkEmailDuplication(for email: String) -> Completable
 }
 
 public final class DefaultAuthUseCase: AuthUseCase {
