@@ -20,10 +20,6 @@ public struct DomainAssembly: Assembly {
         container.register(PostListUseCase.self) { _ in
             return DefaultPostListUseCase(postRepository: container.resolve(PostRepository.self)!)
         }
-    
-        container.register(RequestTokenUseCase.self) { _ in
-            DefaultRequestTokenUseCase(loginRepository: container.resolve(UserLoginRepository.self)!)
-        }
         
         container.register(AuthUseCase.self) { _ in
             DefaultAuthUseCase(
