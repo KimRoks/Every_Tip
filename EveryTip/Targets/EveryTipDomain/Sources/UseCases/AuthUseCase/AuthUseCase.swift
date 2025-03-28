@@ -15,16 +15,20 @@ import Foundation
 public protocol AuthUseCase {
     func requestEmailCode(email: String) -> Completable
     func checkEmailCode(code: String) -> Completable
+    func getAgreements() -> Single<Agreements>
 }
 
 public final class DefaultAuthUseCase: AuthUseCase {
-    
     private let verificationCodeRepository: VerificationCodeRepository
     
+    private let agreementsRepository: AgreementsRepository
+    
     init(
-        verificationCodeRepository: VerificationCodeRepository
+        verificationCodeRepository: VerificationCodeRepository,
+        agreementsRepository: AgreementsRepository
     ) {
         self.verificationCodeRepository = verificationCodeRepository
+        self.agreementsRepository = agreementsRepository
     }
     
     public func requestEmailCode(email: String) -> Completable {
@@ -33,5 +37,9 @@ public final class DefaultAuthUseCase: AuthUseCase {
     
     public func checkEmailCode(code: String) -> Completable {
         verificationCodeRepository.checkCode(with: code)
+    }
+    
+    public func getAgreements() -> RxSwift.Single<Agreements> {
+        agreementsRepository.fetchAgreements()
     }
 }
