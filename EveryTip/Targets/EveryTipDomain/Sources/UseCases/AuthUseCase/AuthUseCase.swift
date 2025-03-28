@@ -28,15 +28,17 @@ public protocol AuthUseCase {
 
 public final class DefaultAuthUseCase: AuthUseCase {
     private let verificationCodeRepository: VerificationCodeRepository
-    
     private let agreementsRepository: AgreementsRepository
+    private let accountRepository: AccountRepository
     
     init(
         verificationCodeRepository: VerificationCodeRepository,
-        agreementsRepository: AgreementsRepository
+        agreementsRepository: AgreementsRepository,
+        accountRepository: AccountRepository
     ) {
         self.verificationCodeRepository = verificationCodeRepository
         self.agreementsRepository = agreementsRepository
+        self.accountRepository = accountRepository
     }
     
     public func requestEmailCode(email: String) -> Completable {
@@ -47,7 +49,29 @@ public final class DefaultAuthUseCase: AuthUseCase {
         verificationCodeRepository.checkCode(with: code)
     }
     
-    public func getAgreements() -> RxSwift.Single<Agreements> {
+    public func getAgreements() -> Single<Agreements> {
         agreementsRepository.fetchAgreements()
+    }
+    
+    public func loginIn(email: String, password: String) -> Single<AccountResponse> {
+        accountRepository.login(with: email, password: password)
+    }
+    
+    public func signUp(
+        email: String,
+        passwrod: String,
+        agreementsIds: [Int],
+        nickName: String
+    ) -> Single<AccountResponse> {
+        accountRepository.signUp(
+            with: email,
+            pasword: passwrod,
+            agreementIds: agreementsIds,
+            nickName: nickName
+        )
+    }
+    
+    public func checkEmailDuplication(for email: String) -> Completable {
+        accountRepository.checkEmailDuplication(email: email)
     }
 }
