@@ -8,16 +8,15 @@
 
 import Foundation
 
-// MARK: - DD
-public struct Agreements: Codable {
-    let status: Int
-    let code, message: String
-    let data: [Datum]
+public struct Agreements: Decodable {
+    public let code: String
+    public let message: String
+    public let data: [AgreementData]
 }
 
-// MARK: - Datum
-public struct Datum: Codable {
-    let id: Int
-    let title, url: String
-    let mandatory: Bool
+public struct AgreementData: Decodable {
+    public let id: Int
+    public let title: String
+    public let url: String
+    public let mandatory: Int
 }
