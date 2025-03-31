@@ -12,23 +12,31 @@ import RxSwift
 
 import EveryTipDomain
 
-public struct DefaultAgreementsRepository: AgreementsRepository  {
-    public func fetchAgreements() {
-        do {
-            let requset = try AuthTarget.getAgreements.asURLRequest()
+public struct DefaultAgreementsRepository: AgreementsRepository, SessionInjectable {
+    var session: Session?
     
-            AF.request(requset)
+    init(session: Session? = .default) {
+        self.session = session
+    }
+    
+    public func fetchAgreements() -> Single<[Agreements]> {
+        guard let request = try? AuthTarget.getAgreements.asURLRequest() else {
+            return Single.error(NetworkError.invalidURLError)
+        }
+        
+        return Single.create { single in
+            let task = self.session?.request(request, interceptor: nil)
                 .validate(statusCode: 200..<300)
-                .responseDecodable(of: EveryTipDomain.Agreements.self) { response in
-                    switch response.result {
+                .responseDecodable(of: AgreementsResponse.self) { respose in
+                    switch respose.result {
                     case .success(let agreements):
-                        print(agreements)
+                        let entity = agreements.data.map { $0.toDomain() }
+                        single(.success(entity))
                     case .failure(let error):
-                        print(NetworkError.sessionError(error))
+                        single(.failure(error))
                     }
                 }
-        } catch {
-            print(NetworkError.invalidURLError)
+            return Disposables.create { task?.cancel() }
         }
     }
 }
