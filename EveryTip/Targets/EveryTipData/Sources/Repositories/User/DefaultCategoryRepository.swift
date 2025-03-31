@@ -15,7 +15,7 @@ import EveryTipDomain
 
 struct DefaultCategoryRepository: CategoryRepository, SessionInjectable {
     var session: Session?
-    
+    private let interceptor: TokenInterceptor = TokenInterceptor()
     init(session: Session? = .default) {
         self.session = session
     }
@@ -28,7 +28,7 @@ struct DefaultCategoryRepository: CategoryRepository, SessionInjectable {
                 return Disposables.create()
             }
             
-            let task = self.session?.request(request, interceptor: TokenInterceptor())
+            let task = self.session?.request(request, interceptor: interceptor)
                 .validate(statusCode: 200..<300)
                 .responseDecodable(of: BaseResponseDTO.self) { response in
                     switch response.result {

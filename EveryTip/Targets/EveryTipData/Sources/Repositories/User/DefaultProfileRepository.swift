@@ -15,7 +15,8 @@ import RxSwift
 
 struct DefaultProfileRepository: ProfileRepository, SessionInjectable {
     var session: Session?
-    
+    private let interceptor: TokenInterceptor
+    = TokenInterceptor()
     init(session: Session? = .default) {
         self.session = session
     }
@@ -26,7 +27,7 @@ struct DefaultProfileRepository: ProfileRepository, SessionInjectable {
         }
         
         return Single.create { single in
-            let task = self.session?.request(request, interceptor: TokenInterceptor())
+            let task = self.session?.request(request, interceptor: interceptor)
                 .validate(statusCode: 200..<300)
                 .responseDecodable(of: MyProfileResponse.self) { response in
                     switch response.result {
@@ -47,7 +48,7 @@ struct DefaultProfileRepository: ProfileRepository, SessionInjectable {
         }
         
         return Single.create { single in
-            let task = self.session?.request(request, interceptor: TokenInterceptor())
+            let task = self.session?.request(request, interceptor: interceptor)
                 .validate(statusCode: 200..<300)
                 .responseDecodable(of: UserProfileResponse.self) { response in
                     switch response.result {
