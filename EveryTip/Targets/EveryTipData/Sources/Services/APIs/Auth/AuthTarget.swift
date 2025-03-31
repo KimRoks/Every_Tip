@@ -40,7 +40,7 @@ extension AuthTarget: TargetType {
                 .post
         case .getCheckEmailDuplication:
                 .get
-        case .patchUpdatePassword(email: let email, password: let password):
+        case .patchUpdatePassword:
                 .patch
         }
     }
@@ -59,7 +59,7 @@ extension AuthTarget: TargetType {
             return "/auth/sign-up"
         case .getCheckEmailDuplication:
             return "/auth/email-check"
-        case .patchUpdatePassword(email: let email, password: let password):
+        case .patchUpdatePassword:
             return "/auth/password"
         }
     }
@@ -107,7 +107,7 @@ extension AuthTarget: TargetType {
             return ["Content-Type": "application/json"]
         case .getCheckEmailDuplication:
             return ["Content-Type": "application/json"]
-        case .patchUpdatePassword(email: let email, password: let password):
+        case .patchUpdatePassword:
             return ["Content-Type": "application/json"]
         }
     }
