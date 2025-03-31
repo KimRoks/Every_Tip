@@ -14,9 +14,9 @@ import Alamofire
 import RxSwift
 
 struct DefaultNickNameRepository: NickNameRepository, SessionInjectable {
-    var session: Alamofire.Session?
+    var session: Session?
     
-    init(session: Alamofire.Session? = .default) {
+    init(session: Session? = .default) {
         self.session = session
     }
     
