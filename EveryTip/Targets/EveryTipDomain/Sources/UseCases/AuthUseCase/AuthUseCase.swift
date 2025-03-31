@@ -16,13 +16,13 @@ public protocol AuthUseCase {
     func requestEmailCode(email: String) -> Completable
     func checkEmailCode(code: String) -> Completable
     func getAgreements() -> Single<[Agreements]>
-    func loginIn(email: String, password: String) -> Single<AccountResponse>
+    func loginIn(email: String, password: String) -> Single<Account>
     func signUp(
         email: String,
         passwrod: String,
         agreementsIds: [Int],
         nickName: String
-    ) -> Single<AccountResponse>
+    ) -> Single<Account>
     func checkEmailDuplication(for email: String) -> Completable
 }
 
@@ -53,7 +53,7 @@ public final class DefaultAuthUseCase: AuthUseCase {
         agreementsRepository.fetchAgreements()
     }
     
-    public func loginIn(email: String, password: String) -> Single<AccountResponse> {
+    public func loginIn(email: String, password: String) -> Single<Account> {
         accountRepository.login(with: email, password: password)
     }
     
@@ -62,7 +62,7 @@ public final class DefaultAuthUseCase: AuthUseCase {
         passwrod: String,
         agreementsIds: [Int],
         nickName: String
-    ) -> Single<AccountResponse> {
+    ) -> Single<Account> {
         accountRepository.signUp(
             with: email,
             pasword: passwrod,
