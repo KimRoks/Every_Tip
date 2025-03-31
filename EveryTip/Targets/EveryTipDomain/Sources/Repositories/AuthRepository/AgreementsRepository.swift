@@ -11,5 +11,5 @@ import Foundation
 import RxSwift
 
 public protocol AgreementsRepository {
-    func fetchAgreements() -> Single<Agreements>
+    func fetchAgreements() -> Single<[Agreements]>
 }

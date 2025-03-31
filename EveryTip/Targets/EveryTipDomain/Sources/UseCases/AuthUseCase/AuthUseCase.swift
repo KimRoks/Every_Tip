@@ -15,7 +15,7 @@ import Foundation
 public protocol AuthUseCase {
     func requestEmailCode(email: String) -> Completable
     func checkEmailCode(code: String) -> Completable
-    func getAgreements() -> Single<Agreements>
+    func getAgreements() -> Single<[Agreements]>
     func loginIn(email: String, password: String) -> Single<AccountResponse>
     func signUp(
         email: String,
@@ -49,7 +49,7 @@ public final class DefaultAuthUseCase: AuthUseCase {
         verificationCodeRepository.checkCode(with: code)
     }
     
-    public func getAgreements() -> Single<Agreements> {
+    public func getAgreements() -> Single<[Agreements]> {
         agreementsRepository.fetchAgreements()
     }
     
