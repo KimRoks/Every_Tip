@@ -11,7 +11,7 @@ import Foundation
 import RxSwift
 
 public protocol UserUseCase {
-    func createRamdomNickName() -> Single<String>
+    func fetchRamdomNickName() -> Single<String>
     func configureTipCategory(categoryIds: [Int]) -> Completable
     func fetchMyProfile() -> Single<User>
     func fetchUserProfile(for userID: Int) -> Single<User>
@@ -32,8 +32,8 @@ final class DefaultUserUseCase: UserUseCase {
         self.categoryRepository = categoryRepository
     }
     
-    public func createRamdomNickName() -> Single<String> {
-        nickNameRepository.createRandomNickName()
+    public func fetchRamdomNickName() -> Single<String> {
+        nickNameRepository.fetchRandomNickName()
     }
     
     public func configureTipCategory(categoryIds: [Int]) -> Completable {

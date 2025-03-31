@@ -11,5 +11,5 @@ import Foundation
 import RxSwift
 
 public protocol NickNameRepository {
-    func createRandomNickName() -> Single<String>
+    func fetchRandomNickName() -> Single<String>
 }
