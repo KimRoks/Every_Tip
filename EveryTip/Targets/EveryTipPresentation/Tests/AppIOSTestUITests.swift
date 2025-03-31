@@ -32,12 +32,12 @@ final class LoginViewTests: XCTestCase {
 }
 
 class MockLoginUseCase: RequestTokenUseCase {
-    func excute(email: String, password: String) -> RxSwift.Single<EveryTipDomain.TokenResponse> {
-        let mockToken = TokenResponse(
+    func excute(email: String, password: String) -> RxSwift.Single<EveryTipDomain.AccountResponse> {
+        let mockToken = AccountResponse(
             statusCode: 200,
             code: "SUCCESS",
             message: "Login successful",
-            data: TokenData(
+            data: AccountData(
                 id: 1,
                 email: email,
                 nickName: "MockUser",

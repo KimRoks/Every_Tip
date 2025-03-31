@@ -9,44 +9,42 @@
 import Foundation
 
 public struct User: Decodable {
-    public init(
-        userName: String,
-        profileImage: String,
-        userStatistics: UserStatistics
-    ) {
-        self.userName = userName
-        self.profileImage = profileImage
-        self.userStatistics = userStatistics
-    }
-    
-    public let userName: String
-    public let profileImage: String
-    public let userStatistics: UserStatistics
+    public let code: String
+    public let message: String
+    public let data: UserData
 }
 
-public struct UserStatistics: Decodable {
+public struct UserData: Decodable {
+    public let isLogined: Bool?
+    public let userProfile: UserProfile
     
-    public init(
-        id: String,
-        subscribersCount: Int,
-        postedTipCount: Int,
-        savedTipCount: Int,
-        postedTip: [Tip],
-        savedTip: [Tip]
-    ) {
-        self.id = id
-        self.subscribersCount = subscribersCount
-        self.postedTipCount = postedTipCount
-        self.savedTipCount = savedTipCount
-        self.postedTip = postedTip
-        self.savedTip = savedTip
+    enum CodingKeys: String, CodingKey {
+        case isLogined = "is_logined"
+        case userProfile = "user_profile"
     }
+}
+
+public struct UserProfile: Decodable, Identifiable {
+    public let id: Int
+    public let status: Int
+    public let nickName: String
+    public let profileImage: Data?
+    public let email: String
+    public let registeredDate: String
+    public let tipCount: Int
+    public let subscriberCount: Int
+    public let isMyProfile: Bool?
+    public let isFollowing: Bool?
     
-    public let id: String
-    public let subscribersCount: Int
-    public let postedTipCount: Int
-    public let savedTipCount: Int
-    
-    public let postedTip: [Tip]
-    public let savedTip: [Tip]
+    enum CodingKeys: String, CodingKey {
+        case id, status
+        case nickName = "nick_name"
+        case profileImage = "profile_image"
+        case email
+        case registeredDate = "registered_date"
+        case tipCount = "tip_count"
+        case subscriberCount = "subscriber_count"
+        case isMyProfile = "is_my_profile"
+        case isFollowing = "is_following"
+    }
 }

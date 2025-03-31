@@ -21,21 +21,20 @@ public struct DomainAssembly: Assembly {
             return DefaultPostListUseCase(postRepository: container.resolve(PostRepository.self)!)
         }
         
-        container.register(UserInfoUseCase.self) { _ in
-            DefaultUserInfoUseCase(userRepository: container.resolve(UserInfoRepository.self)!)
-        }
-        
-        container.register(AgreementUseCase.self) { _ in
-            DefaultAgreementUseCase(agreementsRepository: container.resolve(AgreementsRepository.self)!)
-        }
-        
-        container.register(RequestTokenUseCase.self) { _ in
-            DefaultRequestTokenUseCase(loginRepository: container.resolve(UserLoginRepository.self)!)
-        }
-        
         container.register(AuthUseCase.self) { _ in
             DefaultAuthUseCase(
-                verificationCodeRepository: container.resolve(VerificationCodeRepository.self)!)
+                verificationCodeRepository: container.resolve(VerificationCodeRepository.self)!,
+                agreementsRepository: container.resolve(AgreementsRepository.self)!,
+                accountRepository: container.resolve(AccountRepository.self)!
+            )
+        }
+        
+        container.register(UserUseCase.self) { _ in
+            DefaultUserUseCase(
+                profileRepository: container.resolve(ProfileRepository.self)!,
+                nickNameRepository: container.resolve(NickNameRepository.self)!,
+                categoryRepository: container.resolve(CategoryRepository.self)!
+            )
         }
     }
 }

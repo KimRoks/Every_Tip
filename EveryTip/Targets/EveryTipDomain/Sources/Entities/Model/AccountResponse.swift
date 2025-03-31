@@ -1,5 +1,5 @@
 //
-//  Token.swift
+//  AccountResponse.swift
 //  EveryTipDomain
 //
 //  Created by 김경록 on 10/28/24.
@@ -8,17 +8,17 @@
 
 import Foundation
 
-public struct TokenResponse: Decodable {
+public struct AccountResponse: Decodable {
     public let statusCode: Int
     public let code: String
     public let message: String
-    public let data: TokenData
+    public let data: AccountData
 }
 
-public struct TokenData: Decodable {
+public struct AccountData: Decodable, Identifiable {
     public let id: Int
-    public let email: String
-    public let nickName: String
+    public let email: String?
+    public let nickName: String?
     public let accessToken: String
     public let refreshToken: String
     
