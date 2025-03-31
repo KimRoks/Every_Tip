@@ -11,6 +11,6 @@ import Foundation
 import RxSwift
 
 public protocol ProfileRepository {
-    func fetchMyProfile() -> Single<User>
-    func fetchUserProfile(userID: Int) -> Single<User>
+    func fetchMyProfile() -> Single<MyProfile>
+    func fetchUserProfile(userID: Int) -> Single<UserProfile>
 }
