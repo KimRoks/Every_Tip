@@ -11,7 +11,6 @@ import Foundation
 import EveryTipDomain
 
 public struct AccountResponse: Decodable {
-    public let statusCode: Int
     public let code: String
     public let message: String
     public let data: AccountDTO

@@ -9,8 +9,9 @@
 import Foundation
 
 struct RandomNickNameDTO: Decodable {
-    let status: Int
-    let code, message, data: String
+    let code: String
+    let message: String
+    let data: String
 }
 
 extension RandomNickNameDTO {

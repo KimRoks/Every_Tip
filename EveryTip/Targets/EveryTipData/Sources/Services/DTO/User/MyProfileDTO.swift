@@ -10,10 +10,11 @@ import Foundation
 import EveryTipDomain
 
 struct MyProfileResponse: Decodable {
-    let code, message: String
+    let code:String
+    let message: String
     let data: MyProfileDTO
 }
-
+s
 struct MyProfileDTO: Decodable {
     let id, status: Int
     let nickName: String
