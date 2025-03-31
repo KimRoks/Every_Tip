@@ -35,5 +35,17 @@ public struct DataAssembly: Assembly {
         container.register(VerificationCodeRepository.self) { _ in
             return DefaultVerificationCodeRepository()
         }
+        
+        container.register(NickNameRepository.self) { _ in
+            return DefaultNickNameRepository()
+        }
+        
+        container.register(CategoryRepository.self) { _ in
+            return DefaultCategoryRepository()
+        }
+        
+        container.register(ProfileRepository.self) { _ in
+            return DefaultProfileRepository()
+        }
     }
 }
