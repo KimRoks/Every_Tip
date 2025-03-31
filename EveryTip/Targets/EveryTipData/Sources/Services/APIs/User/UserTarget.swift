@@ -12,7 +12,7 @@ enum UserTarget {
     case getRandomNickName
     case postSetCategory(categoryIDs: [Int])
     case getMyProfile
-    case getUserProfile
+    case getUserProfile(userID: Int)
 }
 
 extension UserTarget: TargetType {
@@ -37,8 +37,8 @@ extension UserTarget: TargetType {
             return "/user/main-category"
         case .getMyProfile:
             return "/user/my-profile"
-        case .getUserProfile:
-            return "/user"
+        case .getUserProfile(userID: let userID):
+            return "/user/\(userID)"
         }
     }
     
