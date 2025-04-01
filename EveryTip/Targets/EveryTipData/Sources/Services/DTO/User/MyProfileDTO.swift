@@ -14,7 +14,7 @@ struct MyProfileResponse: Decodable {
     let message: String
     let data: MyProfileDTO
 }
-s
+
 struct MyProfileDTO: Decodable {
     let id, status: Int
     let nickName: String
