@@ -25,7 +25,7 @@ public struct AgreementsDTO: Decodable {
                 id: id,
                 title: title,
                 webLinkURL: webLinkURL,
-                mandatory: mandatory
+                mandatory: mandatory == 1
             )
         }
     }

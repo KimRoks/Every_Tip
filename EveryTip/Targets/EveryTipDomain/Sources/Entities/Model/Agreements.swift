@@ -12,13 +12,13 @@ public struct Agreements: Identifiable {
     public let id: Int
     public let title: String
     public let webLinkURL: String
-    public let mandatory: Int
+    public let mandatory: Bool
     
     public init(
         id: Int,
         title: String,
         webLinkURL: String,
-        mandatory: Int
+        mandatory: Bool
     ) {
         self.id = id
         self.title = title
