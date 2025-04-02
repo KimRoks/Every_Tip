@@ -27,10 +27,10 @@ struct DefaultNickNameRepository: NickNameRepository, SessionInjectable {
         return Single.create { single in
             let task = self.session?.request(request, interceptor: nil)
                 .validate(statusCode: 200..<300)
-                .responseDecodable(of: RandomNickNameDTO.self) { response in
+                .responseDecodable(of: RandomNickNameResponse.self) { response in
                     switch response.result {
                     case .success(let result):
-                        let nickName = result.data
+                        guard let nickName = result.data else { return }
                         single(.success(nickName))
                     case .failure(let error):
                         single(.failure(error))

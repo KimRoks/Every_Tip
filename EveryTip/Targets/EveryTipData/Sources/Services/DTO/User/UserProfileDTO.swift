@@ -13,12 +13,12 @@ import EveryTipDomain
 struct UserProfileResponse: Decodable {
     let code: String
     let message: String
-    let data: UserProfileData
+    let data: UserProfileData?
 }
 
 struct UserProfileData: Decodable {
     let isLogined: Bool
-    let userProfile: UserProfileDTO
+    let userProfile: UserProfileDTO?
 
     enum CodingKeys: String, CodingKey {
         case isLogined = "is_logined"
@@ -52,7 +52,7 @@ struct UserProfileDTO: Decodable {
 }
 
 extension UserProfileDTO {
-    func toDomain() -> UserProfile {
+    func toDomain() -> UserProfile? {
         UserProfile(
             id: id,
             status: status,

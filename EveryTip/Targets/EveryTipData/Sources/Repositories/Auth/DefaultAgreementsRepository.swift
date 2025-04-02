@@ -30,7 +30,7 @@ public struct DefaultAgreementsRepository: AgreementsRepository, SessionInjectab
                 .responseDecodable(of: AgreementsResponse.self) { respose in
                     switch respose.result {
                     case .success(let agreements):
-                        let entity = agreements.data.map { $0.toDomain() }
+                        let entity = (agreements.data ?? []).compactMap { $0.toDomain() }
                         single(.success(entity))
                     case .failure(let error):
                         single(.failure(error))

@@ -32,7 +32,7 @@ struct DefaultProfileRepository: ProfileRepository, SessionInjectable {
                 .responseDecodable(of: MyProfileResponse.self) { response in
                     switch response.result {
                     case .success(let result):
-                        let myProfile = result.data.toDomain()
+                        guard let myProfile = result.data?.toDomain() else { return }
                         return single(.success(myProfile))
                     case .failure(let error):
                         return single(.failure(error))
@@ -53,7 +53,7 @@ struct DefaultProfileRepository: ProfileRepository, SessionInjectable {
                 .responseDecodable(of: UserProfileResponse.self) { response in
                     switch response.result {
                     case .success(let result):
-                        let userProfile = result.data.userProfile.toDomain()
+                        guard let userProfile = result.data?.userProfile?.toDomain() else { return }
                         return single(.success(userProfile))
                     case .failure(let error):
                         return single(.failure(error))

@@ -13,7 +13,7 @@ import EveryTipDomain
 public struct AgreementsResponse: Decodable {
     public let code: String
     public let message: String
-    public let data: [AgreementDTO]
+    public let data: [AgreementDTO]?
 }
 
 public struct AgreementDTO: Decodable {
@@ -24,7 +24,7 @@ public struct AgreementDTO: Decodable {
 }
 
 extension AgreementDTO {
-    func toDomain() -> Agreements {
+    func toDomain() -> Agreements? {
         return Agreements(
             id: id,
             title: title,

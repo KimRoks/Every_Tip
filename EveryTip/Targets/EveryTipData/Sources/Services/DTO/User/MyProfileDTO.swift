@@ -12,7 +12,7 @@ import EveryTipDomain
 struct MyProfileResponse: Decodable {
     let code: String
     let message: String
-    let data: MyProfileDTO
+    let data: MyProfileDTO?
 }
 
 struct MyProfileDTO: Decodable {

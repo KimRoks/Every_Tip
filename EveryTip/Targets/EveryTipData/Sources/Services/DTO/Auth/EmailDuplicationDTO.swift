@@ -11,7 +11,7 @@ import Foundation
 public struct EmailDuplicationResponse: Decodable {
     public let code: String
     public let message: String
-    public let data: EmailDuplicationDTO
+    public let data: EmailDuplicationDTO?
 }
 
 public struct EmailDuplicationDTO: Decodable {
