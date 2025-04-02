@@ -19,7 +19,7 @@ public struct AgreementsResponse: Decodable {
 public struct AgreementDTO: Decodable {
     public let id: Int
     public let title: String
-    public let url: String
+    public let webLinkURL: String
     public let mandatory: Int
 }
 
@@ -28,7 +28,7 @@ extension AgreementDTO {
         return Agreements(
             id: id,
             title: title,
-            url: url,
+            webLinkURL: webLinkURL,
             mandatory: mandatory
         )
     }

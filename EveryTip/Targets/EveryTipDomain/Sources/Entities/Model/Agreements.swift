@@ -11,18 +11,18 @@ import Foundation
 public struct Agreements: Identifiable {
     public let id: Int
     public let title: String
-    public let url: String
+    public let webLinkURL: String
     public let mandatory: Int
     
     public init(
         id: Int,
         title: String,
-        url: String,
+        webLinkURL: String,
         mandatory: Int
     ) {
         self.id = id
         self.title = title
-        self.url = url
+        self.webLinkURL = webLinkURL
         self.mandatory = mandatory
     }
 }
