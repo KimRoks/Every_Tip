@@ -23,13 +23,13 @@ struct DefaultAccountRepository: AccountRepository, SessionInjectable{
     func signUp(
         with email: String,
         pasword: String,
-        agreementIds: [Int],
+        agreementIDs agreementIDs: [Int],
         nickName: String
     ) -> Single<Account> {
         guard let request = try? AuthTarget.postSignUp(
             email: email,
             password: pasword,
-            agreementsIDs: agreementIds,
+            agreementsIDs: agreementIDs,
             nickName: nickName
         ).asURLRequest() else { return Single.error(NetworkError.invalidURLError) }
         

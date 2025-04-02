@@ -37,7 +37,7 @@ final class DefaultUserUseCase: UserUseCase {
     }
     
     public func configureTipCategory(categoryIds: [Int]) -> Completable {
-        categoryRepository.setCategory(categoryIds: categoryIds)
+        categoryRepository.setCategory(categoryIDs: categoryIds)
     }
     
     public func fetchMyProfile() -> Single<MyProfile> {

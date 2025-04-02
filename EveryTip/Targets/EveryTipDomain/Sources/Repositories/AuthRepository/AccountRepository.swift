@@ -16,7 +16,7 @@ public protocol AccountRepository {
     func signUp(
         with email: String,
         pasword: String,
-        agreementIds: [Int],
+        agreementIDs: [Int],
         nickName: String
     ) -> Single<Account>
     func checkEmailDuplication(email: String) -> Completable

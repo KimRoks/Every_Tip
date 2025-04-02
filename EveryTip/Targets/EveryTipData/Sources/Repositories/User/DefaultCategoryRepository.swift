@@ -21,9 +21,9 @@ struct DefaultCategoryRepository: CategoryRepository, SessionInjectable {
     }
     
     // TODO: API 완성되면 다듬기
-    func setCategory(categoryIds: [Int]) -> Completable {
+    func setCategory(categoryIDs: [Int]) -> Completable {
         return Completable.create { completable in
-            guard let request = try? UserTarget.postSetCategory(categoryIDs: categoryIds).asURLRequest() else {
+            guard let request = try? UserTarget.postSetCategory(categoryIDs: categoryIDs).asURLRequest() else {
                 completable(.error(NetworkError.invalidURLError))
                 return Disposables.create()
             }

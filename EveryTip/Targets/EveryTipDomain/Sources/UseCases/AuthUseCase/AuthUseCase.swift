@@ -20,7 +20,7 @@ public protocol AuthUseCase {
     func signUp(
         email: String,
         passwrod: String,
-        agreementsIds: [Int],
+        agreementsIDs: [Int],
         nickName: String
     ) -> Single<Account>
     func checkEmailDuplication(for email: String) -> Completable
@@ -60,13 +60,13 @@ public final class DefaultAuthUseCase: AuthUseCase {
     public func signUp(
         email: String,
         passwrod: String,
-        agreementsIds: [Int],
+        agreementsIDs agreementsIds: [Int],
         nickName: String
     ) -> Single<Account> {
         accountRepository.signUp(
             with: email,
             pasword: passwrod,
-            agreementIds: agreementsIds,
+            agreementIDs: agreementsIds,
             nickName: nickName
         )
     }
