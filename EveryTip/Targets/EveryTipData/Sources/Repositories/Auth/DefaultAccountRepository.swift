@@ -61,12 +61,12 @@ struct DefaultAccountRepository: AccountRepository, SessionInjectable{
                 .responseDecodable(of: EmailDuplicationDTO.self) { response in
                     switch response.result {
                     case .success(let result):
-                        if let isChecked = result.data?.check {
+                        guard let isChecked = result.data?.check else { return }
+                        if isChecked {
                             return completable(.completed)
                         } else {
                             return completable(.error(NetworkError.invalidEmail))
                         }
-                        
                     case .failure(let error):
                         completable(.error(error))
                     }
