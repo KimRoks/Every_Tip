@@ -9,36 +9,33 @@
 import Foundation
 
 import EveryTipDomain
-
-public struct AccountResponse: Decodable {
+public struct AccountDTO: Decodable {
     public let code: String
     public let message: String
-    public let data: AccountDTO?
-}
-
-public struct AccountDTO: Decodable {
-    public let id: Int
-    public let email: String?
-    public let nickName: String?
-    public let accessToken: String
-    public let refreshToken: String
+    public let data: Data?
     
-    enum CodingKeys: String, CodingKey {
-        case id, email
-        case nickName = "nick_name"
-        case accessToken = "access_token"
-        case refreshToken = "refresh_token"
-    }
-}
-
-extension AccountDTO {
-    func toDomain() -> Account {
-        return Account(
-            id: id,
-            email: email,
-            nickName: nickName,
-            accessToken: accessToken,
-            refreshToken: refreshToken
-        )
+    public struct Data: Decodable {
+        public let id: Int
+        public let email: String?
+        public let nickName: String?
+        public let accessToken: String
+        public let refreshToken: String
+        
+        enum CodingKeys: String, CodingKey {
+            case id, email
+            case nickName = "nick_name"
+            case accessToken = "access_token"
+            case refreshToken = "refresh_token"
+        }
+        
+        func toDomain() -> Account {
+            return Account(
+                id: id,
+                email: email,
+                nickName: nickName,
+                accessToken: accessToken,
+                refreshToken: refreshToken
+            )
+        }
     }
 }

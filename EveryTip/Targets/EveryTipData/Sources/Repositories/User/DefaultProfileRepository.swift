@@ -29,7 +29,7 @@ struct DefaultProfileRepository: ProfileRepository, SessionInjectable {
         return Single.create { single in
             let task = self.session?.request(request, interceptor: interceptor)
                 .validate(statusCode: 200..<300)
-                .responseDecodable(of: MyProfileResponse.self) { response in
+                .responseDecodable(of: MyProfileDTO.self) { response in
                     switch response.result {
                     case .success(let result):
                         guard let myProfile = result.data?.toDomain() else { return }
@@ -50,10 +50,10 @@ struct DefaultProfileRepository: ProfileRepository, SessionInjectable {
         return Single.create { single in
             let task = self.session?.request(request, interceptor: interceptor)
                 .validate(statusCode: 200..<300)
-                .responseDecodable(of: UserProfileResponse.self) { response in
+                .responseDecodable(of: UserProfileDTO.self) { response in
                     switch response.result {
-                    case .success(let result):
-                        guard let userProfile = result.data?.userProfile?.toDomain() else { return }
+                    case .success(let userProfileDTO):
+                        guard let userProfile = userProfileDTO.data?.userProfile?.toDomain() else { return }
                         return single(.success(userProfile))
                     case .failure(let error):
                         return single(.failure(error))

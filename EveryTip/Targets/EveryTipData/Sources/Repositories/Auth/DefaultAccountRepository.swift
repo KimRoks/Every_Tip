@@ -23,7 +23,7 @@ struct DefaultAccountRepository: AccountRepository, SessionInjectable{
     func signUp(
         with email: String,
         pasword: String,
-        agreementIDs agreementIDs: [Int],
+        agreementIDs: [Int],
         nickName: String
     ) -> Single<Account> {
         guard let request = try? AuthTarget.postSignUp(
@@ -36,11 +36,11 @@ struct DefaultAccountRepository: AccountRepository, SessionInjectable{
         return Single.create { single in
             let task = self.session?.request(request, interceptor: nil)
                 .validate(statusCode: 200..<300)
-                .responseDecodable(of: AccountResponse.self) { response in
+                .responseDecodable(of: AccountDTO.self) { response in
                     switch response.result {
-                    case .success(let accountResponse):
-                        guard let entity = accountResponse.data?.toDomain() else { return }
-                        return single(.success(entity))
+                    case .success(let accountDTO):
+                        guard let account = accountDTO.data?.toDomain() else { return }
+                        return single(.success(account))
                     case .failure(let error):
                         return single(.failure(error))
                     }
@@ -60,8 +60,8 @@ struct DefaultAccountRepository: AccountRepository, SessionInjectable{
                 .validate(statusCode: 200..<300)
                 .responseDecodable(of: EmailDuplicationDTO.self) { response in
                     switch response.result {
-                    case .success(let duplicateDTO):
-                        if duplicateDTO.check {
+                    case .success(let result):
+                        if let isChecked = result.data?.check {
                             return completable(.completed)
                         } else {
                             return completable(.error(NetworkError.invalidEmail))
@@ -87,7 +87,7 @@ struct DefaultAccountRepository: AccountRepository, SessionInjectable{
         return Single.create { single in
             let task = self.session?.request(request, interceptor: nil)
                 .validate(statusCode: 200..<300)
-                .responseDecodable(of: AccountResponse.self) { response in
+                .responseDecodable(of: AccountDTO.self) { response in
                     switch response.result {
                     case .success(let accountResponse):
                         guard let account = accountResponse.data?.toDomain() else { return }

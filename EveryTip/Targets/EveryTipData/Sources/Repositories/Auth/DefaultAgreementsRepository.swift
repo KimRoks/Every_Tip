@@ -27,11 +27,11 @@ public struct DefaultAgreementsRepository: AgreementsRepository, SessionInjectab
         return Single.create { single in
             let task = self.session?.request(request, interceptor: nil)
                 .validate(statusCode: 200..<300)
-                .responseDecodable(of: AgreementsResponse.self) { respose in
+                .responseDecodable(of: AgreementsDTO.self) { respose in
                     switch respose.result {
-                    case .success(let agreements):
-                        let entity = (agreements.data ?? []).compactMap { $0.toDomain() }
-                        single(.success(entity))
+                    case .success(let agreementsDTO):
+                        let agreements = (agreementsDTO.data ?? []).compactMap { $0.toDomain() }
+                        single(.success(agreements))
                     case .failure(let error):
                         single(.failure(error))
                     }

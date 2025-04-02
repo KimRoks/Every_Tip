@@ -8,13 +8,12 @@
 
 import Foundation
 
-public struct EmailDuplicationResponse: Decodable {
+public struct EmailDuplicationDTO: Decodable {
     public let code: String
     public let message: String
-    public let data: EmailDuplicationDTO?
+    public let data: Data?
+    
+    public struct Data: Decodable {
+        public let check: Bool
+    }
 }
-
-public struct EmailDuplicationDTO: Decodable {
-    public let check: Bool
-}
-

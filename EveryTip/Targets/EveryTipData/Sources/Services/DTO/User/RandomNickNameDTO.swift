@@ -1,5 +1,5 @@
 //
-//  RandomNickNameResponse.swift
+//  RandomNickNameDTO.swift
 //  EveryTipData
 //
 //  Created by 김경록 on 3/31/25.
@@ -8,13 +8,13 @@
 
 import Foundation
 
-struct RandomNickNameResponse: Decodable {
+struct RandomNickNameDTO: Decodable {
     let code: String
     let message: String
     let data: String?
 }
 
-extension RandomNickNameResponse {
+extension RandomNickNameDTO {
     func toDomain() -> String? {
         return data
     }
