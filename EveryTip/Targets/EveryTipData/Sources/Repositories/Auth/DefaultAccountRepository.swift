@@ -39,7 +39,7 @@ struct DefaultAccountRepository: AccountRepository, SessionInjectable{
                 .responseDecodable(of: AccountResponse.self) { response in
                     switch response.result {
                     case .success(let accountResponse):
-                        let entity = accountResponse.data.toDomain()
+                        guard let entity = accountResponse.data?.toDomain() else { return }
                         return single(.success(entity))
                     case .failure(let error):
                         return single(.failure(error))
@@ -90,7 +90,7 @@ struct DefaultAccountRepository: AccountRepository, SessionInjectable{
                 .responseDecodable(of: AccountResponse.self) { response in
                     switch response.result {
                     case .success(let accountResponse):
-                        let account = accountResponse.data.toDomain()
+                        guard let account = accountResponse.data?.toDomain() else { return }
                         single(.success(account))
                     case .failure(let error):
                         single(.failure(error))
