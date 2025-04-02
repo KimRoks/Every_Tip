@@ -89,7 +89,7 @@ extension AuthTarget: TargetType {
         case .getCheckEmailDuplication(email: let email):
             return ["email": email]
         case .patchUpdatePassword(email: let email, password: let password):
-            return ["email": email, password: password]
+            return ["email": email, "password": password]
         }
     }
     
