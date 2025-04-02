@@ -10,7 +10,7 @@ import Foundation
 import EveryTipDomain
 
 struct MyProfileResponse: Decodable {
-    let code:String
+    let code: String
     let message: String
     let data: MyProfileDTO
 }
