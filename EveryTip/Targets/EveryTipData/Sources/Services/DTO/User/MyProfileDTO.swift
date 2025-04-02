@@ -18,7 +18,7 @@ struct MyProfileResponse: Decodable {
 struct MyProfileDTO: Decodable {
     let id, status: Int
     let nickName: String
-    let profileImage: String?
+    let profileImageURL: String?
     let email: String
     let registeredDate: String
     let tipCount: Int
@@ -28,7 +28,7 @@ struct MyProfileDTO: Decodable {
     enum CodingKeys: String, CodingKey {
         case id, status
         case nickName = "nick_name"
-        case profileImage = "profile_image"
+        case profileImageURL = "profile_image"
         case email
         case registeredDate = "registered_date"
         case tipCount = "tip_count"
@@ -43,7 +43,7 @@ extension MyProfileDTO {
             id: id,
             status: status,
             nickName: nickName,
-            profileImage: profileImage,
+            profileImageURL: profileImageURL,
             email: email,
             registeredDate: registeredDate,
             tipCount: tipCount,

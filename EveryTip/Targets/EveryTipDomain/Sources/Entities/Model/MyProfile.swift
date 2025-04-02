@@ -12,7 +12,7 @@ public struct MyProfile {
     public let id: Int
     public let status: Int
     public let nickName: String
-    public let profileImage: String?
+    public let profileImageURL: String?
     public let email: String
     public let registeredDate: String
     public let tipCount: Int
@@ -23,7 +23,7 @@ public struct MyProfile {
         id: Int,
         status: Int,
         nickName: String,
-        profileImage: String?,
+        profileImageURL: String?,
         email: String,
         registeredDate: String,
         tipCount: Int,
@@ -33,7 +33,7 @@ public struct MyProfile {
         self.id = id
         self.status = status
         self.nickName = nickName
-        self.profileImage = profileImage
+        self.profileImageURL = profileImageURL
         self.email = email
         self.registeredDate = registeredDate
         self.tipCount = tipCount
