@@ -1,5 +1,5 @@
 //
-//  UserInfoReactor.swift
+//  MyInfoReactor.swift
 //  EveryTipPresentation
 //
 //  Created by 김경록 on 7/31/24.
@@ -13,7 +13,7 @@ import EveryTipDomain
 import ReactorKit
 import RxSwift
 
-class UserInfoReactor: Reactor {
+class MyInfoReactor: Reactor {
     enum Action {
         // TODO: 프로필 편집, 각 아이템 터치 처리
         case viewDidLoad
@@ -65,12 +65,12 @@ class UserInfoReactor: Reactor {
         var newState = state
         
         switch mutation {
-        case .setMyProfileData(let userInfo):
-            newState.myProfile = userInfo
-            newState.userName = userInfo.nickName
-            newState.subscribersCount = userInfo.subscriberCount.toAbbreviatedString()
-            newState.postedTipCount = userInfo.tipCount.toAbbreviatedString()
-            newState.savedTipCount = userInfo.savedTipCount.toAbbreviatedString()
+        case .setMyProfileData(let myProfile):
+            newState.myProfile = myProfile
+            newState.userName = myProfile.nickName
+            newState.subscribersCount = myProfile.subscriberCount.toAbbreviatedString()
+            newState.postedTipCount = myProfile.tipCount.toAbbreviatedString()
+            newState.savedTipCount = myProfile.savedTipCount.toAbbreviatedString()
         case .setError(let error):
             newState.fetchError = error
         }
@@ -79,6 +79,6 @@ class UserInfoReactor: Reactor {
     }
     
     func getInfoTableViewItems() -> [String] {
-        Constants.UserInfo.tableViewItems
+        Constants.MyInfo.tableViewItems
     }
 }
