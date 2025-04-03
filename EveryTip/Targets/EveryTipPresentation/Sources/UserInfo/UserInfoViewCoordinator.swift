@@ -35,10 +35,10 @@ final class DefaultUserInfoViewCoordinator: UserInfoViewCoordinator {
     func start() { }
     
     func start() -> UIViewController {
-        guard let useCase = container.resolve(UserInfoUseCase.self) else {
+        guard let useCase = container.resolve(UserUseCase.self) else {
             fatalError("의존성 주입이 옳바르지않습니다! \(self)")
         }
-        let reactor = UserInfoReactor(userInfoUserCase: useCase)
+        let reactor = UserInfoReactor(userUseCase: useCase)
         
         let userInfoViewController = UserInfoViewController(reactor: reactor)
         userInfoViewController.coordinator = self
