@@ -30,10 +30,12 @@ struct DefaultNickNameRepository: NickNameRepository, SessionInjectable {
                 .responseDecodable(of: RandomNickNameDTO.self) { response in
                     switch response.result {
                     case .success(let randomNickNameDTO):
-                        guard let randomNickName = randomNickNameDTO.data else { return }
-                        single(.success(randomNickName))
+                        guard let randomNickName = randomNickNameDTO.toDomain() else {
+                            return single(.failure(NetworkError.emptyResponseData))
+                        }
+                        return single(.success(randomNickName))
                     case .failure(let error):
-                        single(.failure(error))
+                        return single(.failure(error))
                     }
                 }
             return Disposables.create { task?.cancel() }

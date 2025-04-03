@@ -32,7 +32,9 @@ struct DefaultProfileRepository: ProfileRepository, SessionInjectable {
                 .responseDecodable(of: MyProfileDTO.self) { response in
                     switch response.result {
                     case .success(let result):
-                        guard let myProfile = result.data?.toDomain() else { return }
+                        guard let myProfile = result.toDomain() else {
+                            return single(.failure(NetworkError.emptyResponseData))
+                        }
                         return single(.success(myProfile))
                     case .failure(let error):
                         return single(.failure(error))
@@ -53,8 +55,11 @@ struct DefaultProfileRepository: ProfileRepository, SessionInjectable {
                 .responseDecodable(of: UserProfileDTO.self) { response in
                     switch response.result {
                     case .success(let userProfileDTO):
-                        guard let userProfile = userProfileDTO.data?.userProfile?.toDomain() else { return }
+                        guard let userProfile = userProfileDTO.toDomain() else {
+                            return single(.failure(NetworkError.emptyResponseData))
+                        }
                         return single(.success(userProfile))
+                        
                     case .failure(let error):
                         return single(.failure(error))
                     }

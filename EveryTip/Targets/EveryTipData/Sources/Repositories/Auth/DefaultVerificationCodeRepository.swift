@@ -33,12 +33,12 @@ struct DefaultVerificationCodeRepository: VerificationCodeRepository {
                     switch response.result {
                     case .success(let baseResponseDTO):
                         if baseResponseDTO.isSuccess() {
-                            completable(.completed)
+                            return completable(.completed)
                         } else {
-                            completable(.error(NetworkError.invalidEmail))
+                            return completable(.error(NetworkError.invalidEmail))
                         }
                     case .failure(let error):
-                        completable(.error(error))
+                        return completable(.error(error))
                     }
                 }
             return Disposables.create { task?.cancel() }
@@ -59,9 +59,9 @@ struct DefaultVerificationCodeRepository: VerificationCodeRepository {
                 .responseDecodable(of: BaseResponseDTO.self) { response in
                     switch response.result {
                     case .success(_):
-                        completable(.completed)
+                        return completable(.completed)
                     case .failure(let error):
-                        completable(.error(error))
+                        return completable(.error(error))
                     }
                 }
             return Disposables.create { task?.cancel() }

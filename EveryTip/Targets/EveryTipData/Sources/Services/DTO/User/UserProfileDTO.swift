@@ -17,7 +17,7 @@ public struct UserProfileDTO: Decodable {
     
     public struct Data: Decodable {
         public let isLogined: Bool
-        public let userProfile: UserProfileData?
+        public let userProfile: UserProfileData
 
         enum CodingKeys: String, CodingKey {
             case isLogined = "is_logined"
@@ -47,21 +47,24 @@ public struct UserProfileDTO: Decodable {
                 case isMyProfile = "is_my_profile"
                 case isFollowing = "is_following"
             }
-            
-            func toDomain() -> UserProfile {
-                return UserProfile(
-                    id: id,
-                    status: status,
-                    nickName: nickName,
-                    profileImageURL: profileImageURL,
-                    email: email,
-                    registeredDate: registeredDate,
-                    tipCount: tipCount,
-                    subscriberCount: subscriberCount,
-                    isMyProfile: isMyProfile,
-                    isFollowing: isFollowing
-                )
-            }
         }
+    }
+}
+
+extension UserProfileDTO {
+    func toDomain() -> UserProfile? {
+        guard let data = data else { return nil }
+        return UserProfile(
+            id: data.userProfile.id,
+            status: data.userProfile.status,
+            nickName: data.userProfile.nickName,
+            profileImageURL: data.userProfile.profileImageURL,
+            email: data.userProfile.email,
+            registeredDate: data.userProfile.registeredDate,
+            tipCount: data.userProfile.tipCount,
+            subscriberCount: data.userProfile.subscriberCount,
+            isMyProfile: data.userProfile.isMyProfile,
+            isFollowing: data.userProfile.isFollowing
+        )
     }
 }

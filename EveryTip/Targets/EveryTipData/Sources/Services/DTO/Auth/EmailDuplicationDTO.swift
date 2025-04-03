@@ -17,3 +17,10 @@ public struct EmailDuplicationDTO: Decodable {
         public let check: Bool
     }
 }
+
+extension EmailDuplicationDTO {
+    func toDomain() -> Bool? {
+        guard let data = data else { return nil }
+        return data.check
+    }
+}

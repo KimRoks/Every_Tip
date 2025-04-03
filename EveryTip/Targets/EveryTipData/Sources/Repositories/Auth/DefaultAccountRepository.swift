@@ -39,8 +39,10 @@ struct DefaultAccountRepository: AccountRepository, SessionInjectable{
                 .responseDecodable(of: AccountDTO.self) { response in
                     switch response.result {
                     case .success(let accountDTO):
-                        guard let account = accountDTO.data?.toDomain() else { return }
+                        guard let account = accountDTO.toDomain() else { return single(.failure(NetworkError.emptyResponseData))
+                        }
                         return single(.success(account))
+                        
                     case .failure(let error):
                         return single(.failure(error))
                     }
@@ -61,7 +63,9 @@ struct DefaultAccountRepository: AccountRepository, SessionInjectable{
                 .responseDecodable(of: EmailDuplicationDTO.self) { response in
                     switch response.result {
                     case .success(let result):
-                        guard let isChecked = result.data?.check else { return }
+                        guard let isChecked = result.toDomain() else {
+                            return completable(.error(NetworkError.emptyResponseData))
+                        }
                         if isChecked {
                             return completable(.completed)
                         } else {
@@ -89,11 +93,14 @@ struct DefaultAccountRepository: AccountRepository, SessionInjectable{
                 .validate(statusCode: 200..<300)
                 .responseDecodable(of: AccountDTO.self) { response in
                     switch response.result {
-                    case .success(let accountResponse):
-                        guard let account = accountResponse.data?.toDomain() else { return }
-                        single(.success(account))
+                    case .success(let accountDTO):
+                        guard let account = accountDTO.toDomain() else {
+                            return single(.failure(NetworkError.emptyResponseData))
+                        }
+                        return single(.success(account))
+                        
                     case .failure(let error):
-                        single(.failure(error))
+                        return single(.failure(error))
                     }
                 }
             return Disposables.create { task?.cancel() }

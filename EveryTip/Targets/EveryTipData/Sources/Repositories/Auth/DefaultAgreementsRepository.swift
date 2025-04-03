@@ -30,10 +30,13 @@ public struct DefaultAgreementsRepository: AgreementsRepository, SessionInjectab
                 .responseDecodable(of: AgreementsDTO.self) { respose in
                     switch respose.result {
                     case .success(let agreementsDTO):
-                        let agreements = (agreementsDTO.data ?? []).compactMap { $0.toDomain() }
-                        single(.success(agreements))
+                        guard let agreements = agreementsDTO.toDomain() else {
+                            return single(.failure(NetworkError.emptyResponseData))
+                        }
+                        return single(.success(agreements))
+                        
                     case .failure(let error):
-                        single(.failure(error))
+                        return single(.failure(error))
                     }
                 }
             return Disposables.create { task?.cancel() }

@@ -19,13 +19,18 @@ public struct AgreementsDTO: Decodable {
         public let title: String
         public let webLinkURL: String
         public let mandatory: Int
-        
-        func toDomain() -> Agreements? {
-            return Agreements(
-                id: id,
-                title: title,
-                webLinkURL: webLinkURL,
-                mandatory: mandatory == 1
+    }
+}
+
+extension AgreementsDTO {
+    func toDomain() -> [Agreements]? {
+        guard let dataArray = data else { return nil }
+        return dataArray.map { agreement in
+            Agreements(
+                id: agreement.id,
+                title: agreement.title,
+                webLinkURL: agreement.webLinkURL,
+                mandatory: agreement.mandatory == 1
             )
         }
     }

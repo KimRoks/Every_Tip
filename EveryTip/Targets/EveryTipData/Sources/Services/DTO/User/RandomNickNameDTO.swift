@@ -16,6 +16,7 @@ struct RandomNickNameDTO: Decodable {
 
 extension RandomNickNameDTO {
     func toDomain() -> String? {
+        guard let data = data else { return nil }
         return data
     }
 }

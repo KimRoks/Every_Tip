@@ -15,7 +15,8 @@ public struct MyProfileDTO: Decodable {
     public let data: Data?
     
     public struct Data: Decodable {
-        public let id, status: Int
+        public let id: Int
+        public let status: Int
         public let nickName: String
         public let profileImageURL: String?
         public let email: String
@@ -34,19 +35,22 @@ public struct MyProfileDTO: Decodable {
             case savedTipCount = "saved_tip_count"
             case subscriberCount = "subscriber_count"
         }
-        
-        func toDomain() -> MyProfile {
-            return MyProfile(
-                id: id,
-                status: status,
-                nickName: nickName,
-                profileImageURL: profileImageURL,
-                email: email,
-                registeredDate: registeredDate,
-                tipCount: tipCount,
-                savedTipCount: savedTipCount,
-                subscriberCount: subscriberCount
-            )
-        }
+    }
+}
+
+extension MyProfileDTO {
+    func toDomain() -> MyProfile? {
+        guard let data = data else { return nil }
+        return MyProfile(
+            id: data.id,
+            status: data.status,
+            nickName: data.nickName,
+            profileImageURL: data.profileImageURL,
+            email: data.email,
+            registeredDate: data.registeredDate,
+            tipCount: data.tipCount,
+            savedTipCount: data.savedTipCount,
+            subscriberCount: data.subscriberCount
+        )
     }
 }

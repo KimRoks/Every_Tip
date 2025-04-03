@@ -16,8 +16,8 @@ public struct AccountDTO: Decodable {
     
     public struct Data: Decodable {
         public let id: Int
-        public let email: String?
-        public let nickName: String?
+        public let email: String
+        public let nickName: String
         public let accessToken: String
         public let refreshToken: String
         
@@ -27,15 +27,18 @@ public struct AccountDTO: Decodable {
             case accessToken = "access_token"
             case refreshToken = "refresh_token"
         }
-        
-        func toDomain() -> Account {
-            return Account(
-                id: id,
-                email: email,
-                nickName: nickName,
-                accessToken: accessToken,
-                refreshToken: refreshToken
-            )
-        }
+    }
+}
+
+extension AccountDTO {
+    func toDomain() -> Account? {
+        guard let data = data else { return nil }
+        return Account(
+            id: data.id,
+            email: data.email,
+            nickName: data.nickName,
+            accessToken: data.accessToken,
+            refreshToken: data.refreshToken
+        )
     }
 }
