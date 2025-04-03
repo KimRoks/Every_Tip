@@ -15,6 +15,14 @@ enum AuthTarget {
     case postUserLogin(email: String, password: String)
     case postVerificationEmail(email: String)
     case getCheckVerificationCode(code: String)
+    case postSignUp(
+        email: String,
+        password: String,
+        agreementsIDs: [Int],
+        nickName: String
+    )
+    case getCheckEmailDuplication(email: String)
+    case patchUpdatePassword(email: String, password: String)
 }
 
 extension AuthTarget: TargetType {
@@ -28,6 +36,12 @@ extension AuthTarget: TargetType {
                 .post
         case .getCheckVerificationCode:
                 .get
+        case .postSignUp:
+                .post
+        case .getCheckEmailDuplication:
+                .get
+        case .patchUpdatePassword:
+                .patch
         }
     }
     
@@ -41,6 +55,12 @@ extension AuthTarget: TargetType {
             return "/auth/verification/email"
         case .getCheckVerificationCode:
             return "/auth/verification"
+        case .postSignUp:
+            return "/auth/sign-up"
+        case .getCheckEmailDuplication:
+            return "/auth/email-check"
+        case .patchUpdatePassword:
+            return "/auth/password"
         }
     }
     
@@ -54,6 +74,22 @@ extension AuthTarget: TargetType {
             return ["email": email]
         case .getCheckVerificationCode(let code):
             return ["code": code]
+        case .postSignUp(
+            email: let email,
+            password: let password,
+            agreementsIDs: let agreementsIDs,
+            nickName: let nickName
+        ):
+            return [
+                "email": email,
+                "password": password,
+                "agreement_ids": agreementsIDs,
+                "nick_name": nickName
+            ]
+        case .getCheckEmailDuplication(email: let email):
+            return ["email": email]
+        case .patchUpdatePassword(email: let email, password: let password):
+            return ["email": email, "password": password]
         }
     }
     
@@ -67,6 +103,12 @@ extension AuthTarget: TargetType {
             return ["Content-Type": "application/json"]
         case .getCheckVerificationCode:
             return nil
+        case .postSignUp:
+            return ["Content-Type": "application/json"]
+        case .getCheckEmailDuplication:
+            return ["Content-Type": "application/json"]
+        case .patchUpdatePassword:
+            return ["Content-Type": "application/json"]
         }
     }
 }

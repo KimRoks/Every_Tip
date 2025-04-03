@@ -13,8 +13,8 @@ import RxSwift
 public protocol UserUseCase {
     func fetchRamdomNickName() -> Single<String>
     func configureTipCategory(categoryIds: [Int]) -> Completable
-    func fetchMyProfile() -> Single<User>
-    func fetchUserProfile(for userID: Int) -> Single<User>
+    func fetchMyProfile() -> Single<MyProfile>
+    func fetchUserProfile(for userID: Int) -> Single<UserProfile>
 }
 
 final class DefaultUserUseCase: UserUseCase {
@@ -37,14 +37,14 @@ final class DefaultUserUseCase: UserUseCase {
     }
     
     public func configureTipCategory(categoryIds: [Int]) -> Completable {
-        categoryRepository.setCategory(categoryIds: categoryIds)
+        categoryRepository.setCategory(categoryIDs: categoryIds)
     }
     
-    public func fetchMyProfile() -> Single<User> {
+    public func fetchMyProfile() -> Single<MyProfile> {
         profileRepository.fetchMyProfile()
     }
     
-    public func fetchUserProfile(for userID: Int) -> Single<User> {
+    public func fetchUserProfile(for userID: Int) -> Single<UserProfile> {
         profileRepository.fetchUserProfile(userID: userID)
     }
 }

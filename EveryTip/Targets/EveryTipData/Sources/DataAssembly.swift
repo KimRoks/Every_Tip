@@ -24,20 +24,28 @@ public struct DataAssembly: Assembly {
             return DefaultPostRepository()
         }
         
-        container.register(UserInfoRepository.self) { _ in
-            return DefaultUserInfoRepository()
+        container.register(AccountRepository.self) { _ in
+            return DefaultAccountRepository()
         }
         
         container.register(AgreementsRepository.self) { _ in
             return DefaultAgreementsRepository()
         }
         
-        container.register(UserLoginRepository.self) { _ in
-            return DefaultUserLoginRepository()
-        }
-        
         container.register(VerificationCodeRepository.self) { _ in
             return DefaultVerificationCodeRepository()
+        }
+        
+        container.register(NickNameRepository.self) { _ in
+            return DefaultNickNameRepository()
+        }
+        
+        container.register(CategoryRepository.self) { _ in
+            return DefaultCategoryRepository()
+        }
+        
+        container.register(ProfileRepository.self) { _ in
+            return DefaultProfileRepository()
         }
     }
 }

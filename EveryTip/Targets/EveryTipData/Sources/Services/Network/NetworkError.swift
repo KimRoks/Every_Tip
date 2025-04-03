@@ -19,6 +19,7 @@ enum NetworkError: LocalizedError {
     case requestRetryError(Error)
     case baseURLError
     case invalidEmail
+    case emptyResponseData
     
     var errorDescription: String? {
         switch self {
@@ -42,6 +43,8 @@ enum NetworkError: LocalizedError {
             return "plist에서 BaseURL을 가져오는데에 실패했어요"
         case .invalidEmail:
             return "사용 불가능한 이메일입니다."
+        case .emptyResponseData:
+            return "데이터가 없습니다"
         }
     }
 }

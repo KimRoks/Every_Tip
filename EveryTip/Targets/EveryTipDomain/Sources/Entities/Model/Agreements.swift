@@ -8,15 +8,21 @@
 
 import Foundation
 
-public struct Agreements: Decodable {
-    public let code: String
-    public let message: String
-    public let data: [AgreementData]
-}
-
-public struct AgreementData: Decodable {
+public struct Agreements: Identifiable {
     public let id: Int
     public let title: String
-    public let url: String
-    public let mandatory: Int
+    public let webLinkURL: String
+    public let mandatory: Bool
+    
+    public init(
+        id: Int,
+        title: String,
+        webLinkURL: String,
+        mandatory: Bool
+    ) {
+        self.id = id
+        self.title = title
+        self.webLinkURL = webLinkURL
+        self.mandatory = mandatory
+    }
 }
