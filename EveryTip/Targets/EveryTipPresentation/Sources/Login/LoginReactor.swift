@@ -40,7 +40,7 @@ final class LoginReactor: Reactor {
         switch action {
         case .loginButtonTapped(email: let email, password: let password):
             
-            return authUseCase.logIn(
+            return authUseCase.login(
                 email: email,
                 password: password
             )
