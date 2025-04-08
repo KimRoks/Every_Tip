@@ -270,11 +270,6 @@ extension SignUpViewController: View {
     }
     
     func bindInput(to reactor: SignUpReactor) {
-        rx.viewDidLoad
-            .map { Reactor.Action.viewDidLoad }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
         verifyButton.rx.tap
             .map { [weak self] in
                 let emailInput = self?.emailTextFieldView.textField.text ?? ""

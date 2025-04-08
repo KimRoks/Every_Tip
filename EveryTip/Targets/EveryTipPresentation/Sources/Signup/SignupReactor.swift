@@ -39,7 +39,6 @@ final class SignUpReactor: Reactor {
     }
     
     enum Action {
-        case viewDidLoad
         case verifyButtonTapped(email: String)
         case textFieldAction(type: TextFieldType, action: EveryTipTextFieldAction)
         case submitButtonTapped
@@ -84,8 +83,6 @@ final class SignUpReactor: Reactor {
     
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case .viewDidLoad:
-            return Observable.empty()
         case .verifyButtonTapped(let email):
             return handleVerifyButton(email: email)
         case .textFieldAction(let type, let action):
