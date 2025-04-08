@@ -92,6 +92,7 @@ final class LoginViewController: BaseViewController {
         super.viewDidLoad()
         setupLayout()
         setupConstraints()
+        signupButton.addTarget(self, action: #selector(pushToSignUpView), for: .touchUpInside)
     }
     
     init(reactor: LoginReactor) {
@@ -165,6 +166,11 @@ final class LoginViewController: BaseViewController {
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
             $0.height.equalTo(56)
         }
+    }
+    
+    @objc
+    private func pushToSignUpView() {
+        coordinator?.pushToSignupView()
     }
 }
 
