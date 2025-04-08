@@ -24,6 +24,7 @@ final class SignUpReactor: Reactor {
         .take(while: { $0 >= 0 })
         .map { Mutation.updateTimerState(isHidden: false, remainTime: $0) }
         .do(onDispose: { print("타이머 해제") })
+        .share(replay: 1, scope: .whileConnected)
     
     enum VerificationButtonState {
         case beforeSending
