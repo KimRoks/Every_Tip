@@ -28,6 +28,7 @@ public enum ImageAssetType {
     case categoryIcon_social
     case everyTipLogo_story
     case add_Tip
+    case mainTab_Home
 }
 
 extension UIImage {
@@ -67,6 +68,8 @@ extension UIImage {
         case .everyTipLogo_story:
             EveryTipDesignSystemAsset.everyTipLogoStory.image
         case .add_Tip: EveryTipDesignSystemAsset.addTip.image
+        case .mainTab_Home:
+            EveryTipDesignSystemAsset.mainTabHome.image
         }
     }
 }

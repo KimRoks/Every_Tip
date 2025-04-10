@@ -114,14 +114,15 @@ final class MainTabBarContoller: UITabBarController {
         }
         
         let tabBarItems = [
-            (viewControllers[0], "house.fill", "홈"),
-            (viewControllers[1], "menucard", "카테고리"),
-            (viewControllers[3], "sidebar.squares.right", "탐색"),
-            (viewControllers[4], "person.fill", "내정보")
+            (viewControllers[0], ImageAssetType.mainTab_Home, "홈"),
+            (viewControllers[1], ImageAssetType.mainTab_Home, "카테고리"),
+            (viewControllers[3], ImageAssetType.mainTab_Home, "탐색"),
+            (viewControllers[4], ImageAssetType.mainTab_Home, "내정보")
         ]
         
-        for (_, (vc, imageName, title)) in tabBarItems.enumerated() {
-            vc.tabBarItem.image = UIImage(systemName: imageName)
+        for (_, (vc, imageType, title)) in tabBarItems.enumerated() {
+            vc.tabBarItem.image = UIImage.et_getImage(for: imageType)
+           
             vc.tabBarItem.title = title
         }
         
