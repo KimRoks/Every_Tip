@@ -116,7 +116,7 @@ final class MainTabBarContoller: UITabBarController {
         let tabBarItems = [
             (viewControllers[0], ImageAssetType.mainTab_Home, "홈"),
             (viewControllers[1], ImageAssetType.mainTab_Category, "카테고리"),
-            (viewControllers[3], ImageAssetType.mainTab_Home, "탐색"),
+            (viewControllers[3], ImageAssetType.mainTab_Discovery, "탐색"),
             (viewControllers[4], ImageAssetType.mainTab_Home, "내정보")
         ]
         
