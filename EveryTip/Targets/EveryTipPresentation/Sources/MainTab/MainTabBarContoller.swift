@@ -10,6 +10,8 @@ import UIKit
 
 import EveryTipDesignSystem
 
+import SnapKit
+
 final class MainTabBarContoller: UITabBarController {
     
     //MARK: Properties
@@ -70,22 +72,7 @@ final class MainTabBarContoller: UITabBarController {
     
     private lazy var middleButton: UIButton = {
         let button = UIButton(type: .system)
-        // TODO: 이미지 에셋 받으면 변경
-        
-        button.setBackgroundImage(
-            UIImage(systemName: "plus"),
-            for: .normal
-        )
-        button.backgroundColor = .et_brandColor1
-        button.tintColor = .white
-        button.layer.cornerRadius = 25
-        
-        button.addShadow(
-            offset: buttonShadowSize,
-            opacity: 0.2,
-            radius: 4
-        )
-        
+        button.setBackgroundImage(.et_getImage(for: .add_Tip), for: .normal)
         button.addTarget(
             nil,
             action: #selector(presentPostView),
@@ -106,13 +93,14 @@ final class MainTabBarContoller: UITabBarController {
     
     func configureMainTabBarController() {
         tabBar.addSubview(middleButton)
-        middleButton.frame = CGRect(
-            x: tabBar.frame.width / 2 - 25,
-            y: -10,
-            width: 50,
-            height: 50
-        )
-        
+    
+        middleButton.snp.makeConstraints {
+            $0.width.equalTo(75)
+            $0.height.equalTo(82)
+            $0.centerX.equalToSuperview()
+            $0.centerY.equalTo(tabBar.snp.centerY).offset(-17)
+        }
+    
         tabBar.tintColor = .black.withAlphaComponent(0.8)
         tabBar.backgroundColor = UIColor(
             red: 0.95,
