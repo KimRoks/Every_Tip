@@ -70,7 +70,7 @@ final class MainTabBarContoller: UITabBarController {
         height: -2
     )
     
-    private lazy var middleButton: UIButton = {
+    private let addTipButton: UIButton = {
         let button = UIButton(type: .system)
         button.setBackgroundImage(.et_getImage(for: .add_Tip), for: .normal)
         button.addTarget(
@@ -92,9 +92,9 @@ final class MainTabBarContoller: UITabBarController {
     //MARK: Internal Methods
     
     func configureMainTabBarController() {
-        tabBar.addSubview(middleButton)
+        tabBar.addSubview(addTipButton)
     
-        middleButton.snp.makeConstraints {
+        addTipButton.snp.makeConstraints {
             $0.width.equalTo(75)
             $0.height.equalTo(82)
             $0.centerX.equalToSuperview()
