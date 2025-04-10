@@ -117,7 +117,7 @@ final class MainTabBarContoller: UITabBarController {
             (viewControllers[0], ImageAssetType.mainTab_Home, "홈"),
             (viewControllers[1], ImageAssetType.mainTab_Category, "카테고리"),
             (viewControllers[3], ImageAssetType.mainTab_Discovery, "탐색"),
-            (viewControllers[4], ImageAssetType.mainTab_Home, "내정보")
+            (viewControllers[4], ImageAssetType.mainTab_MyInfo, "내정보")
         ]
         
         for (_, (vc, imageType, title)) in tabBarItems.enumerated() {
