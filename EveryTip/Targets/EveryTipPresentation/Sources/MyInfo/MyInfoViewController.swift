@@ -225,7 +225,8 @@ final class MyInfoViewController: BaseViewController {
     private func setupConstraints() {
         roundedBackgroundView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(10)
-            $0.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+            $0.bottom.equalTo(view)
         }
         
         userImageView.snp.makeConstraints {
