@@ -18,46 +18,6 @@ final class MainTabBarContoller: UITabBarController {
     
     weak var coordinator: MainTabCoordinator?
     
-    //MARK: Navigation Items
-    
-    private let titleLogoLabel: UILabel = {
-        let label = UILabel()
-        label.text = "every tip"
-        label.textColor = .white
-        label.font = UIFont.et_pretendard(
-            style: .bold,
-            size: 20
-        )
-        
-        return label
-    }()
-    
-    private let searchButton: UIButton = {
-        let button = UIButton()
-        let boldConfig = UIImage.SymbolConfiguration(weight: .bold)
-        button.setImage(UIImage(
-            systemName: "magnifyingglass",
-            withConfiguration: boldConfig
-        ), for: .normal
-        )
-        button.tintColor = .white
-        
-        return button
-    }()
-    
-    private let notificationButton: UIButton = {
-        let button = UIButton()
-        let boldConfig = UIImage.SymbolConfiguration(weight: .bold)
-        button.setImage(UIImage(
-            systemName: "bell",
-            withConfiguration: boldConfig
-        ), for: .normal
-        )
-        button.tintColor = .white
-        
-        return button
-    }()
-    
     //MARK: Tabbar Middle Button
     
     private let buttonShadowSize: CGSize = CGSize(
@@ -86,7 +46,6 @@ final class MainTabBarContoller: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupNavigationBar()
     }
     
     //MARK: Internal Methods
@@ -140,15 +99,5 @@ final class MainTabBarContoller: UITabBarController {
     @objc
     private func presentPostView() {
         coordinator?.presentPostView()
-    }
-    
-    private func setupNavigationBar() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLogoLabel)
-        
-        let stackView = UIStackView(arrangedSubviews: [searchButton, notificationButton])
-        stackView.axis = .horizontal
-        stackView.spacing = 10
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: stackView)
     }
 }
