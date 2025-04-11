@@ -32,6 +32,7 @@ public enum ImageAssetType {
     case mainTab_Category
     case mainTab_Discovery
     case mainTab_MyInfo
+    case backButton
 }
 
 extension UIImage {
@@ -79,6 +80,8 @@ extension UIImage {
             EveryTipDesignSystemAsset.mainTabDiscovery.image
         case .mainTab_MyInfo:
             EveryTipDesignSystemAsset.mainTabMyInfo.image
+        case .backButton:
+            EveryTipDesignSystemAsset.backButton.image
         }
     }
 }
