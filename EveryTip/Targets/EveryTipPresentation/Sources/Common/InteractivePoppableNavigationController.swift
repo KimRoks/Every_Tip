@@ -25,10 +25,7 @@ public final class InteractivePoppableNavigationController: UINavigationControll
         let button = UIButton(type: .system)
         let boldConfig = UIImage.SymbolConfiguration(weight: .bold)
         button.setImage(
-            UIImage(
-                systemName: "magnifyingglass",
-                withConfiguration: boldConfig
-            ), for: .normal
+            UIImage.et_getImage(for: .searchIcon), for: .normal
         )
         button.tintColor = .white
         return button
@@ -42,10 +39,7 @@ public final class InteractivePoppableNavigationController: UINavigationControll
             weight: .bold
         )
         button.setImage(
-            UIImage(
-                systemName: "bell",
-                withConfiguration: boldConfig
-            ), for: .normal
+            UIImage.et_getImage(for: .bell), for: .normal
         )
         button.tintColor = .white
         return button
@@ -139,7 +133,7 @@ public final class InteractivePoppableNavigationController: UINavigationControll
             ]
         )
         stackView.axis = .horizontal
-        stackView.spacing = 10
+        stackView.spacing = 14
         topViewController?.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: stackView)
     }
 }
