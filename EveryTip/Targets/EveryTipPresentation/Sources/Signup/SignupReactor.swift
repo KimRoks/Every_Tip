@@ -18,13 +18,20 @@ final class SignUpReactor: Reactor {
     private var timerStream: Observable<Mutation> {
         return timerSubject.switchLatest()
     }
-    private let timer = Observable<Int>
-        .interval(.seconds(1), scheduler: MainScheduler.asyncInstance)
-        .map { 300 - $0 }
-        .take(while: { $0 >= 0 })
-        .map { Mutation.updateTimerState(isHidden: false, remainTime: $0) }
-        .do(onDispose: { print("타이머 해제") })
-        .share(replay: 1, scope: .whileConnected)
+    
+    private func runTimer() -> Observable<Mutation> {
+        return Observable<Int>
+            .interval(.seconds(1), scheduler: MainScheduler.asyncInstance)
+            .map { 300 - $0 }
+            .take(while: { $0 >= 0 })
+            .map {
+                Mutation.updateTimerState(
+                    isHidden: false,
+                    remainTime: $0
+                )
+            }
+            .do(onDispose: { print("타이머 해제") })
+    }
     
     enum VerificationButtonState {
         case beforeSending
@@ -128,7 +135,8 @@ final class SignUpReactor: Reactor {
                 )
             )
         }
-        timerSubject.onNext(timer)
+        timerSubject.onNext(runTimer().share())
+        
         return authUseCase.requestEmailCode(email: email)
             .andThen(
                 Observable.concat([
