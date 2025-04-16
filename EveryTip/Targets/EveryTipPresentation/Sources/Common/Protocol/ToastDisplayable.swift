@@ -9,11 +9,11 @@
 import Foundation
 
 public protocol ToastDisplayable {
-    func show(message: String)
+    func showToast(message: String)
 }
 
 public extension ToastDisplayable {
-    func show(message: String) {
+    func showToast(message: String) {
         ToastManager.shared.show(message: message)
     }
 }
