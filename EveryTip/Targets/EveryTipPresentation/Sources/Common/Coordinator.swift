@@ -8,7 +8,7 @@
 
 import UIKit
 
-public protocol Coordinator: AnyObject {
+public protocol Coordinator: AnyObject, ToastDisplayable {
     var parentCoordinator: Coordinator? { get set }
     var childCoordinators: [Coordinator] { get set }
     var navigationController: UINavigationController { get set }
