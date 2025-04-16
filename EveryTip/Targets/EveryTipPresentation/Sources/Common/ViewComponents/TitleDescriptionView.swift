@@ -31,6 +31,7 @@ final class TitleDescriptionView: UIView {
             size: 16
         )
         label.textColor = UIColor(hex: "#777777")
+        label.numberOfLines = 0
         
         return label
     }()
