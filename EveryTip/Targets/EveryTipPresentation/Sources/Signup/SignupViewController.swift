@@ -271,6 +271,11 @@ extension SignUpViewController: View {
     
     func bindInput(to reactor: SignUpReactor) {
         verifyButton.rx.tap
+            .throttle(
+                .seconds(5),
+                latest: false,
+                scheduler: MainScheduler.instance
+            )
             .map { [weak self] in
                 let emailInput = self?.emailTextFieldView.textField.text ?? ""
                 return Reactor.Action.verifyButtonTapped(email: emailInput)
