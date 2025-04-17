@@ -166,9 +166,6 @@ final class SignUpViewController: BaseViewController {
         super.viewDidLoad()
         setupLayout()
         setupConstraints()
-        
-        // TODO: 커스텀 네비게이션으로 대체
-        self.navigationController?.navigationBar.tintColor = .black
     }
     
     private func setupLayout() {
