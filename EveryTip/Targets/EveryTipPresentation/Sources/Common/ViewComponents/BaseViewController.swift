@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BaseViewController: UIViewController {
+class BaseViewController: UIViewController, ToastDisplayable {
     /// 스와이프로 뒤로가기 활성화 여부
     var isInteractivePopGestureEnabled = false
     
