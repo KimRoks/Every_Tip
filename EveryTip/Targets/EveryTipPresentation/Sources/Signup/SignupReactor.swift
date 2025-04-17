@@ -13,6 +13,8 @@ import EveryTipDomain
 import ReactorKit
 import RxSwift
 
+// TODO: MVVM 관점에서의 관심사 분리 고려 필요
+
 final class SignUpReactor: Reactor {
     private let timerSubject = BehaviorSubject<Observable<Mutation>>(value: Observable.empty())
     private var timerStream: Observable<Mutation> {
