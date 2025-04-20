@@ -35,6 +35,7 @@ public enum ImageAssetType {
     case backButton
     case bell
     case bellOn
+    case refresh
 }
 
 extension UIImage {
@@ -88,6 +89,8 @@ extension UIImage {
             EveryTipDesignSystemAsset.bell.image
         case .bellOn:
             EveryTipDesignSystemAsset.bellOn.image
+        case .refresh:
+            EveryTipDesignSystemAsset.refresh.image
         }
     }
 }
