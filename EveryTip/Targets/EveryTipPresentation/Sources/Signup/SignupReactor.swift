@@ -12,8 +12,10 @@ import EveryTipDomain
 
 import ReactorKit
 import RxSwift
+import RxRelay
 
 // TODO: MVVM 관점에서의 관심사 분리 고려 필요
+// TODO: 가이드 메세지 최적화, 데이터 전달 고려 필요
 
 final class SignUpReactor: Reactor {
     private let timerSubject = BehaviorSubject<Observable<Mutation>>(value: Observable.empty())
@@ -34,6 +36,8 @@ final class SignUpReactor: Reactor {
             }
             .do(onDispose: { print("타이머 해제") })
     }
+    
+    let submitButtonTapRelay = PublishRelay<Void>()
     
     enum VerificationButtonState {
         case beforeSending
@@ -258,6 +262,7 @@ final class SignUpReactor: Reactor {
     
     private func handleSubmit() -> Observable<Mutation> {
         // TODO: 이메일 및 비밀번호 데이터 저장 및 다음 화면 넘어가기
-        return Observable.empty()
+        submitButtonTapRelay.accept(())
+        return .empty()
     }
 }
