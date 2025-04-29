@@ -55,7 +55,7 @@ final class SignUpReactor: Reactor {
     enum Action {
         case verifyButtonTapped(email: String)
         case textFieldAction(type: TextFieldType, action: EveryTipTextFieldAction)
-        case submitButtonTapped
+        case confirmButtonTapped
     }
     
     enum Mutation {
@@ -101,7 +101,7 @@ final class SignUpReactor: Reactor {
             return handleVerifyButton(email: email)
         case .textFieldAction(let type, let action):
             return handleTextFieldAction(type: type, action: action)
-        case .submitButtonTapped:
+        case .confirmButtonTapped:
             return handleSubmit()
         }
     }
