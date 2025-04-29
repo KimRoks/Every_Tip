@@ -69,6 +69,7 @@ final class SignUpReactor: Reactor {
             errorMessage: String? = nil
         )
         case updateSubmitButtonEnabledState(Bool)
+        case setToast(String)
     }
     
     struct State {
@@ -79,6 +80,7 @@ final class SignUpReactor: Reactor {
         var isTimerHidden = true
         var textFieldText: [TextFieldType: String] = [:]
         var textFieldStatus: [TextFieldType: (status: EveryTipTextFieldStatus, errorMessage: String?)] = [:]
+        @Pulse var toastMessage: String?
     }
     
     var initialState: State
@@ -123,6 +125,8 @@ final class SignUpReactor: Reactor {
             newState.textFieldStatus[type] = (status, errorMessage)
         case .updateSubmitButtonEnabledState(let isEnabled):
             newState.isSubmitButtonEnabled = isEnabled
+        case .setToast(let message):
+            newState.toastMessage = message
         }
         return newState
     }
@@ -149,6 +153,7 @@ final class SignUpReactor: Reactor {
                     .just(.updateTextField(type: .verificationCode, text: nil, status: .normal)),
                     .just(.updateVerifiedLabelVisibility(true)),
                     .just(.updateCheckEmailButtonState(.afterSent)),
+                    .just(.setToast("인증 코드를 입력한 이메일로 전달드렸어요.")),
                     timerStream
                 ])
             )
@@ -193,7 +198,7 @@ final class SignUpReactor: Reactor {
                     type: .password,
                     text: text,
                     status: isValidPassword ? .editing : .error,
-                    errorMessage: isValidPassword ? nil : "영문 + 숫자 조합 8자리 이상 입력해 주세요."
+                    errorMessage: isValidPassword ? "" : "영문 + 숫자 조합 8자리 이상 입력해 주세요."
                 )
             )
         case .confirmPassword:
@@ -224,6 +229,7 @@ final class SignUpReactor: Reactor {
                         .just(.updateTextField(type: .verificationCode, text: nil, status: .notEnabled)),
                         .just(.updateTextField(type: .password, text: nil, status: .normal)),
                         .just(.updateTextField(type: .confirmPassword, text: nil, status: .normal)),
+                        .just(.setToast("인증이 완료되었습니다.")),
                         .just(.updateVerifiedLabelVisibility(false))
                     ])
                 )
@@ -245,7 +251,7 @@ final class SignUpReactor: Reactor {
         let passwordText = currentState.textFieldText[.password] ?? ""
         let isMatching = passwordText == text && text.checkRegex(type: .password)
         let status: EveryTipTextFieldStatus = isMatching ? .editing : .error
-        let errorMessage = status == .error ? "비밀번호가 일치하지 않습니다." : nil
+        let errorMessage = status == .error ? "비밀번호가 일치하지 않습니다." : ""
         let enableSubmit = Observable.just(Mutation.updateSubmitButtonEnabledState(isMatching))
         return Observable.concat([
             .just(
@@ -259,6 +265,7 @@ final class SignUpReactor: Reactor {
             enableSubmit
         ])
     }
+    
     
     private func handleSubmit() -> Observable<Mutation> {
         // TODO: 이메일 및 비밀번호 데이터 저장 및 다음 화면 넘어가기

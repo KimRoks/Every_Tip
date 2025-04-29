@@ -426,6 +426,13 @@ extension SignUpViewController: View {
             })
             .disposed(by: disposeBag)
         
+        reactor.pulse(\.$toastMessage)
+            .compactMap { $0 }
+            .subscribe(onNext: { [weak self] message in
+                self?.showToast(message: message)
+            })
+            .disposed(by: disposeBag)
+        
         reactor.submitButtonTapRelay.bind { [weak self] in
             self?.onConfirm?()
             self?.coordinator?.pushToNicknameView()
