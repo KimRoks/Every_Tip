@@ -12,7 +12,9 @@ import EveryTipDomain
 
 import Swinject
 
-protocol SignupCoordinator: Coordinator { }
+protocol SignupCoordinator: Coordinator {
+    func pushToNickNameView()
+}
 
 final class DefaultSignupCoordinator: SignupCoordinator {
     var parentCoordinator: (any Coordinator)?
@@ -43,5 +45,12 @@ final class DefaultSignupCoordinator: SignupCoordinator {
     
     func didFinish() {
         parentCoordinator?.remove(child: self)
+    }
+    
+    func pushToNickNameView() {
+        let nicknameCoordinator = DefaultNicknameCoordinator(navigationController: navigationController)
+        nicknameCoordinator.parentCoordinator = self
+        self.append(child: nicknameCoordinator)
+        nicknameCoordinator.start()
     }
 }

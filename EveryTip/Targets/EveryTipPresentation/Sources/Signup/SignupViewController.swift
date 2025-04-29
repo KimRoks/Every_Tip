@@ -26,7 +26,7 @@ final class SignUpViewController: BaseViewController {
             title: "회원가입",
             subTitle: "회원 여부 확인 및 가입을 진행합니다"
         )
-                
+        
         return view
     }()
     
@@ -424,5 +424,9 @@ extension SignUpViewController: View {
                 }
             })
             .disposed(by: disposeBag)
+        
+        reactor.submitButtonTapRelay.bind { [weak self] in
+            self?.coordinator?.pushToNickNameView()
+        }.disposed(by: disposeBag)
     }
 }

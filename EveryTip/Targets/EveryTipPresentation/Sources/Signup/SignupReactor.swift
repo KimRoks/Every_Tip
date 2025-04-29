@@ -12,8 +12,10 @@ import EveryTipDomain
 
 import ReactorKit
 import RxSwift
+import RxRelay
 
 // TODO: MVVM 관점에서의 관심사 분리 고려 필요
+// TODO: 가이드 메세지 최적화, 데이터 전달 고려 필요
 
 final class SignUpReactor: Reactor {
     private let timerSubject = BehaviorSubject<Observable<Mutation>>(value: Observable.empty())
@@ -34,6 +36,8 @@ final class SignUpReactor: Reactor {
             }
             .do(onDispose: { print("타이머 해제") })
     }
+    
+    let submitButtonTapRelay = PublishRelay<Void>()
     
     enum VerificationButtonState {
         case beforeSending
@@ -127,7 +131,7 @@ final class SignUpReactor: Reactor {
     
     private func handleVerifyButton(email: String) -> Observable<Mutation> {
         guard let authUseCase = authUseCase else { return Observable.empty() }
-        guard checkRegex(textType: .email, text: email) else {
+        guard email.checkRegex(type: .email) else {
             return Observable.just(
                 .updateTextField(
                     type: .email,
@@ -183,7 +187,7 @@ final class SignUpReactor: Reactor {
         case .verificationCode:
             return handleVerificationCode(text)
         case .password:
-            let isValidPassword = checkRegex(textType: .password, text: text)
+            let isValidPassword = text.checkRegex(type: .password)
             return Observable.just(
                 .updateTextField(
                     type: .password,
@@ -199,7 +203,7 @@ final class SignUpReactor: Reactor {
     
     private func handleVerificationCode(_ text: String) -> Observable<Mutation> {
         guard let authUseCase = authUseCase else { return Observable.empty() }
-        guard checkRegex(textType: .verifyCode, text: text) else {
+        guard text.checkRegex(type: .verifyCode) else {
             return Observable.just(
                 .updateTextField(
                     type: .verificationCode,
@@ -239,7 +243,7 @@ final class SignUpReactor: Reactor {
     
     private func handleConfirmPassword(_ text: String) -> Observable<Mutation> {
         let passwordText = currentState.textFieldText[.password] ?? ""
-        let isMatching = passwordText == text && checkRegex(textType: .password, text: text)
+        let isMatching = passwordText == text && text.checkRegex(type: .password)
         let status: EveryTipTextFieldStatus = isMatching ? .editing : .error
         let errorMessage = status == .error ? "비밀번호가 일치하지 않습니다." : nil
         let enableSubmit = Observable.just(Mutation.updateSubmitButtonEnabledState(isMatching))
@@ -258,29 +262,7 @@ final class SignUpReactor: Reactor {
     
     private func handleSubmit() -> Observable<Mutation> {
         // TODO: 이메일 및 비밀번호 데이터 저장 및 다음 화면 넘어가기
-        return Observable.empty()
-    }
-}
-
-// MARK: - Regex Helper
-private enum TextType {
-    case email
-    case password
-    case verifyCode
-}
-
-private func checkRegex(textType: TextType, text: String?) -> Bool {
-    guard let text = text else {
-        return false
-    }
-    switch textType {
-    case .email:
-        let pattern = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
-        return text.range(of: pattern, options: .regularExpression) != nil
-    case .password:
-        let pattern = "(?=.*[A-Za-z])(?=.*\\d).{8,}"
-        return text.range(of: pattern, options: .regularExpression) != nil
-    case .verifyCode:
-        return Int(text) != nil
+        submitButtonTapRelay.accept(())
+        return .empty()
     }
 }
