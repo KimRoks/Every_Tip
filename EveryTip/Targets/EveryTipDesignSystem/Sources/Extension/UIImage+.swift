@@ -36,6 +36,11 @@ public enum ImageAssetType {
     case bell
     case bellOn
     case refresh
+    case checkMark_circle
+    case checkMark_normal
+    case checkedMark_circle
+    case checkedMark_normal
+    case signupCompleted
 }
 
 extension UIImage {
@@ -91,6 +96,16 @@ extension UIImage {
             EveryTipDesignSystemAsset.bellOn.image
         case .refresh:
             EveryTipDesignSystemAsset.refresh.image
+        case .checkMark_circle:
+            EveryTipDesignSystemAsset.checkMarkCircle.image
+        case .checkMark_normal:
+            EveryTipDesignSystemAsset.checkMarkNormal.image
+        case .checkedMark_circle:
+            EveryTipDesignSystemAsset.checkedMarkCircle.image
+        case .checkedMark_normal:
+            EveryTipDesignSystemAsset.checkedMarkNormal.image
+        case .signupCompleted:
+            EveryTipDesignSystemAsset.signupCompleted.image
         }
     }
 }
