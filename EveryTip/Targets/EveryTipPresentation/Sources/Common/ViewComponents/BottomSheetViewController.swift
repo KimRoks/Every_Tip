@@ -12,6 +12,9 @@ import SnapKit
 // 바텀 시트 스타일에 상속하여 사용 사용처에서 modalPresentationStyle = .overFullScreen 준수
 // 추가 뷰 객체는 contentView를 통해 레이아웃 설정
 
+
+// TODO: 유동적 높이로 수정 필요
+
 class BottomSheetViewController: UIViewController {
     private var bottomSheetConstraint: Constraint?
     
@@ -32,6 +35,7 @@ class BottomSheetViewController: UIViewController {
         view.layer.shadowOpacity = 0.25
         view.layer.shadowOffset = CGSize(width: 0, height: -10)
         view.layer.shadowRadius = 6
+        view.alpha = 0
         
         return view
     }()
@@ -71,7 +75,7 @@ class BottomSheetViewController: UIViewController {
         
         bottomSheetView.snp.makeConstraints {
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
-            $0.height.equalTo(view).multipliedBy(0.42)
+            $0.height.equalTo(view).multipliedBy(0.5)
             bottomSheetConstraint = $0.top.equalTo(view.snp.bottom).constraint // 시작은 화면 밖 아래
         }
         
@@ -80,6 +84,7 @@ class BottomSheetViewController: UIViewController {
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
+    
     
     private func setupTranslucentView() {
         let translucentViewTapped = UITapGestureRecognizer(
@@ -91,13 +96,14 @@ class BottomSheetViewController: UIViewController {
     
     private func animatePresent() {
         // 배경 어둡게 + BottomSheet 위로 애니메이션
-        self.bottomSheetConstraint?.update(offset: -view.frame.height * 0.42)
+        self.bottomSheetConstraint?.update(offset: -view.frame.height * 0.5)
         UIView.animate(
             withDuration: 0.25,
             delay: 0,
             options: .curveEaseOut,
             animations: {
                 self.translucentView.backgroundColor = UIColor.darkGray.withAlphaComponent(0.6)
+                self.bottomSheetView.alpha = 1
                 self.view.layoutIfNeeded()
             }
         )
