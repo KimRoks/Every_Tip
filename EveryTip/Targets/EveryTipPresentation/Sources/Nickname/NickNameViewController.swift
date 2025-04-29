@@ -16,6 +16,7 @@ final class NicknameViewController: BaseViewController {
     
     weak var coordinator: NicknameCoordinator?
     var disposeBag: DisposeBag = DisposeBag()
+    var onConfirm: (()->Void)?
     
     private let titleView: TitleDescriptionView = {
         let view = TitleDescriptionView(
@@ -278,5 +279,12 @@ extension NicknameViewController: View {
                 self?.showToast(message: message)
             })
             .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$navigateSignal)
+            .filter { $0 == true }
+            .subscribe(onNext: { [weak self] _ in
+                self?.onConfirm?()
+                self?.coordinator?.presentAgreementBottomSheet()
+            }).disposed(by: disposeBag)
     }
 }

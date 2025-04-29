@@ -48,17 +48,18 @@ final class NicknameReactor: Reactor {
         case setNickname(String)
         case setValidation(ValidationResult)
         case setToast(String)
+        case setNavigationSignal(Bool)
     }
 
     struct State {
         var nicknameText: String = ""
         var validationResult: ValidationResult = .none
         @Pulse var toastMessage: String?
+        @Pulse var navigateSignal: Bool = false
     }
 
     var initialState = State()
     private let userUseCase: UserUseCase
-
     init(userUseCase: UserUseCase) {
         self.userUseCase = userUseCase
     }
@@ -105,7 +106,10 @@ final class NicknameReactor: Reactor {
             if currentState.validationResult != .valid {
                 return .just(.setToast("닉네임 중복 확인을 해주세요."))
             }
-            return .just(.setToast("닉네임 설정이 완료되었어요"))
+            return .concat(
+                .just(.setToast("닉네임 설정이 완료되었어요")),
+                .just(.setNavigationSignal(true))
+            )
         }
     }
 
@@ -118,6 +122,8 @@ final class NicknameReactor: Reactor {
             newState.validationResult = validation
         case .setToast(let message):
             newState.toastMessage = message
+        case .setNavigationSignal(let bool):
+            newState.navigateSignal = bool
         }
         return newState
     }
