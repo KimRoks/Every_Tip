@@ -13,7 +13,7 @@ import EveryTipDomain
 import Swinject
 
 protocol NicknameCoordinator: Coordinator {
-    func presentAgreementBottomSheet()
+
 }
 
 final class DefaultNicknameCoordinator: NicknameCoordinator {
@@ -45,12 +45,5 @@ final class DefaultNicknameCoordinator: NicknameCoordinator {
     
     func didFinish() {
         parentCoordinator?.remove(child: self)
-    }
-    
-    func presentAgreementBottomSheet() {
-        let agreementCoordinator = DefaultCheckAgreementCoordinator(navigationContoller: navigationController)
-        agreementCoordinator.parentCoordinator = self
-        self.append(child: agreementCoordinator)
-        agreementCoordinator.start()
     }
 }
