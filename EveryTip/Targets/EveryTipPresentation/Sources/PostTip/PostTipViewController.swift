@@ -21,7 +21,7 @@ final class PostTipViewController: BaseViewController {
     private let closeButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(
-            UIImage(systemName: "x.square"),
+            .et_getImage(for: .closeButton),
             for: .normal
         )
         button.tintColor = .black
@@ -113,33 +113,51 @@ final class PostTipViewController: BaseViewController {
     }()
     
     private let bodyUnderLine: StraightLineView = StraightLineView(color: .et_brandColor4)
-   
+    
     private let addImageButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setImage(
-            UIImage(systemName: "plus.square"),
-            for: .normal
-        )
-        button.setTitle(
+        var configuration = UIButton.Configuration.plain()
+        let attributedTitle = AttributedString(
             "이미지",
-            for: .normal
+            attributes: AttributeContainer([
+                .font: UIFont.et_pretendard(style: .medium, size: 18)
+            ])
         )
-        button.tintColor = .et_textColor5
+        configuration.attributedTitle = attributedTitle
+        configuration.image = .et_getImage(for: .addImage_empty)
+        configuration.baseForegroundColor = .et_textColor5
+
+        configuration.imagePadding = 4
+        configuration.contentInsets = NSDirectionalEdgeInsets(
+            top: 0,
+            leading: 0,
+            bottom: 0,
+            trailing: 0
+        )
+        let button = UIButton(configuration: configuration)
         
         return button
     }()
     
     private let addLinkButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setImage(
-            UIImage(systemName: "link.circle"),
-            for: .normal
-        )
-        button.setTitle(
+        var configuration = UIButton.Configuration.plain()
+        let attributedTitle = AttributedString(
             "링크",
-            for: .normal
+            attributes: AttributeContainer([
+                .font: UIFont.et_pretendard(style: .medium, size: 18)
+            ])
         )
-        button.tintColor = .et_textColor5
+        configuration.baseForegroundColor = .et_textColor5
+
+        configuration.attributedTitle = attributedTitle
+        configuration.image = .et_getImage(for: .link)
+        configuration.imagePadding = 4
+        configuration.contentInsets = NSDirectionalEdgeInsets(
+            top: 0,
+            leading: 0,
+            bottom: 0,
+            trailing: 0
+        )
+        let button = UIButton(configuration: configuration)
         
         return button
     }()
@@ -160,6 +178,7 @@ final class PostTipViewController: BaseViewController {
             "임시 저장 0",
             for: .normal
         )
+        button.titleLabel?.font = .et_pretendard(style: .bold, size: 14)
         button.tintColor = .et_textColor5
         
         return button
@@ -181,25 +200,26 @@ final class PostTipViewController: BaseViewController {
     //MARK: Private Methods
     
     private func setupLayout() {
-        view.addSubview(topStackView)
-        topStackView.addArrangedSubview(closeButton)
-        topStackView.addArrangedSubview(topTitleLabel)
-        topStackView.addArrangedSubview(registerButton)
+        view.addSubViews(
+            topStackView,
+            choiceCategoryView,
+            categoryUnderLine,
+            hashtagView,
+            hashTagUnderLine,
+            titleTextField,
+            bodyTextView,
+            addedImageView,
+            bodyUnderLine,
+            addImageButton,
+            addLinkButton,
+            temporaryStorageButton
+        )
         
-        view.addSubview(choiceCategoryView)
-        view.addSubview(categoryUnderLine)
-        view.addSubview(hashtagView)
-        view.addSubview(hashTagUnderLine)
-        view.addSubview(titleTextField)
-        view.addSubview(bodyTextView)
-        view.addSubview(addedImageView)
-        view.addSubview(bodyUnderLine)
-        
-        view.addSubview(attachmentStackView)
-        attachmentStackView.addArrangedSubview(addImageButton)
-        attachmentStackView.addArrangedSubview(addLinkButton)
-        
-        view.addSubview(temporaryStorageButton)
+        topStackView.addArrangedSubViews(
+            closeButton,
+            topTitleLabel,
+            registerButton
+        )
     }
     
     private func setupConstraints() {
@@ -260,21 +280,27 @@ final class PostTipViewController: BaseViewController {
         }
         
         bodyUnderLine.snp.makeConstraints {
-            $0.bottom.equalTo(attachmentStackView.snp.top).offset(-10)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(-46)
             $0.leading.equalTo(view.safeAreaLayoutGuide)
             $0.trailing.equalTo(view.safeAreaLayoutGuide)
         }
         
-        attachmentStackView.snp.makeConstraints {
+        addImageButton.snp.makeConstraints {
+            $0.top.equalTo(bodyUnderLine.snp.bottom).offset(12)
             $0.leading.equalTo(view.safeAreaLayoutGuide).offset(20)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide)
-            $0.height.equalTo(34)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(-12)
+        }
+        
+        addLinkButton.snp.makeConstraints {
+            $0.top.equalTo(bodyUnderLine.snp.bottom).offset(12)
+            $0.leading.equalTo(addImageButton.snp.trailing).offset(10)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(-12)
         }
         
         temporaryStorageButton.snp.makeConstraints {
+            $0.top.equalTo(bodyUnderLine.snp.bottom).offset(15)
             $0.trailing.equalTo(view.safeAreaLayoutGuide).offset(-20)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide)
-            $0.height.equalTo(30)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(-15)
         }
     }
     
