@@ -36,6 +36,11 @@ public enum ImageAssetType {
     case bell
     case bellOn
     case refresh
+    case addImage_empty
+    case addImage_fill
+    case nextButton
+    case link
+    case closeButton
 }
 
 extension UIImage {
@@ -91,6 +96,16 @@ extension UIImage {
             EveryTipDesignSystemAsset.bellOn.image
         case .refresh:
             EveryTipDesignSystemAsset.refresh.image
+        case .addImage_empty:
+            EveryTipDesignSystemAsset.addImageEmpty.image
+        case .addImage_fill:
+            EveryTipDesignSystemAsset.addImageFill.image
+        case .nextButton:
+            EveryTipDesignSystemAsset.nextButton.image
+        case .link:
+            EveryTipDesignSystemAsset.link.image
+        case .close:
+            EveryTipDesignSystemAsset.closeButton.image
         }
     }
 }
