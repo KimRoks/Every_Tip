@@ -104,7 +104,7 @@ extension UIImage {
             EveryTipDesignSystemAsset.nextButton.image
         case .link:
             EveryTipDesignSystemAsset.link.image
-        case .close:
+        case .closeButton:
             EveryTipDesignSystemAsset.closeButton.image
         }
     }
