@@ -108,7 +108,7 @@ final class PostTipViewController: BaseViewController {
         let button = UIButton(type: .system)
         button.backgroundColor = .black
         button.layer.cornerRadius = 10
-    
+        
         return button
     }()
     
@@ -125,7 +125,7 @@ final class PostTipViewController: BaseViewController {
         configuration.attributedTitle = attributedTitle
         configuration.image = .et_getImage(for: .addImage_empty)
         configuration.baseForegroundColor = .et_textColor5
-
+        
         configuration.imagePadding = 4
         configuration.contentInsets = NSDirectionalEdgeInsets(
             top: 0,
@@ -147,7 +147,7 @@ final class PostTipViewController: BaseViewController {
             ])
         )
         configuration.baseForegroundColor = .et_textColor5
-
+        
         configuration.attributedTitle = attributedTitle
         configuration.image = .et_getImage(for: .link)
         configuration.imagePadding = 4
@@ -190,6 +190,7 @@ final class PostTipViewController: BaseViewController {
         super.viewDidLoad()
         setupLayout()
         setupConstraints()
+        bodyTextView.delegate = self
         closeButton.addTarget(
             nil,
             action: #selector(dismissView),
@@ -307,5 +308,21 @@ final class PostTipViewController: BaseViewController {
     @objc
     private func dismissView() {
         coordinator?.didFinish()
+    }
+}
+
+extension PostTipViewController: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.text == "내용 입력" {
+            textView.text = ""
+            textView.textColor = UIColor.et_textColorBlack70
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            textView.text = "내용 입력"
+            textView.textColor = .placeholderText
+        }
     }
 }
