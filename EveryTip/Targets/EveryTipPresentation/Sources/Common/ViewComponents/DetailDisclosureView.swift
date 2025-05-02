@@ -17,16 +17,19 @@ final class DetailDisclosureView: UIStackView {
             style: .medium,
             size: 16
         )
+        label.textColor = .et_textColorBlack50
         
         return label
     }()
     
     private let detailDisclosureButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setBackgroundImage(
-            UIImage(systemName: "greaterthan"),
-            for: .normal
+        
+        button.setImage(
+            .et_getImage(for: .nextButton),
+                        for: .normal
         )
+
         button.tintColor = .et_textColor5
         button.contentMode = .center
         
@@ -60,5 +63,14 @@ final class DetailDisclosureView: UIStackView {
         detailDisclosureButton.snp.makeConstraints {
             $0.width.equalTo(15)
         }
+    }
+    
+    func updateTitle(_ title: String) {
+        titleLabel.text = title
+        titleLabel.textColor = .et_textColorBlack70
+        titleLabel.font = .et_pretendard(
+            style: .bold,
+            size: 16
+        )
     }
 }
