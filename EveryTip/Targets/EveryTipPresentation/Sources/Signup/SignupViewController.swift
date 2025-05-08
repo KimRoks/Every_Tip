@@ -17,10 +17,13 @@ import ReactorKit
 
 final class SignUpViewController: BaseViewController {
     
+    var onConfirm: (() -> Void)?
     weak var coordinator: SignupCoordinator?
     
     var disposeBag = DisposeBag()
 
+    // MARK: View Components
+    
     private let titleView: TitleDescriptionView = {
         let view = TitleDescriptionView(
             title: "회원가입",
@@ -140,7 +143,7 @@ final class SignUpViewController: BaseViewController {
         return etView
     }()
     
-    private let submitButton: UIButton = {
+    private let confirmButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("다음", for: .normal)
         button.isEnabled = false
@@ -162,11 +165,47 @@ final class SignUpViewController: BaseViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: View Life Cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
         setupConstraints()
+        setupTextFieldDelegates()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+    }
+   
+    // MARK: Internal Methods
     
     private func setupLayout() {
         view.addSubViews(
@@ -179,7 +218,7 @@ final class SignUpViewController: BaseViewController {
             passwordLabel,
             passwordTextFieldView,
             confirmPasswordTextFieldView,
-            submitButton,
+            confirmButton,
             verificationCompletedLabel
         )
         view.addSubview(verifyButton)
@@ -252,13 +291,62 @@ final class SignUpViewController: BaseViewController {
             $0.height.greaterThanOrEqualTo(52)
         }
         
-        submitButton.snp.makeConstraints {
+        confirmButton.snp.makeConstraints {
             $0.height.equalTo(56)
             $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(-20)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
     }
+    
+    // MARK: - About Keyboard Notification
+
+    private var activeTextField: UITextField?
+    
+    private func setupTextFieldDelegates() {
+        passwordTextFieldView.textField.delegate = self
+        confirmPasswordTextFieldView.textField.delegate = self
+    }
+    
+    @objc private func keyboardWillShow(_ notification: Notification) {
+        guard let active = activeTextField,
+              (active == passwordTextFieldView.textField ||
+               active == confirmPasswordTextFieldView.textField),
+              let userInfo = notification.userInfo,
+              let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect
+        else {
+            return
+        }
+        
+        let keyboardHeight = keyboardFrame.height
+        UIView.animate(withDuration: 0.5) {
+            self.view.transform = CGAffineTransform(
+                translationX: 0,
+                y: -keyboardHeight * 0.9
+            )
+        }
+    }
+    
+    @objc private func keyboardWillHide(_ notification: Notification) {
+        UIView.animate(withDuration: 0.3) {
+            self.view.transform = .identity
+        }
+    }
 }
+
+// MARK: - UITextFieldDelegate
+extension SignUpViewController: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        activeTextField = textField
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if activeTextField == textField {
+            activeTextField = nil
+        }
+    }
+}
+
+// MARK: Reactor Binding
 
 extension SignUpViewController: View {
     func bind(reactor: SignUpReactor) {
@@ -313,8 +401,8 @@ extension SignUpViewController: View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        submitButton.rx.tap
-            .map { Reactor.Action.submitButtonTapped }
+        confirmButton.rx.tap
+            .map { Reactor.Action.confirmButtonTapped }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
     }
@@ -401,13 +489,13 @@ extension SignUpViewController: View {
         reactor.state
             .map { $0.isSubmitButtonEnabled }
             .distinctUntilChanged()
-            .bind(to: submitButton.rx.isEnabled)
+            .bind(to: confirmButton.rx.isEnabled)
             .disposed(by: disposeBag)
         
         reactor.state.map {
             $0.isSubmitButtonEnabled ? .et_brandColor2 : .et_textColor5
         }
-        .bind(to: submitButton.rx.backgroundColor )
+        .bind(to: confirmButton.rx.backgroundColor )
         .disposed(by: disposeBag)
         
         reactor.state
@@ -425,8 +513,16 @@ extension SignUpViewController: View {
             })
             .disposed(by: disposeBag)
         
+        reactor.pulse(\.$toastMessage)
+            .compactMap { $0 }
+            .subscribe(onNext: { [weak self] message in
+                self?.showToast(message: message)
+            })
+            .disposed(by: disposeBag)
+        
         reactor.submitButtonTapRelay.bind { [weak self] in
-            self?.coordinator?.pushToNickNameView()
+            self?.onConfirm?()
+            self?.coordinator?.pushToNicknameView()
         }.disposed(by: disposeBag)
     }
 }

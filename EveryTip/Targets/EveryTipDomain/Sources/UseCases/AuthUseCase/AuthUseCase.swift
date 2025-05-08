@@ -17,7 +17,7 @@ public protocol AuthUseCase {
     func login(email: String, password: String) -> Single<Account>
     func signUp(
         email: String,
-        passwrod: String,
+        password: String,
         agreementsIDs: [Int],
         nickName: String
     ) -> Single<Account>
@@ -57,13 +57,13 @@ public final class DefaultAuthUseCase: AuthUseCase {
     
     public func signUp(
         email: String,
-        passwrod: String,
+        password: String,
         agreementsIDs agreementsIds: [Int],
         nickName: String
     ) -> Single<Account> {
         accountRepository.signUp(
             with: email,
-            pasword: passwrod,
+            pasword: password,
             agreementIDs: agreementsIds,
             nickName: nickName
         )

@@ -13,7 +13,7 @@ import EveryTipDomain
 import Swinject
 
 protocol NicknameCoordinator: Coordinator {
-
+    func presentAgreementBottomSheet()
 }
 
 final class DefaultNicknameCoordinator: NicknameCoordinator {
@@ -24,8 +24,14 @@ final class DefaultNicknameCoordinator: NicknameCoordinator {
      
     var navigationController: UINavigationController
     
-    init(navigationController: UINavigationController) {
+    private var signupData: SignupData
+    
+    init(
+        navigationController: UINavigationController,
+        signupData: SignupData
+    ) {
         self.navigationController = navigationController
+        self.signupData = signupData
     }
     
     func start() {
@@ -36,6 +42,12 @@ final class DefaultNicknameCoordinator: NicknameCoordinator {
         let nicknameReactor = NicknameReactor(userUseCase: userUseCase)
         let nicknameViewController = NicknameViewController(reactor: nicknameReactor)
         nicknameViewController.coordinator = self
+        nicknameViewController.onConfirm = { [weak self] in
+            guard let self = self else { return }
+            let state = nicknameReactor.currentState
+            let nickname = state.nicknameText
+            signupData.nickname = nickname
+        }
         
         navigationController.pushViewController(
             nicknameViewController,
@@ -45,5 +57,16 @@ final class DefaultNicknameCoordinator: NicknameCoordinator {
     
     func didFinish() {
         parentCoordinator?.remove(child: self)
+    }
+ 
+    func presentAgreementBottomSheet() {
+        let agreementCoordinator = DefaultCheckAgreementCoordinator(
+            navigationContoller: navigationController,
+            signupData: signupData
+        )
+        agreementCoordinator.parentCoordinator = self
+    
+        self.append(child: agreementCoordinator)
+        agreementCoordinator.start()
     }
 }
