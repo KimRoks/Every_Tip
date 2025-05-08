@@ -54,13 +54,16 @@ final class DefaultCheckAgreementCoordinator: CheckAgreementCoordinator {
     }
     
     func pushToSignupSuccessView() {
-        let completedCoordinator = DefaultSignupSuccessCoordinator(navigationContoller: navigationController)
-        
-        completedCoordinator.parentCoordinator = self
-        self.append(child: completedCoordinator)
-        
-        navigationController.dismiss(animated: true) {
-            completedCoordinator.start()
+        navigationController.dismiss(animated: true) { [ weak self] in
+            guard let self = self else { return }
+            let signupSuccessCoordinator = DefaultSignupSuccessCoordinator(
+                navigationContoller: navigationController
+            )
+            
+            signupSuccessCoordinator.parentCoordinator = self
+            self.append(child: signupSuccessCoordinator)
+            
+            signupSuccessCoordinator.start()
         }
     }
 }
