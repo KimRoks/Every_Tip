@@ -41,6 +41,11 @@ public enum ImageAssetType {
     case checkedMark_circle
     case checkedMark_normal
     case signupCompleted
+    case addImage_empty
+    case addImage_fill
+    case nextButton
+    case link
+    case closeButton
 }
 
 extension UIImage {
@@ -106,6 +111,16 @@ extension UIImage {
             EveryTipDesignSystemAsset.checkedMarkNormal.image
         case .signupCompleted:
             EveryTipDesignSystemAsset.signupCompleted.image
+        case .addImage_empty:
+            EveryTipDesignSystemAsset.addImageEmpty.image
+        case .addImage_fill:
+            EveryTipDesignSystemAsset.addImageFill.image
+        case .nextButton:
+            EveryTipDesignSystemAsset.nextButton.image
+        case .link:
+            EveryTipDesignSystemAsset.link.image
+        case .closeButton:
+            EveryTipDesignSystemAsset.closeButton.image
         }
     }
 }
