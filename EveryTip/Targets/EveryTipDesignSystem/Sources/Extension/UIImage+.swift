@@ -44,8 +44,10 @@ public enum ImageAssetType {
     case addImage_empty
     case addImage_fill
     case nextButton
+    case nextButton_darkGray
     case link
     case closeButton
+    case edit
 }
 
 extension UIImage {
@@ -117,10 +119,14 @@ extension UIImage {
             EveryTipDesignSystemAsset.addImageFill.image
         case .nextButton:
             EveryTipDesignSystemAsset.nextButton.image
+        case .nextButton_darkGray:
+            EveryTipDesignSystemAsset.nextButtonDarkGray.image
         case .link:
             EveryTipDesignSystemAsset.link.image
         case .closeButton:
             EveryTipDesignSystemAsset.closeButton.image
+        case .edit:
+            EveryTipDesignSystemAsset.edit.image
         }
     }
 }
