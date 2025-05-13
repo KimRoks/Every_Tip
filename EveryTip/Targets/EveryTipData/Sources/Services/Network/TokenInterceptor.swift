@@ -16,14 +16,11 @@ import Alamofire
 final class TokenInterceptor: RequestInterceptor {
         
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, any Error>) -> Void) {
-        guard let aceessToken = TokenKeyChainManager.shared.getToken(type:  .access) else {
-            completion(.success(urlRequest))
-            return
-        }
-    
-        // TODO: 추후 API가 토큰을 어떤 형식으로 받는지 체크 후 수정 필요
         var request = urlRequest
-        request.addValue(aceessToken, forHTTPHeaderField: "Authorization")
+        if let accessToken = TokenKeyChainManager.shared.getToken(type: .access) {
+            request.addValue(accessToken, forHTTPHeaderField: "Authorization")
+        }
+        completion(.success(request))
     }
     
     func retry(_ request: Request, for session: Session, dueTo error: any Error, completion: @escaping (RetryResult) -> Void) {

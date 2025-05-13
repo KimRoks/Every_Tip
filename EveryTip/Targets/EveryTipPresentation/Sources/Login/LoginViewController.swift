@@ -20,6 +20,8 @@ final class LoginViewController: BaseViewController {
     
     var disposeBag = DisposeBag()
     
+    private var activeTextField: UITextField?
+
     private let logoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage.et_getImage(for: .everyTipLogoimage)
@@ -39,14 +41,16 @@ final class LoginViewController: BaseViewController {
     private let emailTextFieldView: EveryTipTextFieldView = {
         let textFiedldView = EveryTipTextFieldView(hasClearButton: true)
         let textField = textFiedldView.textField
+        textField.keyboardType = .emailAddress
         textField.placeholder = "예) everyTip@everytip.com"
         
         return textFiedldView
     }()
     
     private let passwordTextFieldView: EveryTipTextFieldView = {
-        let textFiedldView = EveryTipTextFieldView(hasClearButton: true)
+        let textFiedldView = EveryTipTextFieldView(hasClearButton: true, hasSecureTextButton: true)
         let textField = textFiedldView.textField
+        
         textField.placeholder = "비밀번호 입력"
         
         return textFiedldView
@@ -78,7 +82,7 @@ final class LoginViewController: BaseViewController {
         return button
     }()
     
-    let loginButton: UIButton = {
+    private let loginButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("로그인", for: .normal)
         button.tintColor = .white
@@ -93,6 +97,38 @@ final class LoginViewController: BaseViewController {
         setupLayout()
         setupConstraints()
         signupButton.addTarget(self, action: #selector(pushToSignUpView), for: .touchUpInside)
+        setupTextFieldDelegates()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
     }
     
     init(reactor: LoginReactor) {
@@ -157,7 +193,6 @@ final class LoginViewController: BaseViewController {
         
         signupButton.snp.makeConstraints {
             $0.top.equalTo(passwordTextFieldView.snp.bottom).offset(8)
-            
             $0.leading.equalTo(separator.snp.trailing).offset(20)
         }
         
@@ -172,6 +207,36 @@ final class LoginViewController: BaseViewController {
     private func pushToSignUpView() {
         coordinator?.pushToSignupView()
     }
+    
+    private func setupTextFieldDelegates() {
+        emailTextFieldView.textField.delegate = self
+        passwordTextFieldView.textField.delegate = self
+    }
+    
+    @objc private func keyboardWillShow(_ notification: Notification) {
+        guard let active = activeTextField,
+              (active == emailTextFieldView.textField ||
+               active == passwordTextFieldView.textField),
+              let userInfo = notification.userInfo,
+              let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect
+        else {
+            return
+        }
+        
+        let keyboardHeight = keyboardFrame.height
+        UIView.animate(withDuration: 0.5) {
+            self.view.transform = CGAffineTransform(
+                translationX: 0,
+                y: -keyboardHeight * 0.6
+            )
+        }
+    }
+    
+    @objc private func keyboardWillHide(_ notification: Notification) {
+        UIView.animate(withDuration: 0.3) {
+            self.view.transform = .identity
+        }
+    }
 }
 
 extension LoginViewController: View {
@@ -181,26 +246,71 @@ extension LoginViewController: View {
     }
     
     func bindInput(to reactor: LoginReactor) {
-        let emailObservable = emailTextFieldView.textField.rx.text.orEmpty.asObservable()
-        let passwordObservable = passwordTextFieldView.textField.rx.text.orEmpty.asObservable()
+
+        emailTextFieldView.textField.rx.text.orEmpty
+            .distinctUntilChanged()
+            .map { Reactor.Action.emailTextChanged($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
         
+        emailTextFieldView.textField.rx.controlEvent(.editingDidBegin)
+            .map { EveryTipTextFieldStatus.editing }
+            .bind(to: emailTextFieldView.status)
+            .disposed(by: disposeBag)
+        
+        emailTextFieldView.textField.rx.controlEvent(.editingDidEnd)
+            .map {  EveryTipTextFieldStatus.normal }
+            .bind(to: emailTextFieldView.status)
+            .disposed(by: disposeBag)
+        
+        passwordTextFieldView.textField.rx.text.orEmpty
+            .distinctUntilChanged()
+            .map { Reactor.Action.passwordTextChanged($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        passwordTextFieldView.textField.rx.controlEvent(.editingDidBegin)
+            .map { EveryTipTextFieldStatus.editing }
+            .bind(to: passwordTextFieldView.status)
+            .disposed(by: disposeBag)
+        
+        passwordTextFieldView.textField.rx.controlEvent(.editingDidEnd)
+            .map {  EveryTipTextFieldStatus.normal }
+            .bind(to: passwordTextFieldView.status)
+            .disposed(by: disposeBag)
+
         loginButton.rx.tap
-            .withLatestFrom(Observable.combineLatest(emailObservable, passwordObservable))
-            .map { email, password in
-                Reactor.Action.loginButtonTapped(email: email, password: password)
-            }
+            .map { Reactor.Action.loginButtonTapped }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
     }
     
     func bindOutput(to reactor: LoginReactor) {
-        reactor.state
-            .map { $0.isLogined }
-            .distinctUntilChanged()
-            .compactMap { $0 }
-            .subscribe(onNext: { isLogined in
-                    
+        reactor.pulse(\.$toastMessage)
+            .subscribe(onNext: { [weak self] message in
+                guard let message = message else { return }
+                self?.showToast(message: message)
             })
             .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$navigationSignal)
+            .filter { $0 == true }
+            .subscribe(onNext: { [weak self] _ in
+                self?.coordinator?.popToRootView()
+            })
+            .disposed(by: disposeBag)
+    }
+}
+
+// MARK: - UITextFieldDelegate
+extension LoginViewController: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        activeTextField = textField
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if activeTextField == textField {
+            activeTextField = nil
+        }
     }
 }

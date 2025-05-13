@@ -20,6 +20,10 @@ final class MyInfoViewController: BaseViewController {
     weak var coordinator: MyInfoViewCoordinator?
     var disposeBag = DisposeBag()
     
+    private let logoutConfirmTapped = PublishRelay<Void>()
+    private let tableViewCellTapped = PublishRelay<Int>()
+    private let tapGesture = UITapGestureRecognizer()
+    
     private let roundedBackgroundView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
@@ -49,118 +53,59 @@ final class MyInfoViewController: BaseViewController {
         return label
     }()
     
-    private let subscribersLabel: UILabel = {
-        let label = UILabel()
-        label.text = "구독자"
-        label.font = UIFont.et_pretendard(
-            style: .medium,
-            size: 14
-        )
-        
-        return label
-    }()
-    
     private let subscribersCountLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.et_pretendard(
-            style: .semiBold,
-            size: 14
-        )
-        
-        return label
-    }()
-    
-    private lazy var subscribersStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.spacing = 3
-        stackView.axis = .horizontal
-        stackView.alignment = .leading
-        
-        return stackView
-    }()
-    
-    private let postedTipLabel: UILabel = {
-        let label = UILabel()
-        label.text = "작성 팁"
-        label.font = UIFont.et_pretendard(
-            style: .medium,
-            size: 14
-        )
+        label.text = "구독자 0"
         
         return label
     }()
     
     private let postedTipCountLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.et_pretendard(
-            style: .semiBold,
-            size: 14
-        )
-        
-        return label
-    }()
-    
-    private lazy var postedStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.spacing = 3
-        stackView.axis = .horizontal
-        stackView.alignment = .leading
-        
-        return stackView
-    }()
-    
-    private let savedTipLabel: UILabel = {
-        let label = UILabel()
-        label.text = "저장 팁"
-        label.font = UIFont.et_pretendard(
-            style: .medium,
-            size: 14
-        )
-        
+        label.text = "구독자 0"
         return label
     }()
     
     private let savedTipCountLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.et_pretendard(
-            style: .semiBold,
-            size: 14
-        )
-        
+        label.text = "구독자 0"
+
         return label
     }()
     
-    private lazy var savedStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.spacing = 3
-        stackView.axis = .horizontal
-        stackView.alignment = .leading
+    private let touchableView: UIView = {
+        let view = UIView()
         
-        return stackView
+        return view
     }()
     
-    private let touchableStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.spacing = 10
-        stackView.alignment = .leading
-        stackView.distribution = .equalSpacing
-        stackView.isUserInteractionEnabled = true
+    private let nextButtonImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = .et_getImage(for: .nextButton_darkGray)
         
-        return stackView
+        return imageView
     }()
     
     private let editProfileButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("프로필 편집", for: .normal)
-        button.titleLabel?.font = UIFont.et_pretendard(
-            style: .bold,
-            size: 14
+                
+        var configuration = UIButton.Configuration.plain()
+        configuration.image = .et_getImage(for: .edit)
+
+        let attributedTitle = AttributedString(
+            "프로필 편집",
+            attributes: AttributeContainer([
+                .font: UIFont.et_pretendard(style: .bold, size: 14)
+            ])
         )
-        button.backgroundColor = UIColor.et_lineGray20
-        button.tintColor = UIColor.et_textColorBlack50
-        button.layer.cornerRadius = 5
+        configuration.attributedTitle = attributedTitle
+        configuration.imagePadding = 8
+        configuration.baseForegroundColor = .et_textColorBlack50
+        configuration.background.backgroundColor = .et_lineGray20
         
+        button.configuration = configuration
+        button.layer.cornerRadius = 5
+
         return button
     }()
     
@@ -198,28 +143,20 @@ final class MyInfoViewController: BaseViewController {
     
     private func setupLayout() {
         view.addSubview(roundedBackgroundView)
-        roundedBackgroundView.addSubview(userImageView)
-        roundedBackgroundView.addSubview(userNameLable)
+        roundedBackgroundView.addSubViews(
+            userImageView,
+            userNameLable,
+            touchableView,
+            editProfileButton,
+            userInfoTableView
+        )
         
-        roundedBackgroundView.addSubview(subscribersStackView)
-        subscribersStackView.addArrangedSubview(subscribersLabel)
-        subscribersStackView.addArrangedSubview(subscribersCountLabel)
-        
-        roundedBackgroundView.addSubview(postedStackView)
-        postedStackView.addArrangedSubview(postedTipLabel)
-        postedStackView.addArrangedSubview(postedTipCountLabel)
-        
-        roundedBackgroundView.addSubview(savedStackView)
-        savedStackView.addArrangedSubview(savedTipLabel)
-        savedStackView.addArrangedSubview(savedTipCountLabel)
-        
-        roundedBackgroundView.addSubview(touchableStackView)
-        touchableStackView.addArrangedSubview(subscribersStackView)
-        touchableStackView.addArrangedSubview(postedStackView)
-        touchableStackView.addArrangedSubview(savedStackView)
-        
-        roundedBackgroundView.addSubview(editProfileButton)
-        roundedBackgroundView.addSubview(userInfoTableView)
+        touchableView.addSubViews(
+            subscribersCountLabel,
+            postedTipCountLabel,
+            savedTipCountLabel,
+            nextButtonImageView
+        )
     }
     
     private func setupConstraints() {
@@ -241,10 +178,33 @@ final class MyInfoViewController: BaseViewController {
             $0.trailing.equalTo(roundedBackgroundView.snp.trailing)
         }
         
-        touchableStackView.snp.makeConstraints {
+        subscribersCountLabel.snp.makeConstraints {
+            $0.top.bottom.equalTo(touchableView)
+            $0.leading.equalTo(touchableView)
+        }
+        
+        postedTipCountLabel.snp.makeConstraints {
+            $0.top.bottom.equalTo(touchableView)
+            $0.leading.equalTo(subscribersCountLabel.snp.trailing).offset(12)
+        }
+        
+        savedTipCountLabel.snp.makeConstraints {
+            $0.top.bottom.equalTo(touchableView)
+            $0.leading.equalTo(postedTipCountLabel.snp.trailing).offset(12)
+        }
+        
+        nextButtonImageView.snp.makeConstraints {
+            $0.width.equalTo(4)
+            $0.height.equalTo(8)
+            $0.centerY.equalTo(touchableView)
+            $0.leading.equalTo(savedTipCountLabel.snp.trailing).offset(12)
+        }
+        
+        touchableView.snp.makeConstraints {
             $0.top.equalTo(userNameLable.snp.bottom).offset(5)
             $0.leading.equalTo(userImageView.snp.trailing).offset(20)
-            $0.trailing.lessThanOrEqualTo(roundedBackgroundView.snp.trailing).offset(-10)
+            $0.trailing.equalTo(roundedBackgroundView.snp.trailing).offset(-10)
+            $0.height.equalTo(20)
         }
         
         editProfileButton.snp.makeConstraints {
@@ -269,39 +229,34 @@ final class MyInfoViewController: BaseViewController {
     }
     
     private func setUserInteraction() {
-        let tapGesture = UITapGestureRecognizer(
-            target: self,
-            action: #selector(navigationToUserContentsView)
+        touchableView.addGestureRecognizer(tapGesture)
+    }
+    
+    private func showLogoutAlert() {
+        let alertController = UIAlertController(
+            title: "로그아웃 하시겠습니까?",
+            message: nil,
+            preferredStyle: .alert
         )
-        touchableStackView.addGestureRecognizer(tapGesture)
-    }
-    
-    // TODO: 리액터로 처리하도록 변경
-    @objc
-    private func navigationToUserContentsView() {
-        coordinator?.checkLoginBeforeAction(onLoggedIn: { [weak self] in
-            self?.coordinator?.pushToUserContentsView()
-        })
-    }
-    
-    private func navigationToAgreementView() {
-        coordinator?.pushToAgreementViewcontroller()
-    }
- 
-    private func toTestSignInView() {
-        let testSignInVC = TestSignInViewController()
-        coordinator?.navigationController.pushViewController(testSignInVC, animated: true)
+        let confirmAction = UIAlertAction(
+            title: "예",
+            style: .default
+        ) { [weak self] _ in
+            self?.logoutConfirmTapped.accept(())
+        }
+        let cancleAction = UIAlertAction(title: "아니오", style: .default)
+        
+        alertController.addAction(confirmAction)
+        alertController.addAction(cancleAction)
+        
+        self.present(alertController, animated: true)
     }
 }
 
 extension MyInfoViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch indexPath.row {
-        case 4: navigationToAgreementView()
-        case 6: toTestSignInView()
-        default:
-            return
-        }
+        tableViewCellTapped.accept(indexPath.row)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 
@@ -348,24 +303,106 @@ extension MyInfoViewController: View {
     }
     
     private func bindInputs(to reactor: MyInfoReactor) {
-        self.reactor?.action.onNext(.viewDidLoad)
+        rx.viewDidLoad
+            .map { Reactor.Action.viewDidLoad }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        rx.viewWillAppear
+            .map { Reactor.Action.viewWillAppear }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        tapGesture.rx.event
+            .bind { [weak self] _ in
+                self?.coordinator?.checkLoginBeforeAction(onLoggedIn: { [weak self] in
+                    self?.coordinator?.pushToUserContentsView()
+                })
+            }
+            .disposed(by: disposeBag)
+        
+        logoutConfirmTapped.map { Reactor.Action.logoutConfirmTapped }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        tableViewCellTapped.map { row -> Reactor.Action? in
+            switch row {
+            case 4: return .agreementCellTapped
+            case 6: return .logoutCellTapped
+                
+            default:
+                return nil
+            }
+        }
+        .compactMap { $0 }
+        .bind(to: reactor.action)
+        .disposed(by: disposeBag)
     }
     
     private func bindOutputs(to reactor: MyInfoReactor) {
-        reactor.state.map { $0.userName }
+        reactor.state.map { $0.myProfile.nickName }
+            .distinctUntilChanged()
             .bind(to: userNameLable.rx.text)
             .disposed(by: disposeBag)
         
-        reactor.state.map { $0.subscribersCount }
-        .bind(to: subscribersCountLabel.rx.text)
-        .disposed(by: disposeBag)
+        reactor.state.map { $0.myProfile.subscriberCount }
+            .distinctUntilChanged()
+            .bind(
+                with: self,
+                onNext: { owner, count in
+                    owner.subscribersCountLabel.setCountLabelStyle(
+                        normalText: "구독자 ",
+                        boldText: count.toAbbreviatedString()
+                    )
+                }
+            )
+            .disposed(by: disposeBag)
         
-        reactor.state.map { $0.postedTipCount }
-        .bind(to: postedTipCountLabel.rx.text)
-        .disposed(by: disposeBag)
+        reactor.state.map { $0.myProfile.tipCount }
+            .distinctUntilChanged()
+            .bind(
+                with: self,
+                onNext: { owner, count in
+                    owner.postedTipCountLabel.setCountLabelStyle(
+                        normalText: "작성 팁 ",
+                        boldText: count.toAbbreviatedString()
+                    )
+                }
+            )
+            .disposed(by: disposeBag)
         
-        reactor.state.map { $0.savedTipCount }
-        .bind(to: savedTipCountLabel.rx.text)
-        .disposed(by: disposeBag)
+        reactor.state.map { $0.myProfile.savedTipCount }
+            .distinctUntilChanged()
+            .bind(
+                with: self,
+                onNext: { owner, count in
+                    owner.savedTipCountLabel.setCountLabelStyle(
+                        normalText: "저장 팁 ",
+                        boldText: count.toAbbreviatedString()
+                    )
+                }
+            )
+            .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$toastMessage)
+            .compactMap { $0 }
+            .subscribe(onNext: { [weak self] message in
+                self?.showToast(message: message)
+            })
+            .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$navigationSignal)
+            .compactMap { $0 }
+            .bind(onNext: { [weak self] event in
+                switch event {
+                case .agreement:
+                    self?.coordinator?.pushToAgreementViewcontroller()
+                case .logout:
+                    self?.showLogoutAlert()
+                case .userContents:
+                    self?.coordinator?.pushToUserContentsView()
+                }
+            })
+            .disposed(by: disposeBag)
     }
 }
