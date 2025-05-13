@@ -81,4 +81,25 @@ extension UILabel {
         layer.masksToBounds = true
         textAlignment = .center
     }
+    
+    func setCountLabelStyle(normalText: String, boldText: String) {
+        let attributedText = NSMutableAttributedString(
+            string: normalText,
+            attributes: [
+                .font: UIFont.et_pretendard(style: .medium, size: 14),
+                .foregroundColor: UIColor.et_textColorBlack50
+            ]
+        )
+        
+        let boldPart = NSAttributedString(
+            string: boldText,
+            attributes: [
+                .font: UIFont.et_pretendard(style: .semiBold, size: 14),
+                .foregroundColor: UIColor.et_textColorBlack50
+            ]
+        )
+        
+        attributedText.append(boldPart)
+        self.attributedText = attributedText
+    }
 }
