@@ -246,29 +246,62 @@ extension LoginViewController: View {
     }
     
     func bindInput(to reactor: LoginReactor) {
-        let emailObservable = emailTextFieldView.textField.rx.text.orEmpty.asObservable()
-        let passwordObservable = passwordTextFieldView.textField.rx.text.orEmpty.asObservable()
+
+        emailTextFieldView.textField.rx.text.orEmpty
+            .distinctUntilChanged()
+            .map { Reactor.Action.emailTextChanged($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
         
+        emailTextFieldView.textField.rx.controlEvent(.editingDidBegin)
+            .map { EveryTipTextFieldStatus.editing }
+            .bind(to: emailTextFieldView.status)
+            .disposed(by: disposeBag)
+        
+        emailTextFieldView.textField.rx.controlEvent(.editingDidEnd)
+            .map {  EveryTipTextFieldStatus.normal }
+            .bind(to: emailTextFieldView.status)
+            .disposed(by: disposeBag)
+        
+        passwordTextFieldView.textField.rx.text.orEmpty
+            .distinctUntilChanged()
+            .map { Reactor.Action.passwordTextChanged($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        passwordTextFieldView.textField.rx.controlEvent(.editingDidBegin)
+            .map { EveryTipTextFieldStatus.editing }
+            .bind(to: passwordTextFieldView.status)
+            .disposed(by: disposeBag)
+        
+        passwordTextFieldView.textField.rx.controlEvent(.editingDidEnd)
+            .map {  EveryTipTextFieldStatus.normal }
+            .bind(to: passwordTextFieldView.status)
+            .disposed(by: disposeBag)
+
         loginButton.rx.tap
-            .withLatestFrom(Observable.combineLatest(emailObservable, passwordObservable))
-            .map { email, password in
-                Reactor.Action.loginButtonTapped(email: email, password: password)
-            }
+            .map { Reactor.Action.loginButtonTapped }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
     }
     
     func bindOutput(to reactor: LoginReactor) {
-        reactor.state
-            .map { $0.isLogined }
-            .distinctUntilChanged()
-            .compactMap { $0 }
-            .subscribe(onNext: { isLogined in
-                    
+        reactor.pulse(\.$toastMessage)
+            .subscribe(onNext: { [weak self] message in
+                guard let message = message else { return }
+                self?.showToast(message: message)
+            })
+            .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$navigationSignal)
+            .filter { $0 == true }
+            .subscribe(onNext: { [weak self] _ in
+                self?.coordinator?.popToRootView()
             })
             .disposed(by: disposeBag)
     }
 }
+
 // MARK: - UITextFieldDelegate
 extension LoginViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
