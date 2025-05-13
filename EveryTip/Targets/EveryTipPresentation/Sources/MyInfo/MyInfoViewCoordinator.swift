@@ -17,6 +17,8 @@ protocol MyInfoViewCoordinator: AuthenticationCoordinator {
     func start() -> UIViewController
     func pushToAgreementViewcontroller()
     func pushToUserContentsView()
+    
+    func popToRootView()
 }
 
 final class DefaultMyInfoViewCoordinator: MyInfoViewCoordinator {
@@ -60,5 +62,10 @@ final class DefaultMyInfoViewCoordinator: MyInfoViewCoordinator {
             userContentsCoordinator.parentCoordinator = self
             self.append(child: userContentsCoordinator)
             userContentsCoordinator.start()
+    }
+    
+    func popToRootView() {
+        didFinish()
+        navigationController.popToRootViewController(animated: true)
     }
 }
