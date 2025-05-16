@@ -15,6 +15,7 @@ public protocol UserUseCase {
     func configureTipCategory(categoryIds: [Int]) -> Completable
     func fetchMyProfile() -> Single<MyProfile>
     func fetchUserProfile(for userID: Int) -> Single<UserProfile>
+    func isNicknameDuplicated(_ nickname: String) -> Single<Bool>
 }
 
 final class DefaultUserUseCase: UserUseCase {
@@ -46,5 +47,9 @@ final class DefaultUserUseCase: UserUseCase {
     
     public func fetchUserProfile(for userID: Int) -> Single<UserProfile> {
         profileRepository.fetchUserProfile(userID: userID)
+    }
+    
+    func isNicknameDuplicated(_ nickname: String) -> RxSwift.Single<Bool> {
+        nickNameRepository.isNicknameDuplicated(nickname)
     }
 }

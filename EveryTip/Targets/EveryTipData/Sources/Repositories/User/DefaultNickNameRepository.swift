@@ -41,4 +41,30 @@ struct DefaultNickNameRepository: NickNameRepository, SessionInjectable {
             return Disposables.create { task?.cancel() }
         }
     }
+    
+    func isNicknameDuplicated(_ nickname: String) -> Single<Bool> {
+        guard let request = try? UserTarget.getIsDuplicatedNickname(nickname).asURLRequest() else {
+            return Single.error(NetworkError.invalidURLError)
+        }
+        
+        return Single.create { single in
+            
+            let task = self.session?.request(request, interceptor: nil)
+                .validate(statusCode: 200..<300)
+                .responseDecodable(of: NicknameCheckDTO.self) { response in
+                    switch response.result {
+                    case .success(let isDuplicated):
+                        let isDubplicated = isDuplicated.data.isRedundant
+                        
+                        return single(.success(isDubplicated))
+                    case .failure(let error):
+                        return single(.failure(error))
+                    }
+                }
+            
+            return Disposables.create {
+                task?.cancel()
+            }
+        }
+    }
 }
