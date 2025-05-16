@@ -13,6 +13,7 @@ enum UserTarget {
     case postSetCategory(categoryIDs: [Int])
     case getMyProfile
     case getUserProfile(userID: Int)
+    case getIsDuplicatedNickname(String)
 }
 
 extension UserTarget: TargetType {
@@ -25,6 +26,8 @@ extension UserTarget: TargetType {
         case .getMyProfile:
                 .get
         case .getUserProfile:
+                .get
+        case .getIsDuplicatedNickname:
                 .get
         }
     }
@@ -39,6 +42,8 @@ extension UserTarget: TargetType {
             return "/user/my-profile"
         case .getUserProfile(userID: let userID):
             return "/user/\(userID)"
+        case .getIsDuplicatedNickname(let nickname):
+            return "/user/nick-name-check?nick_name=\(nickname)"
         }
     }
     
@@ -52,6 +57,8 @@ extension UserTarget: TargetType {
             return nil
         case .getUserProfile:
             return nil
+        case .getIsDuplicatedNickname:
+            return nil
         }
     }
     
@@ -64,6 +71,8 @@ extension UserTarget: TargetType {
         case .getMyProfile:
             return nil
         case .getUserProfile:
+            return nil
+        case .getIsDuplicatedNickname:
             return nil
         }
     }
