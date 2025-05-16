@@ -12,4 +12,5 @@ import RxSwift
 
 public protocol NickNameRepository {
     func fetchRandomNickName() -> Single<String>
+    func isNicknameDuplicated(_ nickname: String) -> Single<Bool>
 }
