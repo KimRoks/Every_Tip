@@ -84,12 +84,13 @@ final class NicknameReactor: Reactor {
                 return .just(.setValidation(.invalidFormat))
             }
             
-            // TODO: 중복검사 useCase 삽입
-            return Observable.just(false)
+            return userUseCase.isNicknameDuplicated(currentText)
                 .asObservable()
-                .flatMap { isDuplicated in
+                .map { isDuplicated in
                     let result: ValidationResult = isDuplicated ? .duplicated : .valid
-                    return Observable.just(Mutation.setValidation(result))
+                    return Mutation.setValidation(result)
+                }.catch { error in
+                    return Observable.just(Mutation.setToast("일시적 오류입니다. 잠시 후 다시 시도해주세요."))
                 }
 
         case .randomButtonTapped:
