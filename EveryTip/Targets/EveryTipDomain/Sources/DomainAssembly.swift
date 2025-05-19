@@ -17,9 +17,6 @@ public struct DomainAssembly: Assembly {
         container.register(ExUseCase.self) { _ in
             return DefaultExUseCase(exRepository: container.resolve(ExRepository.self)!)
         }
-        container.register(PostListUseCase.self) { _ in
-            return DefaultPostListUseCase(postRepository: container.resolve(PostRepository.self)!)
-        }
         
         container.register(AuthUseCase.self) { _ in
             DefaultAuthUseCase(
