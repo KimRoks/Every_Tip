@@ -20,10 +20,6 @@ public struct DataAssembly: Assembly {
             return DefaultExRepository()
         }
         
-        container.register(PostRepository.self) { _ in
-            return DefaultPostRepository()
-        }
-        
         container.register(AccountRepository.self) { _ in
             return DefaultAccountRepository()
         }
@@ -46,6 +42,10 @@ public struct DataAssembly: Assembly {
         
         container.register(ProfileRepository.self) { _ in
             return DefaultProfileRepository()
+        }
+        
+        container.register(TipRepository.self) { _ in
+            return DefaultTipRepository()
         }
     }
 }
