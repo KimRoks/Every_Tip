@@ -1,5 +1,5 @@
 //
-//  PostListCell.swift
+//  TipListCell.swift
 //  EveryTipPresentation
 //
 //  Created by 김경록 on 1/3/25.
@@ -11,7 +11,7 @@ import SnapKit
 
 import EveryTipDesignSystem
 
-final class PostListCell: UITableViewCell, Reusable {
+final class TipListCell: UITableViewCell, Reusable {
     
     private let categoryLabel: UILabel = {
         let label = UILabel()
@@ -198,7 +198,7 @@ final class PostListCell: UITableViewCell, Reusable {
         viewsImage.snp.makeConstraints {
             $0.leading.equalTo(contentView.snp.leading).offset(20)
             $0.bottom.equalTo(contentView.snp.bottom).offset(-15)
-            $0.width.height.equalTo(14)
+            $0.height.equalTo(viewsCountLabel)
         }
         
         viewsCountLabel.snp.makeConstraints {
@@ -209,7 +209,7 @@ final class PostListCell: UITableViewCell, Reusable {
         commentsImage.snp.makeConstraints {
             $0.leading.equalTo(viewsCountLabel.snp.trailing).offset(8)
             $0.bottom.equalTo(contentView.snp.bottom).offset(-15)
-            $0.width.height.equalTo(14)
+            $0.height.equalTo(commentsCountLabel)
         }
         
         commentsCountLabel.snp.makeConstraints {
@@ -220,8 +220,7 @@ final class PostListCell: UITableViewCell, Reusable {
         likesImage.snp.makeConstraints {
             $0.leading.equalTo(commentsCountLabel.snp.trailing).offset(8)
             $0.bottom.equalTo(contentView.snp.bottom).offset(-15)
-            $0.width.equalTo(12)
-            $0.height.equalTo(12)
+            $0.height.equalTo(likesCountLabel)
         }
         
         likesCountLabel.snp.makeConstraints {
