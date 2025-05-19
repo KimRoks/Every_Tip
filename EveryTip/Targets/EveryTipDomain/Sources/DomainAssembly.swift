@@ -33,5 +33,9 @@ public struct DomainAssembly: Assembly {
                 categoryRepository: container.resolve(CategoryRepository.self)!
             )
         }
+        
+        container.register(TipUseCase.self) { _ in
+            DefaultTipUseCase(tipRepository: container.resolve(TipRepository.self)!)
+        }
     }
 }
