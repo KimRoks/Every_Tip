@@ -159,7 +159,11 @@ final class TipListCell: UITableViewCell, Reusable {
 
         thumbnailImageView.kf.setImage(
             with: url,
-            placeholder: UIImage.et_getImage(for: .blankImage)
+            placeholder: UIImage.et_getImage(for: .blankImage),
+            options: [
+                .transition(.fade(0.3)),
+                .forceTransition
+              ]
         )
     }
     
