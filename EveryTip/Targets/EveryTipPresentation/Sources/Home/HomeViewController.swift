@@ -250,6 +250,12 @@ extension HomeViewController: View {
             }
             .bind(to: tipListTableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$toastMessage)
+            .compactMap{ $0 }
+            .subscribe { [weak self] message in
+                self?.showToast(message: message)
+            }
             .disposed(by: disposeBag)
     }
 }
