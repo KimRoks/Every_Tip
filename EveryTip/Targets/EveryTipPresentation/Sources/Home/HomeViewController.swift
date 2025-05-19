@@ -11,7 +11,6 @@ import UIKit
 import EveryTipDesignSystem
 import EveryTipDomain
 
-
 import ReactorKit
 import RxCocoa
 import RxDataSources
@@ -19,8 +18,6 @@ import RxSwift
 import SnapKit
 
 final class HomeViewController: BaseViewController {
-    
-    
     weak var coordinator: HomeViewCoordinator?
     
     var disposeBag = DisposeBag()
@@ -89,7 +86,7 @@ final class HomeViewController: BaseViewController {
         return imageView
     }()
     
-    private let postListTableView: UITableView = {
+    private let tipListTableView: UITableView = {
         let tableView = UITableView(
             frame: .zero,
             style: .grouped
@@ -103,16 +100,20 @@ final class HomeViewController: BaseViewController {
     private let dataSource = RxTableViewSectionedReloadDataSource<HomeTableViewSection>(
         configureCell: { dataSource, tableView, indexPath, item in
             guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: PostListCell.reuseIdentifier,
+                withIdentifier: TipListCell.reuseIdentifier,
                 for: indexPath
-            ) as? PostListCell else { return UITableViewCell() }
+            ) as? TipListCell else { return UITableViewCell() }
             
-            cell.configureCategoryLabel(id: 1)
+            let thumbnailURL = item.images.first(where: { $0.isThumbnail == 1 })?.url
+            cell.updateThumbnailImage(with: thumbnailURL)
+            cell.updateLikeImage(isLiked: item.isLiked)
+            cell.configureCategoryLabel(id: item.categoryId)
             cell.configureTitleLabelText(item.title)
-            cell.userNameLabel.text = item.userName
-            cell.viewsCountLabel.text = "\(item.viewCount)"
-            cell.likesCountLabel.text = "\(item.likeCount)"
-            cell.mainTextLabel.text = item.mainText
+            
+            cell.mainTextLabel.text = item.content
+            cell.userNameLabel.text = "by \(item.writer.name)"
+            cell.viewsCountLabel.text = "\(item.views)"
+            cell.likesCountLabel.text = "\(item.likes)"
             
             return cell
         }
@@ -137,7 +138,7 @@ final class HomeViewController: BaseViewController {
         
         roundedBackgroundView.addSubview(searchBarButton)
         searchBarButton.addSubview(searchIcon)
-        roundedBackgroundView.addSubview(postListTableView)
+        roundedBackgroundView.addSubview(tipListTableView)
     }
     
     private func setupConstraints() {
@@ -176,7 +177,7 @@ final class HomeViewController: BaseViewController {
             $0.trailing.equalTo(searchBarButton.snp.trailing).offset(-11)
         }
         
-        postListTableView.snp.makeConstraints {
+        tipListTableView.snp.makeConstraints {
             $0.top.equalTo(searchBarButton.snp.bottom).offset(20)
             $0.leading.equalTo(roundedBackgroundView)
             $0.trailing.equalTo(roundedBackgroundView)
@@ -185,18 +186,18 @@ final class HomeViewController: BaseViewController {
     }
     
     private func setupTableView() {
-        postListTableView.register(
-            PostListCell.self,
-            forCellReuseIdentifier: PostListCell.reuseIdentifier
+        tipListTableView.register(
+            TipListCell.self,
+            forCellReuseIdentifier: TipListCell.reuseIdentifier
         )
-        postListTableView.register(
+        tipListTableView.register(
             HomeSectionHeaderView.self,
             forHeaderFooterViewReuseIdentifier: HomeSectionHeaderView.reuseIdentifier
         )
-        postListTableView.indicatorStyle = .white
-        postListTableView.separatorStyle = .none
-        postListTableView.rowHeight = UITableView.automaticDimension
-        postListTableView.estimatedRowHeight = 130
+        tipListTableView.indicatorStyle = .white
+        tipListTableView.separatorStyle = .none
+        tipListTableView.rowHeight = UITableView.automaticDimension
+        tipListTableView.estimatedRowHeight = 130
     }
 }
 
@@ -214,27 +215,16 @@ extension HomeViewController: View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        postListTableView.rx.itemSelected
+        tipListTableView.rx.itemSelected
             .map{Reactor.Action.itemSeleted($0)}
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        postListTableView.rx.setDelegate(self)
+        tipListTableView.rx.setDelegate(self)
             .disposed(by: disposeBag)
     }
     
     private func bindOutputs(to reactor: HomeReactor) {
-        
-        reactor.state
-            .map { $0.fetchError }
-            .subscribe(onNext: { error in
-                if let error = error {
-                    print("Error: \(error)")
-                    // 에러 핸들링 로직 추가 (예: Alert 표시)
-                }
-            })
-            .disposed(by: disposeBag)
-        
         reactor.state
             .map { $0.selectedItem }
             .compactMap{ $0 }
@@ -258,7 +248,14 @@ extension HomeViewController: View {
                     )
                 ]
             }
-            .bind(to: postListTableView.rx.items(dataSource: dataSource))
+            .bind(to: tipListTableView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$toastMessage)
+            .compactMap{ $0 }
+            .subscribe { [weak self] message in
+                self?.showToast(message: message)
+            }
             .disposed(by: disposeBag)
     }
 }

@@ -19,39 +19,35 @@ class HomeReactor: Reactor {
     }
     
     enum Mutation {
-        case setPosts([Tip])
-        case setError(Error)
+        case setTips([Tip])
         case pushToItemView(Tip)
+        case setToast(String)
     }
     
     struct State {
         var posts: [Tip] = []
-        var fetchError: Error?
         var selectedItem: Tip?
+        @Pulse var toastMessage: String?
     }
     
     let initialState: State
-    private let postUseCase: PostListUseCase
+    private let tipUseCase: TipUseCase
     
-    init(postUseCase: PostListUseCase) {
-        self.postUseCase = postUseCase
+    init(tipUseCase: TipUseCase) {
+        self.tipUseCase = tipUseCase
         self.initialState = State()
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .viewDidLoad:
-            return postUseCase.fetchPosts()
+            return tipUseCase.fetchTotalTips()
                 .asObservable()
-                .map { posts in
-                    let sortedTopThreeByLikeCount = Array(posts.sorted { $0.likeCount > $1.likeCount }.prefix(3))
-                    
-                    return Mutation.setPosts(sortedTopThreeByLikeCount)
+                .map { return Mutation.setTips($0) }
+                .catch { _ in
+                    return Observable.just(.setToast("팁 목록을 불러오는데 실패했어요. 잠시 후 다시 시도해주세요"))
                 }
-                .catch { error in
-                    Observable.just(Mutation.setError(error))
-                }
-        
+            
         case .itemSeleted(let indexPath):
             guard indexPath.row < currentState.posts.count else { return .empty() }
             let tip = currentState.posts[indexPath.row]
@@ -63,14 +59,12 @@ class HomeReactor: Reactor {
         var newState = state
         
         switch mutation {
-        case .setPosts(let posts):
+        case .setTips(let posts):
             newState.posts = posts
-            
-        case .setError(let error):
-            newState.fetchError = error
-            
         case .pushToItemView(let tip):
             newState.selectedItem = tip
+        case .setToast(let message):
+            newState.toastMessage = message
         }
         
         return newState

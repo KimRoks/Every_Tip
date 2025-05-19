@@ -38,10 +38,10 @@ final class DefaultHomeViewCoordinator: HomeViewCoordinator {
     func start() { }
     
     func start() -> UIViewController {
-        guard let useCase = container.resolve(PostListUseCase.self) else {
+        guard let useCase = container.resolve(TipUseCase.self) else {
             fatalError("의존성 주입이 옳바르지 않습니다!")
         }
-        let reactor = HomeReactor(postUseCase: useCase)
+        let reactor = HomeReactor(tipUseCase: useCase)
         let homeViewController = HomeViewController(reactor: reactor)
         
         homeViewController.coordinator = self

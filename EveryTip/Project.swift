@@ -189,7 +189,8 @@ let project = Project(
                 .external(name: "SnapKit"),
                 .external(name: "RxCocoa"),
                 .external(name: "ReactorKit"),
-                .external(name: "RxDataSources")
+                .external(name: "RxDataSources"),
+                .external(name: "Kingfisher")
             ]
         ),
         //Design System layer

@@ -146,8 +146,8 @@ final class ExploreViewController: BaseViewController, View {
     
     private func setupTableView() {
         postListTableView.register(
-            PostListCell.self,
-            forCellReuseIdentifier: PostListCell.reuseIdentifier
+            TipListCell.self,
+            forCellReuseIdentifier: TipListCell.reuseIdentifier
         )
         postListTableView.rowHeight = UITableView.automaticDimension
         postListTableView.estimatedRowHeight = 110

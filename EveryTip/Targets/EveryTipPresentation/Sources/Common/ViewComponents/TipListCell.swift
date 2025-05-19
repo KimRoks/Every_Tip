@@ -1,5 +1,5 @@
 //
-//  PostListCell.swift
+//  TipListCell.swift
 //  EveryTipPresentation
 //
 //  Created by 김경록 on 1/3/25.
@@ -8,10 +8,11 @@
 
 import UIKit
 import SnapKit
+import Kingfisher
 
 import EveryTipDesignSystem
 
-final class PostListCell: UITableViewCell, Reusable {
+final class TipListCell: UITableViewCell, Reusable {
     
     private let categoryLabel: UILabel = {
         let label = UILabel()
@@ -41,9 +42,10 @@ final class PostListCell: UITableViewCell, Reusable {
         return label
     }()
     
-    let thumnailImageView: UIImageView = {
+    private let thumbnailImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage.et_getImage(for: .blankImage)
+        imageView.layer.cornerRadius = 10
+        imageView.clipsToBounds = true
         
         return imageView
     }()
@@ -92,7 +94,7 @@ final class PostListCell: UITableViewCell, Reusable {
         return label
     }()
     
-    let likesImage: UIImageView = {
+    private let likesImage: UIImageView = {
         let imageview = UIImageView()
         imageview.image = UIImage.et_getImage(for: .likeImage_empty)
         imageview.tintColor = UIColor(hex: "#777777")
@@ -141,6 +143,30 @@ final class PostListCell: UITableViewCell, Reusable {
         categoryLabel.setCategory(with: id)
     }
     
+    func updateLikeImage(isLiked: Bool) {
+        let image = isLiked
+        ? UIImage.et_getImage(for: .likeImage_fill)
+        : UIImage.et_getImage(for: .likeImage_empty)
+        
+        likesImage.image = image
+    }
+    
+    func updateThumbnailImage(with urlString: String?) {
+        guard let urlString = urlString,
+              let url = URL(string: urlString) else {
+            return
+        }
+
+        thumbnailImageView.kf.setImage(
+            with: url,
+            placeholder: UIImage.et_getImage(for: .blankImage),
+            options: [
+                .transition(.fade(0.3)),
+                .forceTransition
+              ]
+        )
+    }
+    
     // MARK: Private Methods
     
     private func calculateLabelWidth(for label: UILabel) -> CGFloat {
@@ -169,7 +195,7 @@ final class PostListCell: UITableViewCell, Reusable {
             commentsCountLabel,
             likesImage,
             likesCountLabel,
-            thumnailImageView,
+            thumbnailImageView,
             userNameLabel,
             separatorView
         )
@@ -185,20 +211,20 @@ final class PostListCell: UITableViewCell, Reusable {
         titleLabel.snp.makeConstraints {
             $0.top.equalTo(contentView.snp.top).offset(20)
             $0.leading.equalTo(contentView.snp.leading).offset(20)
-            $0.trailing.equalTo(thumnailImageView.snp.leading).offset(-20)
+            $0.trailing.equalTo(thumbnailImageView.snp.leading).offset(-20)
         }
         
         mainTextLabel.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(10)
             $0.leading.equalTo(contentView.snp.leading).offset(20)
-            $0.trailing.equalTo(thumnailImageView.snp.leading).offset(-10)
+            $0.trailing.equalTo(thumbnailImageView.snp.leading).offset(-10)
             $0.height.equalTo(40)
         }
         
         viewsImage.snp.makeConstraints {
             $0.leading.equalTo(contentView.snp.leading).offset(20)
             $0.bottom.equalTo(contentView.snp.bottom).offset(-15)
-            $0.width.height.equalTo(14)
+            $0.height.equalTo(viewsCountLabel)
         }
         
         viewsCountLabel.snp.makeConstraints {
@@ -209,7 +235,7 @@ final class PostListCell: UITableViewCell, Reusable {
         commentsImage.snp.makeConstraints {
             $0.leading.equalTo(viewsCountLabel.snp.trailing).offset(8)
             $0.bottom.equalTo(contentView.snp.bottom).offset(-15)
-            $0.width.height.equalTo(14)
+            $0.height.equalTo(commentsCountLabel)
         }
         
         commentsCountLabel.snp.makeConstraints {
@@ -220,8 +246,7 @@ final class PostListCell: UITableViewCell, Reusable {
         likesImage.snp.makeConstraints {
             $0.leading.equalTo(commentsCountLabel.snp.trailing).offset(8)
             $0.bottom.equalTo(contentView.snp.bottom).offset(-15)
-            $0.width.equalTo(12)
-            $0.height.equalTo(12)
+            $0.height.equalTo(likesCountLabel)
         }
         
         likesCountLabel.snp.makeConstraints {
@@ -229,7 +254,7 @@ final class PostListCell: UITableViewCell, Reusable {
             $0.bottom.equalTo(contentView.snp.bottom).offset(-15)
         }
     
-        thumnailImageView.snp.makeConstraints{
+        thumbnailImageView.snp.makeConstraints{
             $0.top.equalTo(contentView.snp.top).offset(20)
             $0.trailing.equalTo(contentView.snp.trailing).offset(-20)
             $0.height.equalTo(90)
@@ -237,7 +262,7 @@ final class PostListCell: UITableViewCell, Reusable {
         }
         
         userNameLabel.snp.makeConstraints {
-            $0.top.greaterThanOrEqualTo(thumnailImageView.snp.bottom).offset(10)
+            $0.top.greaterThanOrEqualTo(thumbnailImageView.snp.bottom).offset(10)
             $0.trailing.equalTo(contentView.snp.trailing).offset(-20)
             $0.bottom.equalTo(contentView.snp.bottom).offset(-15)
         }
