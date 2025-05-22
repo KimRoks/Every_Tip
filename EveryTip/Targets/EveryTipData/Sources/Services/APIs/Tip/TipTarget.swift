@@ -10,13 +10,16 @@ import Foundation
 
 enum TipTarget {
     case fetchTotalTip
+    case fetchTipByTipID(Int)
 }
 
 extension TipTarget: TargetType {
     var method: HTTPMethods {
         switch self {
         case .fetchTotalTip:
-            .get
+                .get
+        case .fetchTipByTipID:
+                .get
         }
     }
     
@@ -24,6 +27,8 @@ extension TipTarget: TargetType {
         switch self {
         case .fetchTotalTip:
             return "/tips"
+        case .fetchTipByTipID(let tipID):
+            return "/tips?tip_id=\(tipID)"
         }
     }
     
@@ -31,12 +36,16 @@ extension TipTarget: TargetType {
         switch self {
         case .fetchTotalTip:
             return nil
+        case .fetchTipByTipID:
+            return nil
         }
     }
         
     var parameters: [String : Any]? {
         switch self {
         case .fetchTotalTip:
+            return nil
+        case .fetchTipByTipID:
             return nil
         }
     }
