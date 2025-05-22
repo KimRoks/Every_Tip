@@ -25,6 +25,11 @@ public struct TipDTO: Codable {
         public let isLogined: Bool
         public let tips: [Tip]
 
+        enum CodingKeys: String, CodingKey {
+            case isLogined = "is_logined"
+            case tips
+        }
+
         public init(isLogined: Bool, tips: [Tip]) {
             self.isLogined = isLogined
             self.tips = tips
@@ -39,13 +44,25 @@ public struct TipDTO: Codable {
             public let views: Int
             public let createdAt: String
             public let tags: [String]
-            public let images: [Image]
+            public let images: [Image]?
             public let writer: Writer
             public let likes: Int
             public let commentsCount: Int
             public let isMine: Bool
             public let isLiked: Bool
             public let isSaved: Bool
+
+            enum CodingKeys: String, CodingKey {
+                case id, title, content, views, tags, writer, likes
+                case categoryName = "category_name"
+                case categoryId = "category_id"
+                case createdAt = "created_at"
+                case images
+                case commentsCount = "comments_count"
+                case isMine = "is_mine"
+                case isLiked = "is_liked"
+                case isSaved = "is_saved"
+            }
 
             public init(
                 id: Int,
@@ -56,7 +73,7 @@ public struct TipDTO: Codable {
                 views: Int,
                 createdAt: String,
                 tags: [String],
-                images: [Image],
+                images: [Image]?,
                 writer: Writer,
                 likes: Int,
                 commentsCount: Int,
@@ -83,9 +100,14 @@ public struct TipDTO: Codable {
 
             public struct Image: Codable {
                 public let url: String
-                public let isThumbnail: Int
+                public let isThumbnail: Bool
 
-                public init(url: String, isThumbnail: Int) {
+                enum CodingKeys: String, CodingKey {
+                    case url
+                    case isThumbnail = "is_thumbnail"
+                }
+
+                public init(url: String, isThumbnail: Bool) {
                     self.url = url
                     self.isThumbnail = isThumbnail
                 }
@@ -96,6 +118,11 @@ public struct TipDTO: Codable {
                 public let name: String
                 public let profileImage: String?
 
+                enum CodingKeys: String, CodingKey {
+                    case id, name
+                    case profileImage = "profile_image"
+                }
+
                 public init(id: Int, name: String, profileImage: String?) {
                     self.id = id
                     self.name = name
@@ -105,6 +132,8 @@ public struct TipDTO: Codable {
         }
     }
 }
+
+// MARK: - Domain Mapping
 
 public extension TipDTO.TipData.Tip {
     func toDomain() -> Tip {
@@ -117,7 +146,7 @@ public extension TipDTO.TipData.Tip {
             views: views,
             createdAt: createdAt,
             tags: tags,
-            images: images.map { $0.toDomain() },
+            images: images?.map { $0.toDomain() } ?? [],
             writer: writer.toDomain(),
             likes: likes,
             commentsCount: commentsCount,
@@ -132,7 +161,7 @@ public extension TipDTO.TipData.Tip.Image {
     func toDomain() -> Tip.Image {
         return Tip.Image(
             url: url,
-            isThumbnail: isThumbnail
+            isThumbnail: isThumbnail ? 1 : 0
         )
     }
 }
@@ -144,5 +173,13 @@ public extension TipDTO.TipData.Tip.Writer {
             name: name,
             profileImage: profileImage
         )
+    }
+}
+
+// MARK: - Mapper
+
+struct TipMapper {
+    static func toDTO(_ image: Tip.Image) -> TipDTO.TipData.Tip.Image {
+        return TipDTO.TipData.Tip.Image(url: image.url, isThumbnail: image.isThumbnail == 1)
     }
 }
