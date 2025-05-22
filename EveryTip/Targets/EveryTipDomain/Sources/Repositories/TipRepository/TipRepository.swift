@@ -12,4 +12,5 @@ import RxSwift
 
 public protocol TipRepository {
     func fetchTotalTips() -> Single<[Tip]>
+    func fetchTip(forTipID tipID: Int) -> Single<Tip>
 }

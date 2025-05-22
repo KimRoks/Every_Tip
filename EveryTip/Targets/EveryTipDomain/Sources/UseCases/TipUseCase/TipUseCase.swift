@@ -12,6 +12,7 @@ import RxSwift
 
 public protocol TipUseCase {
     func fetchTotalTips() -> Single<[Tip]>
+    func fetchTip(forTipID tipID: Int) -> Single<Tip>
 }
 
 final class DefaultTipUseCase: TipUseCase {
@@ -24,5 +25,9 @@ final class DefaultTipUseCase: TipUseCase {
     
     func fetchTotalTips() -> Single<[Tip]> {
         tipRepository.fetchTotalTips()
+    }
+    
+    func fetchTip(forTipID tipID: Int) -> Single<Tip> {
+        tipRepository.fetchTip(forTipID: tipID)
     }
 }
