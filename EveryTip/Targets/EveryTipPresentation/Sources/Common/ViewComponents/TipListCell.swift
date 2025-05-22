@@ -46,6 +46,7 @@ final class TipListCell: UITableViewCell, Reusable {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 10
         imageView.clipsToBounds = true
+        imageView.image = .et_getImage(for: .blankImage)
         
         return imageView
     }()
