@@ -48,6 +48,9 @@ public enum ImageAssetType {
     case link
     case closeButton
     case edit
+    case bookmark
+    case share
+    case reply
 }
 
 extension UIImage {
@@ -127,6 +130,12 @@ extension UIImage {
             EveryTipDesignSystemAsset.closeButton.image
         case .edit:
             EveryTipDesignSystemAsset.edit.image
+        case .bookmark:
+            EveryTipDesignSystemAsset.bookmark.image
+        case .share:
+            EveryTipDesignSystemAsset.share.image
+        case .reply:
+            EveryTipDesignSystemAsset.reply.image
         }
     }
 }
