@@ -229,7 +229,7 @@ extension HomeViewController: View {
             .map { $0.selectedItem }
             .compactMap{ $0 }
             .subscribe(onNext: { [weak self] tip in
-                self?.coordinator?.navigateToTestView(with: tip)
+                self?.coordinator?.pushToTipDetailView(with: tip.id)
             })
             .disposed(by: disposeBag)
         

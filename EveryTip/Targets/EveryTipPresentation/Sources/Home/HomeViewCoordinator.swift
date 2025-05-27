@@ -14,7 +14,7 @@ import Swinject
 
 protocol HomeViewCoordinator: AuthenticationCoordinator {
     func start() -> UIViewController
-    func navigateToTestView(with data: Tip)
+    func pushToTipDetailView(with tipID: Int)
 }
 
 final class DefaultHomeViewCoordinator: HomeViewCoordinator {
@@ -53,13 +53,14 @@ final class DefaultHomeViewCoordinator: HomeViewCoordinator {
         parentCoordinator?.remove(child: self)
     }
     
-    func navigateToTestView(with tip: Tip) {
-        let testViewCoordinator = DefaultTestViewCoordinator(
+    func pushToTipDetailView(with tipID: Int) {
+        let tipDetailCoordinator = DefaultTipDetailCoordinator(
+            tipId: tipID,
             navigationController: navigationController
         )
-        testViewCoordinator.parentCoordinator = self
-        childCoordinators.append(testViewCoordinator)
+        tipDetailCoordinator.parentCoordinator = self
+        append(child: tipDetailCoordinator)
         
-        testViewCoordinator.start(with: tip)
+        tipDetailCoordinator.start()
     }
 }
