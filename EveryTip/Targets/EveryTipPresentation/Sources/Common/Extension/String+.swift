@@ -43,4 +43,47 @@ extension String {
             }
         }
     }
+    
+    func timeAgo() -> String? {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [
+            .withInternetDateTime,
+            .withFractionalSeconds
+        ]
+        
+        guard let inputDate = formatter.date(from: self) else {
+            return nil
+        }
+        
+        let calendar = Calendar.current
+        guard let now = calendar.date(
+            byAdding: .second,
+            value: TimeZone.current.secondsFromGMT(),
+            to: Date()
+        ) else {
+            return nil
+        }
+        
+        let components = calendar.dateComponents(
+            [.year, .month, .weekOfYear, .day, .hour, .minute],
+            from: inputDate,
+            to: now
+        )
+        
+        if let years = components.year, years > 0 {
+            return "\(years)년 전"
+        } else if let months = components.month, months > 0 {
+            return "\(months)개월 전"
+        } else if let weeks = components.weekOfYear, weeks > 0 {
+            return "\(weeks)주 전"
+        } else if let days = components.day, days > 0 {
+            return "\(days)일 전"
+        } else if let hours = components.hour, hours > 0 {
+            return "\(hours)시간 전"
+        } else if let minutes = components.minute, minutes > 0 {
+            return "\(minutes)분 전"
+        } else {
+            return "방금 전"
+        }
+    }
 }
