@@ -51,6 +51,7 @@ public enum ImageAssetType {
     case bookmark
     case share
     case reply
+    case ellipsis
 }
 
 extension UIImage {
@@ -136,6 +137,8 @@ extension UIImage {
             EveryTipDesignSystemAsset.share.image
         case .reply:
             EveryTipDesignSystemAsset.reply.image
+        case .ellipsis:
+            EveryTipDesignSystemAsset.ellipsis.image
         }
     }
 }
