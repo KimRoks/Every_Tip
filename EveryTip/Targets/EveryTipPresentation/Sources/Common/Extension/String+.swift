@@ -55,15 +55,9 @@ extension String {
             return nil
         }
         
+        let now = Date() // 보정 없이 현재 시각 사용
+
         let calendar = Calendar.current
-        guard let now = calendar.date(
-            byAdding: .second,
-            value: TimeZone.current.secondsFromGMT(),
-            to: Date()
-        ) else {
-            return nil
-        }
-        
         let components = calendar.dateComponents(
             [.year, .month, .weekOfYear, .day, .hour, .minute],
             from: inputDate,
