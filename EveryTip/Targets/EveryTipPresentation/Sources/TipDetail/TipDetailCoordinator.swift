@@ -12,7 +12,7 @@ import EveryTipDomain
 
 import Swinject
 
-protocol TipDetailCoordinator: Coordinator {
+protocol TipDetailCoordinator: AuthenticationCoordinator {
 
 }
 
@@ -34,10 +34,16 @@ final class DefaultTipDetailCoordinator: TipDetailCoordinator {
     }
     
     func start() {
-        guard let tipUseCase = Container.shared.resolve(TipUseCase.self) else {
+        guard let tipUseCase = Container.shared.resolve(TipUseCase.self),
+              let commentUseCase = Container.shared.resolve(CommentUseCase.self)
+        else {
             fatalError("의존성 주입이 옳바르지 않습니다!")
         }
-        let reactor = TipDetailReactor(tipID: tipId, tipUseCase: tipUseCase)
+        let reactor = TipDetailReactor(
+            tipID: tipId,
+            tipUseCase: tipUseCase,
+            commentUseCase: commentUseCase
+        )
         let tipDetailVC = TipDetailViewController(reactor: reactor)
         tipDetailVC.coordinator = self
         navigationController.pushViewController(tipDetailVC, animated: true)
