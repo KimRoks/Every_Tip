@@ -201,7 +201,7 @@ final class TipDetailViewController: BaseViewController {
         return view
     }()
     
-    private let qwerView: UIView = {
+    private let commentInfoView: UIView = {
         let view = UIView()
         
         return view
@@ -321,7 +321,7 @@ final class TipDetailViewController: BaseViewController {
             lineSeparator,
             tipView,
             bottomSeparator,
-            qwerView,
+            commentInfoView,
             commentTableView
         )
         
@@ -353,7 +353,7 @@ final class TipDetailViewController: BaseViewController {
             saveButton
         )
         
-        qwerView.addSubViews(
+        commentInfoView.addSubViews(
             commentCountLabel,
             commentSortButton
         )
@@ -486,24 +486,24 @@ final class TipDetailViewController: BaseViewController {
             $0.height.equalTo(50)
         }
         
-        qwerView.snp.makeConstraints {
+        commentInfoView.snp.makeConstraints {
             $0.top.equalTo(bottomSeparator.snp.bottom)
             $0.height.equalTo(50)
             $0.leading.trailing.equalTo(contentView)
         }
         
         commentCountLabel.snp.makeConstraints {
-            $0.leading.equalTo(qwerView.snp.leading).offset(20)
-            $0.centerY.equalTo(qwerView.snp.centerY)
+            $0.leading.equalTo(commentInfoView.snp.leading).offset(20)
+            $0.centerY.equalTo(commentInfoView.snp.centerY)
         }
         
         commentSortButton.snp.makeConstraints {
-            $0.trailing.equalTo(qwerView.snp.trailing).offset(-20)
-            $0.centerY.equalTo(qwerView.snp.centerY)
+            $0.trailing.equalTo(commentInfoView.snp.trailing).offset(-20)
+            $0.centerY.equalTo(commentInfoView.snp.centerY)
         }
         
         commentTableView.snp.makeConstraints {
-            $0.top.equalTo(qwerView.snp.bottom)
+            $0.top.equalTo(commentInfoView.snp.bottom)
             $0.leading.trailing.equalTo(contentView)
             $0.height.equalTo(100)
             $0.bottom.equalTo(contentView.snp.bottom).offset(-50)
