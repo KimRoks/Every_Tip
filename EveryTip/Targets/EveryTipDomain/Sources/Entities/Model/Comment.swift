@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Comment: Codable {
+public struct Comment {
     public let id: Int
     public let parentID: Int?
     public let content: String
@@ -19,7 +19,6 @@ public struct Comment: Codable {
     public let isMine: Bool
     public let isLiked: Bool
     
-    // 디코딩 제외
     public var isReply: Bool = false
     
     public init(
@@ -44,18 +43,6 @@ public struct Comment: Codable {
         self.isLiked = isLiked
     }
     
-    enum CodingKeys: String, CodingKey {
-        case id
-        case parentID = "parent_id"
-        case content
-        case createdAt = "created_at"
-        case writer
-        case likes
-        case replies
-        case isMine = "is_mine"
-        case isLiked = "is_liked"
-    }
-    
     public struct Writer: Codable {
         public let id: Int
         public let name: String
@@ -69,12 +56,6 @@ public struct Comment: Codable {
             self.id = id
             self.name = name
             self.profileImage = profileImage
-        }
-        
-        enum CodingKeys: String, CodingKey {
-            case id
-            case name
-            case profileImage = "profile_image"
         }
     }
 }
