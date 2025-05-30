@@ -42,4 +42,27 @@ struct DefaultTipRepository: TipRepository, SessionInjectable {
             return Disposables.create { task?.cancel() }
         }
     }
+    
+    func fetchTip(forTipID tipID: Int) -> Single<Tip> {
+        guard let request = try? TipTarget.fetchTipByTipID(tipID).asURLRequest() else {
+            return Single.error(NetworkError.invalidURLError)
+        }
+        
+        return Single.create { single in
+            let task = session?.request(request, interceptor: interceptor)
+                .validate(statusCode: 200..<300)
+                .responseDecodable(of: TipDTO.self) { response in
+                    switch response.result {
+                    case .success(let tipDTO):
+                        guard let tip = tipDTO.data.tips.first?.toDomain() else { return }
+                        return single(.success(tip))
+                    case .failure(let error):
+                        return single(.failure(error))
+                    }
+                }
+            return Disposables.create {
+                task?.cancel()
+            }
+        }
+    }
 }
