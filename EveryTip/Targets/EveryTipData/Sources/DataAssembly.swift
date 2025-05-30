@@ -47,5 +47,9 @@ public struct DataAssembly: Assembly {
         container.register(TipRepository.self) { _ in
             return DefaultTipRepository()
         }
+        
+        container.register(CommentRepository.self) { _ in
+            return DefaultCommentRepository()
+        }
     }
 }
