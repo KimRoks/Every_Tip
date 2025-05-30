@@ -15,6 +15,7 @@ enum CommentTarget {
         tipID: Int,
         parentID: Int?
     )
+    case deleteComment(commentID: Int)
 }
 
 extension CommentTarget: TargetType {
@@ -24,6 +25,8 @@ extension CommentTarget: TargetType {
                 return .get
         case .postComment:
                 return .post
+        case .deleteComment:
+            return .delete
         }
     }
     
@@ -33,6 +36,8 @@ extension CommentTarget: TargetType {
             return "/tips/comments"
         case .postComment:
             return "/tips/comments"
+        case .deleteComment(let commentID):
+            return "/tips/comments?comment_id=\(commentID)"
         }
     }
     
@@ -41,6 +46,8 @@ extension CommentTarget: TargetType {
         case .getComments:
             return nil
         case .postComment:
+            return nil
+        case .deleteComment:
             return nil
         }
     }
@@ -57,6 +64,8 @@ extension CommentTarget: TargetType {
                 "tip_id": tipID,
                 "parent_id": parentID
             ]
+        case .deleteComment:
+            return nil
         }
     }
 }
