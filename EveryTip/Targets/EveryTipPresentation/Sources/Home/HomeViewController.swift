@@ -216,6 +216,12 @@ extension HomeViewController: View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        self.rx.viewWillAppear
+            .map { _ in
+                Reactor.Action.refesh
+            }.bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
         tipListTableView.rx.itemSelected
             .map{Reactor.Action.itemSeleted($0)}
             .bind(to: reactor.action)
@@ -226,13 +232,15 @@ extension HomeViewController: View {
     }
     
     private func bindOutputs(to reactor: HomeReactor) {
-        reactor.state
-            .map { $0.selectedItem }
-            .compactMap{ $0 }
-            .subscribe(onNext: { [weak self] tip in
-                self?.coordinator?.pushToTipDetailView(with: tip.id)
-            })
-            .disposed(by: disposeBag)
+        reactor.pulse(\.$pushSignal)
+            .filter { $0 }
+            .withUnretained(self)
+            .bind { vc, _ in
+                guard let tip = vc.reactor?.currentState.selectedTip else {
+                    return
+                }
+                vc.coordinator?.pushToTipDetailView(with: tip.id)
+            }.disposed(by: disposeBag)
         
         reactor.state.map { $0.posts }
             .map { posts in

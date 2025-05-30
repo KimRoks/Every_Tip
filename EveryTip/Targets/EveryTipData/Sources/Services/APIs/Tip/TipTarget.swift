@@ -11,6 +11,7 @@ import Foundation
 enum TipTarget {
     case fetchTotalTip
     case fetchTipByTipID(Int)
+    case deleteTip(tipID: Int)
 }
 
 extension TipTarget: TargetType {
@@ -20,6 +21,8 @@ extension TipTarget: TargetType {
                 .get
         case .fetchTipByTipID:
                 .get
+        case .deleteTip:
+                .delete
         }
     }
     
@@ -29,6 +32,8 @@ extension TipTarget: TargetType {
             return "/tips"
         case .fetchTipByTipID(let tipID):
             return "/tips?tip_id=\(tipID)"
+        case .deleteTip(tipID: let tipID):
+            return "/tips?id=\(tipID)"
         }
     }
     
@@ -38,6 +43,8 @@ extension TipTarget: TargetType {
             return nil
         case .fetchTipByTipID:
             return nil
+        case .deleteTip:
+            return nil
         }
     }
         
@@ -46,6 +53,8 @@ extension TipTarget: TargetType {
         case .fetchTotalTip:
             return nil
         case .fetchTipByTipID:
+            return nil
+        case .deleteTip:
             return nil
         }
     }

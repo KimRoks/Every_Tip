@@ -16,17 +16,20 @@ class HomeReactor: Reactor {
     enum Action {
         case viewDidLoad
         case itemSeleted(IndexPath)
+        case refesh
     }
     
     enum Mutation {
         case setTips([Tip])
-        case pushToItemView(Tip)
+        case setSelectedTip(Tip)
         case setToast(String)
+        case setPushSignal(Bool)
     }
     
     struct State {
         var posts: [Tip] = []
-        var selectedItem: Tip?
+        var selectedTip: Tip?
+        @Pulse var pushSignal: Bool = false
         @Pulse var toastMessage: String?
     }
     
@@ -51,7 +54,18 @@ class HomeReactor: Reactor {
         case .itemSeleted(let indexPath):
             guard indexPath.row < currentState.posts.count else { return .empty() }
             let tip = currentState.posts[indexPath.row]
-            return .just(Mutation.pushToItemView(tip))
+            return Observable.concat(
+                .just(.setSelectedTip(tip)),
+                .just(.setPushSignal(true))
+            )
+            
+        case .refesh:
+            return tipUseCase.fetchTotalTips()
+                .asObservable()
+                .map { return Mutation.setTips($0) }
+                .catch { _ in
+                    return Observable.just(.setToast("팁 목록을 불러오는데 실패했어요. 잠시 후 다시 시도해주세요"))
+                }
         }
     }
     
@@ -61,10 +75,12 @@ class HomeReactor: Reactor {
         switch mutation {
         case .setTips(let posts):
             newState.posts = posts
-        case .pushToItemView(let tip):
-            newState.selectedItem = tip
+        case .setSelectedTip(let tip):
+            newState.selectedTip = tip
         case .setToast(let message):
             newState.toastMessage = message
+        case .setPushSignal(let signal):
+            newState.pushSignal = signal
         }
         
         return newState

@@ -273,8 +273,24 @@ final class TipDetailViewController: BaseViewController {
         setupTagCollectionView()
         setupCommentTableView()
         commentInputTextView.delegate = self
+        navigationItem.rightBarButtonItem = rightButtonItem
+        
     }
     
+    private let ellipsisButton: UIButton = {
+        let button = UIButton()
+        button.setImage(.et_getImage(for: .ellipsis_black), for: .normal)
+        
+        button.tintColor = .et_textColorBlack90
+        button.isHidden = true
+        
+        return button
+    }()
+
+    private lazy var rightButtonItem: UIBarButtonItem = {
+        return UIBarButtonItem(customView: ellipsisButton)
+    }()
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         writerImageView.makeCircular()
@@ -545,8 +561,22 @@ final class TipDetailViewController: BaseViewController {
     ) {
         switch contentType {
         case .tip:
-            // TODO: 팁의 경우 작성
-            return
+            let alertController = UIAlertController(
+                title: "작성하신 팁을 삭제할까요?",
+                message: nil,
+                preferredStyle: .alert
+            )
+            
+            let confirmAction = UIAlertAction(title: "예", style: .destructive) { _ in
+                confirmHandler()
+            }
+            let cancleAction = UIAlertAction(title: "아니오", style: .cancel)
+            
+            alertController.addAction(confirmAction)
+            alertController.addAction(cancleAction)
+            
+            self.present(alertController, animated: true)
+            
         case .comment:
             let alertController = UIAlertController(
                 title: "댓글을 삭제할까요?",
@@ -590,6 +620,14 @@ extension TipDetailViewController: View {
             }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+        
+        ellipsisButton.rx.tap
+            .bind { [weak self] in
+                self?.showDeleteAlert(contentType: .tip) {
+                    self?.reactor?.action.onNext(.tipEllipsisTapped)
+                }
+            }
+            .disposed(by: disposeBag)
     }
     
     func bindOutput(reactor: TipDetailReactor) {
@@ -602,6 +640,11 @@ extension TipDetailViewController: View {
                         placeholder: UIImage.et_getImage(for: .blankImage)
                     )
                 }
+                
+                if tip.isMine {
+                    self?.ellipsisButton.isHidden = false
+                }
+                
                 self?.writerNameLabel.text = tip.writer.name
                 self?.categoryLabel.text = "\(tip.categoryName) ・ "
                 self?.postWrittenTimeLabel.text = tip.createdAt.timeAgo()
@@ -692,6 +735,14 @@ extension TipDetailViewController: View {
             .observe(on: MainScheduler.instance)
             .bind { [weak self] message in
                 self?.showToast(message: message)
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$popSignal)
+            .filter { $0 == true }
+            .bind { [weak self] _ in
+                self?.navigationController?.popViewController(animated: true)
+                self?.coordinator?.didFinish()
             }
             .disposed(by: disposeBag)
     }
