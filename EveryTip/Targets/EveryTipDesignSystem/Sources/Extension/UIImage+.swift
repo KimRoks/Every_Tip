@@ -52,6 +52,7 @@ public enum ImageAssetType {
     case share
     case reply
     case ellipsis
+    case ellipsis_black
 }
 
 extension UIImage {
@@ -139,6 +140,8 @@ extension UIImage {
             EveryTipDesignSystemAsset.reply.image
         case .ellipsis:
             EveryTipDesignSystemAsset.ellipsis.image
+        case .ellipsis_black:
+            EveryTipDesignSystemAsset.ellipsisBlack.image
         }
     }
 }
