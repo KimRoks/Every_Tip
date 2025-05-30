@@ -19,6 +19,11 @@ final class TipDetailViewController: BaseViewController {
     weak var coordinator: TipDetailCoordinator?
     var disposeBag: DisposeBag = DisposeBag()
     
+    enum EllipsisButtonType {
+        case tip
+        case comment
+    }
+    
     private let backgroundScrollView: UIScrollView = {
         let scrollView = UIScrollView()
         
@@ -196,7 +201,7 @@ final class TipDetailViewController: BaseViewController {
         return view
     }()
     
-    private let qwerView: UIView = {
+    private let commentInfoView: UIView = {
         let view = UIView()
         
         return view
@@ -279,12 +284,6 @@ final class TipDetailViewController: BaseViewController {
         tagsCollectionView.snp.updateConstraints {
             $0.height.equalTo(height)
         }
-//        
-//        let tableViewheight = commentTableView.contentSize.height
-//        
-//        commentTableView.snp.updateConstraints {
-//            $0.height.equalTo(tableViewheight + 20)
-//        }
         
         updateTableViewHeight()
     }
@@ -322,7 +321,7 @@ final class TipDetailViewController: BaseViewController {
             lineSeparator,
             tipView,
             bottomSeparator,
-            qwerView,
+            commentInfoView,
             commentTableView
         )
         
@@ -354,7 +353,7 @@ final class TipDetailViewController: BaseViewController {
             saveButton
         )
         
-        qwerView.addSubViews(
+        commentInfoView.addSubViews(
             commentCountLabel,
             commentSortButton
         )
@@ -487,24 +486,24 @@ final class TipDetailViewController: BaseViewController {
             $0.height.equalTo(50)
         }
         
-        qwerView.snp.makeConstraints {
+        commentInfoView.snp.makeConstraints {
             $0.top.equalTo(bottomSeparator.snp.bottom)
             $0.height.equalTo(50)
             $0.leading.trailing.equalTo(contentView)
         }
         
         commentCountLabel.snp.makeConstraints {
-            $0.leading.equalTo(qwerView.snp.leading).offset(20)
-            $0.centerY.equalTo(qwerView.snp.centerY)
+            $0.leading.equalTo(commentInfoView.snp.leading).offset(20)
+            $0.centerY.equalTo(commentInfoView.snp.centerY)
         }
         
         commentSortButton.snp.makeConstraints {
-            $0.trailing.equalTo(qwerView.snp.trailing).offset(-20)
-            $0.centerY.equalTo(qwerView.snp.centerY)
+            $0.trailing.equalTo(commentInfoView.snp.trailing).offset(-20)
+            $0.centerY.equalTo(commentInfoView.snp.centerY)
         }
         
         commentTableView.snp.makeConstraints {
-            $0.top.equalTo(qwerView.snp.bottom)
+            $0.top.equalTo(commentInfoView.snp.bottom)
             $0.leading.trailing.equalTo(contentView)
             $0.height.equalTo(100)
             $0.bottom.equalTo(contentView.snp.bottom).offset(-50)
@@ -538,6 +537,33 @@ final class TipDetailViewController: BaseViewController {
         configuration.attributedTitle = attributedTitle
         
         return configuration
+    }
+    
+    private func showDeleteAlert(
+        contentType: EllipsisButtonType,
+        confirmHandler: @escaping () -> Void
+    ) {
+        switch contentType {
+        case .tip:
+            // TODO: 팁의 경우 작성
+            return
+        case .comment:
+            let alertController = UIAlertController(
+                title: "댓글을 삭제할까요?",
+                message: nil,
+                preferredStyle: .alert
+            )
+            
+            let confirmAction = UIAlertAction(title: "예", style: .destructive) { _ in
+                confirmHandler()
+            }
+            let cancleAction = UIAlertAction(title: "아니오", style: .cancel)
+            
+            alertController.addAction(confirmAction)
+            alertController.addAction(cancleAction)
+            
+            self.present(alertController, animated: true)
+        }
     }
 }
 
@@ -640,6 +666,15 @@ extension TipDetailViewController: View {
                 cellType: CommentTableViewCell.self)
             ) { _, data, cell in
                 cell.configureCell(with: data)
+                 
+                // TODO: 현재 댓글 삭제 한번에 여러번 불가능 개선 필요
+                cell.ellipsisTapped
+                    .subscribe(onNext: { [weak self] in
+                        self?.showDeleteAlert(contentType: .comment) {
+                            reactor.action.onNext(.commnetEllipsisTapped(commentID: data.id))
+                        }
+                    })
+                    .disposed(by: cell.disposeBag)
             }.disposed(by: disposeBag)
         
         reactor.state
@@ -651,7 +686,6 @@ extension TipDetailViewController: View {
                 }
             })
             .disposed(by: disposeBag)
-        
         
         reactor.pulse(\.$toastMessage)
             .compactMap { $0 }

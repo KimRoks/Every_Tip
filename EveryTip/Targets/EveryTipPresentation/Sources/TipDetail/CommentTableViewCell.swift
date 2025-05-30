@@ -12,7 +12,13 @@ import EveryTipDomain
 
 import Kingfisher
 
+import RxSwift
+
 final class CommentTableViewCell: UITableViewCell, Reusable {
+    
+    let ellipsisTapped = PublishSubject<Void>()
+    var disposeBag = DisposeBag()
+    
     private let commenterImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = .et_getImage(for: .blankImage)
@@ -55,6 +61,17 @@ final class CommentTableViewCell: UITableViewCell, Reusable {
         label.isHidden = true
         
         return label
+    }()
+    
+    private let ellipsisButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(
+            .et_getImage(for: .ellipsis)
+            , for: .normal)
+        button.tintColor = .et_textColorBlack30
+        button.isHidden = true
+        
+        return button
     }()
     
     private let commentLabel: UILabel = {
@@ -139,6 +156,7 @@ final class CommentTableViewCell: UITableViewCell, Reusable {
         self.indentationWidth = 50
         setupLayout()
         setupConstraints()
+        setupAction()
         self.selectionStyle = .none
     }
     
@@ -146,7 +164,18 @@ final class CommentTableViewCell: UITableViewCell, Reusable {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        disposeBag = DisposeBag()
+    }
+    
     // MARK: Private Method
+    
+    private func setupAction() {
+        ellipsisButton.rx.tap
+            .bind(to: ellipsisTapped)
+            .disposed(by: disposeBag)
+    }
     
     private func setupLayout() {
         contentView.addSubViews(
@@ -157,6 +186,7 @@ final class CommentTableViewCell: UITableViewCell, Reusable {
             commentLabel,
             addReplyButton,
             commentsLikebutton,
+            ellipsisButton,
             separator
         )
     }
@@ -204,6 +234,12 @@ final class CommentTableViewCell: UITableViewCell, Reusable {
             $0.leading.trailing.equalTo(contentView).inset(20)
             $0.bottom.equalTo(contentView.snp.bottom).priority(.required)
         }
+        
+        ellipsisButton.snp.makeConstraints {
+            $0.top.equalTo(contentView.snp.top).offset(37)
+            $0.trailing.equalTo(contentView.snp.trailing).offset(-20)
+            $0.width.equalTo(12)
+        }
     }
     
     // MARK: Internal Method
@@ -229,6 +265,7 @@ final class CommentTableViewCell: UITableViewCell, Reusable {
         
         if data.isMine == true {
             writerBadgeLabel.isHidden = false
+            ellipsisButton.isHidden = false
         }
         
         if data.isLiked == true {

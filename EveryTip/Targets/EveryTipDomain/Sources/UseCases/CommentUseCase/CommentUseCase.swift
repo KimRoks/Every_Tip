@@ -17,6 +17,7 @@ public protocol CommentUseCase {
         tipID: Int,
         parentID: Int?
     ) -> Completable
+    func deleteComment(commentId: Int) -> Completable
 }
 
 final class DefaultCommentUseCase: CommentUseCase {
@@ -41,5 +42,9 @@ final class DefaultCommentUseCase: CommentUseCase {
             tipID: tipID,
             parentID: parentID
         )
+    }
+    
+    func deleteComment(commentId: Int) -> Completable {
+        commentRepository.deleteComment(commentId: commentId)
     }
 }

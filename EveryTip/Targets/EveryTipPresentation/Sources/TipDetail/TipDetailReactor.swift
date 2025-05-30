@@ -17,6 +17,7 @@ final class TipDetailReactor: Reactor {
     enum Action {
         case viewDidLoad
         case commentSubmitTapped(content: String, parentID: Int?)
+        case commnetEllipsisTapped(commentID: Int)
     }
     
     enum Mutation {
@@ -89,6 +90,20 @@ final class TipDetailReactor: Reactor {
                 .catch { _ in
                     Observable.just(.setToast("댓글 작성에 실패했어요."))
                 }
+            
+        case .commnetEllipsisTapped(commentID: let commentID):
+            return commentUseCase.deleteComment(commentId: commentID)
+                .andThen(
+                    commentUseCase.fetchComments(tipID: tipID).asObservable()
+                )
+                .map { self.flatten(from: $0) }
+                .flatMap { comments -> Observable<Mutation> in
+                    return Observable.concat([
+                        .just(.setToast("댓글이 삭제되었어요")),
+                        .just(.setComments(comments))
+                    ])
+                }
+                .catch { _ in .just(.setToast("댓글 삭제를 실패했어요")) }
         }
     }
     
