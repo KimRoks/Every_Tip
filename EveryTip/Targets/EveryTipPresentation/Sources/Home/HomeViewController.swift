@@ -112,6 +112,7 @@ final class HomeViewController: BaseViewController {
             
             cell.mainTextLabel.text = item.content
             cell.userNameLabel.text = "by \(item.writer.name)"
+            cell.commentsCountLabel.text = "\(item.commentsCount)"
             cell.viewsCountLabel.text = "\(item.views)"
             cell.likesCountLabel.text = "\(item.likes)"
             
