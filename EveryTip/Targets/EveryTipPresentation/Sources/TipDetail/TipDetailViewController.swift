@@ -284,12 +284,6 @@ final class TipDetailViewController: BaseViewController {
         tagsCollectionView.snp.updateConstraints {
             $0.height.equalTo(height)
         }
-//        
-//        let tableViewheight = commentTableView.contentSize.height
-//        
-//        commentTableView.snp.updateConstraints {
-//            $0.height.equalTo(tableViewheight + 20)
-//        }
         
         updateTableViewHeight()
     }
