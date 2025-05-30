@@ -17,6 +17,7 @@ final class TipDetailReactor: Reactor {
     enum Action {
         case viewDidLoad
         case commentSubmitTapped(content: String, parentID: Int?)
+        case tipEllipsisTapped
         case commnetEllipsisTapped(commentID: Int)
     }
     
@@ -25,6 +26,7 @@ final class TipDetailReactor: Reactor {
         case setComments([Comment])
         case setToast(String)
         case setCommentInput(message: String, parentID: Int?)
+        case setPopSignal(Bool)
     }
     
     struct State {
@@ -32,6 +34,7 @@ final class TipDetailReactor: Reactor {
         var comment: [Comment]?
         var commentInput: (message: String, parentID: Int?) = ("", nil)
         @Pulse var toastMessage: String?
+        @Pulse var popSignal: Bool = false
     }
     
     var initialState: State = State()
@@ -73,7 +76,7 @@ final class TipDetailReactor: Reactor {
                 comment
             )
             
-        
+            
         case .commentSubmitTapped(content: let content, parentID: let parentID):
             return commentUseCase
                 .postComment(
@@ -83,7 +86,7 @@ final class TipDetailReactor: Reactor {
                 )
                 .andThen(commentUseCase.fetchComments(tipID: tipID))
                 .map { self.flatten(from: $0) }
-                .map {    
+                .map {
                     Mutation.setComments($0)
                 }
                 .asObservable()
@@ -104,6 +107,18 @@ final class TipDetailReactor: Reactor {
                     ])
                 }
                 .catch { _ in .just(.setToast("댓글 삭제를 실패했어요")) }
+            
+            
+        case .tipEllipsisTapped:
+            return tipUseCase.deleteTip(for: tipID)
+                .andThen(
+                    Observable.concat(
+                        .just(.setPopSignal(true))
+                    )
+                )
+                .catch { _ in
+                        .just(.setToast("팁을 삭제하는데 실패했어요"))
+                }
         }
     }
     
@@ -118,6 +133,9 @@ final class TipDetailReactor: Reactor {
             newState.comment = comments
         case .setCommentInput(message: let message, parentID: let parentID):
             newState.commentInput = (message, parentID)
+        case .setPopSignal(let signal):
+            newState.popSignal = signal
+            
         }
         
         return newState
@@ -129,13 +147,13 @@ final class TipDetailReactor: Reactor {
         for var comment in commentArray {
             comment.isReply = false
             result.append(comment)
-
+            
             for var reply in comment.replies {
                 reply.isReply = true
                 result.append(reply)
             }
         }
-
+        
         return result
     }
 }
