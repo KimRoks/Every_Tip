@@ -19,6 +19,11 @@ final class TipDetailViewController: BaseViewController {
     weak var coordinator: TipDetailCoordinator?
     var disposeBag: DisposeBag = DisposeBag()
     
+    enum EllipsisButtonType {
+        case tip
+        case comment
+    }
+    
     private let backgroundScrollView: UIScrollView = {
         let scrollView = UIScrollView()
         
@@ -539,6 +544,33 @@ final class TipDetailViewController: BaseViewController {
         
         return configuration
     }
+    
+    private func showDeleteAlert(
+        contentType: EllipsisButtonType,
+        confirmHandler: @escaping () -> Void
+    ) {
+        switch contentType {
+        case .tip:
+            // TODO: 팁의 경우 작성
+            return
+        case .comment:
+            let alertController = UIAlertController(
+                title: "댓글을 삭제할까요?",
+                message: nil,
+                preferredStyle: .alert
+            )
+            
+            let confirmAction = UIAlertAction(title: "예", style: .destructive) { _ in
+                confirmHandler()
+            }
+            let cancleAction = UIAlertAction(title: "아니오", style: .cancel)
+            
+            alertController.addAction(confirmAction)
+            alertController.addAction(cancleAction)
+            
+            self.present(alertController, animated: true)
+        }
+    }
 }
 
 extension TipDetailViewController: View {
@@ -640,6 +672,15 @@ extension TipDetailViewController: View {
                 cellType: CommentTableViewCell.self)
             ) { _, data, cell in
                 cell.configureCell(with: data)
+                 
+                // TODO: 현재 댓글 삭제 한번에 여러번 불가능 개선 필요
+                cell.ellipsisTapped
+                    .subscribe(onNext: { [weak self] in
+                        self?.showDeleteAlert(contentType: .comment) {
+                            reactor.action.onNext(.commnetEllipsisTapped(commentID: data.id))
+                        }
+                    })
+                    .disposed(by: cell.disposeBag)
             }.disposed(by: disposeBag)
         
         reactor.state
@@ -651,7 +692,6 @@ extension TipDetailViewController: View {
                 }
             })
             .disposed(by: disposeBag)
-        
         
         reactor.pulse(\.$toastMessage)
             .compactMap { $0 }
