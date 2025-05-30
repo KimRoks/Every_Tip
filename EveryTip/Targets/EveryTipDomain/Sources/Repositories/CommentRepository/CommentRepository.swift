@@ -18,4 +18,6 @@ public protocol CommentRepository {
         tipID: Int,
         parentID: Int?
     ) -> Completable
+    
+    func deleteComment(commentId: Int) -> Completable
 }
