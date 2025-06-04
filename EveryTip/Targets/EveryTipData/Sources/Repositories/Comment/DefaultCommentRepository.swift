@@ -23,7 +23,7 @@ struct DefaultCommentRepository: CommentRepository, SessionInjectable {
     
     private let interceptor = TokenInterceptor()
     
-    func fetchComments(tipID: Int) -> Single<[Comment]?> {
+    func fetchComments(for tipID: Int) -> Single<[Comment]?> {
         guard let request = try? CommentTarget.getComments(tipID: tipID).asURLRequest() else {
             return Single.error(NetworkError.invalidURLError)
         }
@@ -71,7 +71,7 @@ struct DefaultCommentRepository: CommentRepository, SessionInjectable {
         }
     }
     
-    func deleteComment(commentId: Int) -> Completable {
+    func deleteComment(for commentId: Int) -> Completable {
         guard let request = try? CommentTarget.deleteComment(commentID: commentId).asURLRequest() else {
             return Completable.error(NetworkError.invalidURLError)
         }

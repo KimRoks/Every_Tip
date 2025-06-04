@@ -11,13 +11,13 @@ import Foundation
 import RxSwift
 
 public protocol CommentRepository {
-    func fetchComments(tipID: Int) -> Single<[Comment]?>
+    func fetchComments(for tipID: Int) -> Single<[Comment]?>
     
     func postComment(
         content: String,
         tipID: Int,
         parentID: Int?
     ) -> Completable
-    
-    func deleteComment(commentId: Int) -> Completable
+  
+    func deleteComment(for commentID: Int) -> Completable
 }
