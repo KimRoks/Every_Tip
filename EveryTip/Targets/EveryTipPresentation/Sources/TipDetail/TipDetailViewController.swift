@@ -236,12 +236,20 @@ final class TipDetailViewController: BaseViewController {
         return view
     }()
     
+    private let commnetPlaceholderLable: UILabel = {
+        let label = UILabel()
+        label.text = "유용한 답변으로 팁 좋아요를 받아보세요 :)"
+        label.font = .et_pretendard(style: .bold, size: 14)
+        label.textColor = .et_textColor5
+        
+        return label
+    }()
+    
     private let commentInputTextView: UITextView = {
         let textView = UITextView()
         textView.font = .et_pretendard(style: .bold, size: 14)
+        textView.textColor = .et_textColorBlack70
         textView.isScrollEnabled = false
-        textView.text = "유용한 답변으로 팁 좋아요를 받아보세요 :)"
-        textView.textColor = .et_textColor5
         
         return textView
     }()
@@ -340,6 +348,8 @@ final class TipDetailViewController: BaseViewController {
             commentTableView
         )
         
+        commentInputTextView.addSubViews(commnetPlaceholderLable)
+
         commentInputTextFieldView.addSubViews(
             commentInputTextView,
             submitCommentButton
@@ -499,6 +509,11 @@ final class TipDetailViewController: BaseViewController {
             $0.bottom.equalTo(view.keyboardLayoutGuide.snp.top)
             $0.leading.trailing.equalTo(view)
             $0.height.equalTo(50)
+        }
+        
+        commnetPlaceholderLable.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalToSuperview().offset(5)
         }
         
         commentInfoView.snp.makeConstraints {
@@ -778,17 +793,7 @@ extension TipDetailViewController: View {
 }
 
 extension TipDetailViewController: UITextViewDelegate {
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.text == "유용한 답변으로 팁 좋아요를 받아보세요 :)" {
-            textView.text = ""
-            textView.textColor = UIColor.et_textColorBlack70
-        }
-    }
-    
-    func textViewDidEndEditing(_ textView: UITextView) {
-        if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            textView.text = "유용한 답변으로 팁 좋아요를 받아보세요 :)"
-            textView.textColor = .placeholderText
-        }
+    func textViewDidChange(_ textView: UITextView) {
+        commnetPlaceholderLable.isHidden = !textView.text.isEmpty
     }
 }
