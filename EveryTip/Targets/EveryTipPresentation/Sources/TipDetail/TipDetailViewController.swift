@@ -227,7 +227,7 @@ final class TipDetailViewController: BaseViewController {
         return tableView
     }()
     
-    private let commentInputTextFieldView: UIView = {
+    private let commentInputBackgroundView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
         view.layer.borderColor = UIColor.et_lineGray30.cgColor
@@ -236,12 +236,20 @@ final class TipDetailViewController: BaseViewController {
         return view
     }()
     
+    private let commnetPlaceholderLable: UILabel = {
+        let label = UILabel()
+        label.text = "유용한 답변으로 팁 좋아요를 받아보세요 :)"
+        label.font = .et_pretendard(style: .bold, size: 14)
+        label.textColor = .et_textColor5
+        
+        return label
+    }()
+    
     private let commentInputTextView: UITextView = {
         let textView = UITextView()
         textView.font = .et_pretendard(style: .bold, size: 14)
+        textView.textColor = .et_textColorBlack70
         textView.isScrollEnabled = false
-        textView.text = "유용한 답변으로 팁 좋아요를 받아보세요 :)"
-        textView.textColor = .et_textColor5
         
         return textView
     }()
@@ -326,7 +334,7 @@ final class TipDetailViewController: BaseViewController {
     private func setupLayout() {
         view.addSubViews(
             backgroundScrollView,
-            commentInputTextFieldView
+            commentInputBackgroundView
         )
         
         backgroundScrollView.addSubview(contentView)
@@ -340,7 +348,9 @@ final class TipDetailViewController: BaseViewController {
             commentTableView
         )
         
-        commentInputTextFieldView.addSubViews(
+        commentInputTextView.addSubViews(commnetPlaceholderLable)
+
+        commentInputBackgroundView.addSubViews(
             commentInputTextView,
             submitCommentButton
         )
@@ -495,12 +505,6 @@ final class TipDetailViewController: BaseViewController {
             $0.height.equalTo(8)
         }
         
-        commentInputTextFieldView.snp.makeConstraints {
-            $0.bottom.equalTo(view.keyboardLayoutGuide.snp.top)
-            $0.leading.trailing.equalTo(view)
-            $0.height.equalTo(50)
-        }
-        
         commentInfoView.snp.makeConstraints {
             $0.top.equalTo(bottomSeparator.snp.bottom)
             $0.height.equalTo(50)
@@ -524,28 +528,43 @@ final class TipDetailViewController: BaseViewController {
             $0.bottom.equalTo(contentView.snp.bottom).offset(-50)
         }
         
+        commentInputBackgroundView.snp.makeConstraints {
+            $0.bottom.equalTo(view.keyboardLayoutGuide.snp.top)
+            $0.leading.trailing.equalTo(view)
+            $0.height.greaterThanOrEqualTo(50)
+        }
+        
+        commnetPlaceholderLable.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalToSuperview().offset(5)
+        }
+        
         commentInputTextView.snp.makeConstraints {
-            $0.centerY.equalTo(commentInputTextFieldView.snp.centerY)
-            $0.leading.equalTo(commentInputTextFieldView.snp.leading).offset(20)
-            $0.trailing.equalTo(commentInputTextFieldView.snp.trailing).offset(-100)
+            $0.top.equalTo(commentInputBackgroundView.snp.top).offset(16)
+            $0.bottom.equalTo(commentInputBackgroundView.snp.bottom).offset(-10)
+            $0.leading.equalTo(commentInputBackgroundView.snp.leading).offset(20)
+            $0.trailing.equalTo(commentInputBackgroundView.snp.trailing).offset(-100)
+            
+            let size = commentInputTextView.sizeThatFits(
+                CGSize(
+                    width: commentInputTextView.frame.width,
+                    height: .greatestFiniteMagnitude
+                )
+            )
+            
+            $0.height.equalTo(size.height)
         }
         
         submitCommentButton.snp.makeConstraints {
             $0.width.equalTo(48)
             $0.height.equalTo(30)
-            $0.centerY.equalTo(commentInputTextFieldView.snp.centerY)
-            $0.trailing.equalTo(commentInputTextFieldView.snp.trailing).offset(-20)
+            $0.bottom.equalTo(commentInputBackgroundView.snp.bottom).offset(-10)
+            $0.trailing.equalTo(commentInputBackgroundView.snp.trailing).offset(-20)
         }
     }
-    
-    
-    
-    
+
     private func updateLikeButton(for count: Int, isLiked: Bool) -> UIButton.Configuration {
         var configuration = UIButton.Configuration.plain()
-        
-        
-        
         let likeImage: UIImage = isLiked ?
             .et_getImage(for: .likeImage_fill) :
             .et_getImage(for: .likeImage_empty)
@@ -618,16 +637,22 @@ extension TipDetailViewController: View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        // TODO: 로그인 안되어있는 경우 동작 불가능하도록 개선 필요
-        self.submitCommentButton.rx.tap
+        submitCommentButton.rx.tap
             .withLatestFrom(commentInputTextView.rx.text.orEmpty)
-            .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
-            .map { content in
-                // 대댓글 기능 임시 미지원
-                let parentID: Int? = nil
-                return Reactor.Action.commentSubmitTapped(content: content, parentID: parentID)
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+            .bind { [weak self] content in
+                self?.coordinator?.checkLoginBeforeAction {
+                    // 대댓글 기능 임시 미지원
+                    let parentID: Int? = nil
+                    self?.reactor?.action.onNext(
+                        .commentSubmitTapped(
+                            content: content,
+                            parentID: parentID
+                        )
+                    )
+                }
             }
-            .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         ellipsisButton.rx.tap
@@ -779,21 +804,39 @@ extension TipDetailViewController: View {
                 )
             })
             .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$commentSubmittedSignal)
+            .compactMap { $0 }
+            .filter { $0 }
+            .bind { [weak self] _ in
+                self?.commentInputTextView.text = nil
+                self?.commnetPlaceholderLable.isHidden = false
+            }
+            .disposed(by: disposeBag)
     }
 }
 
 extension TipDetailViewController: UITextViewDelegate {
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.text == "유용한 답변으로 팁 좋아요를 받아보세요 :)" {
-            textView.text = ""
-            textView.textColor = UIColor.et_textColorBlack70
+    func textViewDidChange(_ textView: UITextView) {
+        commnetPlaceholderLable.isHidden = !textView.text.isEmpty
+        
+        let maxHeight: CGFloat = 100
+        let size = textView.sizeThatFits(
+            CGSize(
+                width: textView.frame.width,
+                height: .greatestFiniteMagnitude
+            )
+        )
+        let newHeight = min(size.height, maxHeight)
+        
+        commentInputTextView.isScrollEnabled = size.height > maxHeight
+        
+        commentInputTextView.snp.updateConstraints { make in
+            make.height.equalTo(newHeight)
         }
-    }
-    
-    func textViewDidEndEditing(_ textView: UITextView) {
-        if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            textView.text = "유용한 답변으로 팁 좋아요를 받아보세요 :)"
-            textView.textColor = .placeholderText
+        
+        UIView.animate(withDuration: 0.2) {
+            self.view.layoutIfNeeded()
         }
     }
 }

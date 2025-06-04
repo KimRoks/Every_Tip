@@ -28,12 +28,14 @@ final class TipDetailReactor: Reactor {
         case setToast(String)
         case setCommentInput(message: String, parentID: Int?)
         case setPopSignal(Bool)
+        case setCommentSignal(Bool)
     }
     
     struct State {
         var tip: Tip?
         var comment: [Comment]?
         var commentInput: (message: String, parentID: Int?) = ("", nil)
+        @Pulse var commentSubmittedSignal: Bool = false
         @Pulse var toastMessage: String?
         @Pulse var popSignal: Bool = false
     }
@@ -87,10 +89,13 @@ final class TipDetailReactor: Reactor {
                 )
                 .andThen(commentUseCase.fetchComments(tipID: tipID))
                 .map { self.flatten(from: $0) }
-                .map {
-                    Mutation.setComments($0)
-                }
                 .asObservable()
+                .flatMap { comments in
+                    Observable.concat(
+                        .just(.setComments(comments)),
+                        .just(.setCommentSignal(true))
+                    )
+                }
                 .catch { _ in
                     Observable.just(.setToast("댓글 작성에 실패했어요."))
                 }
@@ -146,7 +151,8 @@ final class TipDetailReactor: Reactor {
             newState.commentInput = (message, parentID)
         case .setPopSignal(let signal):
             newState.popSignal = signal
-            
+        case .setCommentSignal(let signal):
+            newState.commentSubmittedSignal = signal
         }
         
         return newState
