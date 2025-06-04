@@ -13,6 +13,7 @@ import RxSwift
 public protocol TipUseCase {
     func fetchTotalTips() -> Single<[Tip]>
     func fetchTip(forTipID tipID: Int) -> Single<Tip>
+    func likeTip(for tipID: Int) -> Completable
     func deleteTip(for tipID: Int) -> Completable
 }
 
@@ -30,6 +31,10 @@ final class DefaultTipUseCase: TipUseCase {
     
     func fetchTip(forTipID tipID: Int) -> Single<Tip> {
         tipRepository.fetchTip(forTipID: tipID)
+    }
+    
+    func likeTip(for tipID: Int) -> Completable {
+        tipRepository.likeTip(for: tipID)
     }
     
     func deleteTip(for tipID: Int) -> Completable {
