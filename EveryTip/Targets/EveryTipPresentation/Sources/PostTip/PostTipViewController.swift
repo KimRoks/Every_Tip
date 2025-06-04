@@ -176,6 +176,12 @@ final class PostTipViewController: BaseViewController {
             action: #selector(dismissView),
             for: .touchUpInside
         )
+        
+        addImageButton.addTarget(
+            self,
+            action: #selector(presentPhotoPicker),
+            for: .touchUpInside
+        )
     }
     
     //MARK: Private Methods
@@ -281,5 +287,10 @@ final class PostTipViewController: BaseViewController {
     @objc
     private func dismissView() {
         coordinator?.didFinish()
+    }
+    
+    @objc
+    private func presentPhotoPicker() {
+        coordinator?.presentPhotoPicker()
     }
 }

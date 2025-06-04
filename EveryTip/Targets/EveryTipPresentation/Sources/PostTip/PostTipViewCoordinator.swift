@@ -12,10 +12,11 @@ import UIKit
 
 import Swinject
 
-protocol PostTipViewCoordinator: Coordinator { }
+protocol PostTipViewCoordinator: Coordinator {
+    func presentPhotoPicker()
+}
 
 final class DefaultPostTipViewCoordinator: PostTipViewCoordinator {
-    
     //MARK: Internal Properties
     
     weak var parentCoordinator: Coordinator?
@@ -81,5 +82,17 @@ final class DefaultPostTipViewCoordinator: PostTipViewCoordinator {
                 print(error.localizedDescription)
             }
         }
+    }
+    
+    func presentPhotoPicker() {
+        guard let postTipViewController = postTipViewController else {
+            return
+        }
+        let photoPickerCoordinator = DefaultPhotoPickerCoordinator(
+            navigationController: navigationController,
+            presentingViewController: postTipViewController
+        )
+        photoPickerCoordinator.parentCoordinator = self
+        photoPickerCoordinator.start()
     }
 }
