@@ -645,7 +645,12 @@ extension TipDetailViewController: View {
                 self?.coordinator?.checkLoginBeforeAction {
                     // 대댓글 기능 임시 미지원
                     let parentID: Int? = nil
-                    self?.reactor?.action.onNext(.commentSubmitTapped(content: content, parentID: parentID))
+                    self?.reactor?.action.onNext(
+                        .commentSubmitTapped(
+                            content: content,
+                            parentID: parentID
+                        )
+                    )
                 }
             }
             .disposed(by: disposeBag)
@@ -798,6 +803,15 @@ extension TipDetailViewController: View {
                     isLiked: isLiked
                 )
             })
+            .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$commentSubmittedSignal)
+            .compactMap { $0 }
+            .filter { $0 }
+            .bind { [weak self] _ in
+                self?.commentInputTextView.text = nil
+                self?.commnetPlaceholderLable.isHidden = false
+            }
             .disposed(by: disposeBag)
     }
 }
