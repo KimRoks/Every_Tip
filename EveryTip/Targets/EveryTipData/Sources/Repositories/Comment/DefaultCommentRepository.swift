@@ -23,7 +23,7 @@ struct DefaultCommentRepository: CommentRepository, SessionInjectable {
     
     private let interceptor = TokenInterceptor()
     
-    func fetchComments(tipID: Int) -> Single<[Comment]?> {
+    func fetchComments(for tipID: Int) -> Single<[Comment]?> {
         guard let request = try? CommentTarget.getComments(tipID: tipID).asURLRequest() else {
             return Single.error(NetworkError.invalidURLError)
         }
@@ -71,11 +71,11 @@ struct DefaultCommentRepository: CommentRepository, SessionInjectable {
         }
     }
     
-    func deleteComment(commentId: Int) -> Completable {
+    func deleteComment(for commentId: Int) -> Completable {
         guard let request = try? CommentTarget.deleteComment(commentID: commentId).asURLRequest() else {
             return Completable.error(NetworkError.invalidURLError)
         }
-                
+        
         return Completable.create { completable in
             let task = session?.request(request, interceptor: interceptor)
                 .validate(statusCode: 200..<300)
@@ -88,6 +88,29 @@ struct DefaultCommentRepository: CommentRepository, SessionInjectable {
                         return completable(.error(error))
                     }
                 }
+            return Disposables.create {
+                task?.cancel()
+            }
+        }
+    }
+    
+    func likeComment(for commentID: Int) -> Completable {
+        guard let request = try? CommentTarget.postLikeComment(commentID: commentID).asURLRequest() else {
+            return Completable.error(NetworkError.invalidURLError)
+        }
+        
+        return Completable.create { completable in
+            let task = session?.request(request, interceptor: interceptor)
+                .validate(statusCode: 200..<300)
+                .response { response in
+                    switch response.result {
+                    case .success(_):
+                        return completable(.completed)
+                    case .failure(let error):
+                        return completable(.error(error))
+                    }
+                }
+            
             return Disposables.create {
                 task?.cancel()
             }
