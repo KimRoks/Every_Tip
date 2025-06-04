@@ -19,6 +19,7 @@ final class TipDetailReactor: Reactor {
         case commentSubmitTapped(content: String, parentID: Int?)
         case tipEllipsisTapped
         case commnetEllipsisTapped(commentID: Int)
+        case likeButtonTapped
     }
     
     enum Mutation {
@@ -118,6 +119,16 @@ final class TipDetailReactor: Reactor {
                 )
                 .catch { _ in
                         .just(.setToast("팁을 삭제하는데 실패했어요"))
+                }
+            
+        case .likeButtonTapped:
+            return tipUseCase.likeTip(for: tipID)
+                .andThen(
+                    tipUseCase.fetchTip(forTipID: tipID).asObservable()
+                )
+                .map { Mutation.setTip($0) }
+                .catch { _ in
+                    return .just(.setToast("팁 좋아요를 실패했어요"))
                 }
         }
     }
