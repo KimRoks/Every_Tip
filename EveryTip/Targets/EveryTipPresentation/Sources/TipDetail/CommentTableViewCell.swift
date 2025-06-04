@@ -17,6 +17,8 @@ import RxSwift
 final class CommentTableViewCell: UITableViewCell, Reusable {
     
     let ellipsisTapped = PublishSubject<Void>()
+    let likeButtonTapped = PublishSubject<Void>()
+
     var disposeBag = DisposeBag()
     
     private let commenterImageView: UIImageView = {
@@ -136,7 +138,6 @@ final class CommentTableViewCell: UITableViewCell, Reusable {
         self.indentationWidth = 50
         setupLayout()
         setupConstraints()
-        setupAction()
         self.selectionStyle = .none
     }
     
@@ -150,13 +151,6 @@ final class CommentTableViewCell: UITableViewCell, Reusable {
     }
     
     // MARK: Private Method
-    
-    private func setupAction() {
-        ellipsisButton.rx.tap
-            .bind(to: ellipsisTapped)
-            .disposed(by: disposeBag)
-    }
-    
     private func setupLayout() {
         contentView.addSubViews(
             commenterImageView,
@@ -217,6 +211,16 @@ final class CommentTableViewCell: UITableViewCell, Reusable {
     }
     
     // MARK: Internal Method
+    
+    func setupAction() {
+        ellipsisButton.rx.tap
+            .bind(to: ellipsisTapped)
+            .disposed(by: disposeBag)
+        
+        commentsLikebutton.rx.tap
+            .bind(to: likeButtonTapped)
+            .disposed(by: disposeBag)
+    }
     
     func configureCell(with data: Comment) {
         if let profileImageUrl = data.writer.profileImage {

@@ -123,7 +123,7 @@ final class TipDetailViewController: BaseViewController {
         let stack = UIStackView()
         stack.distribution = .equalSpacing
         stack.spacing = 10
-
+        
         return stack
     }()
     
@@ -293,11 +293,11 @@ final class TipDetailViewController: BaseViewController {
         
         return button
     }()
-
+    
     private lazy var rightButtonItem: UIBarButtonItem = {
         return UIBarButtonItem(customView: ellipsisButton)
     }()
-
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         writerImageView.makeCircular()
@@ -326,7 +326,6 @@ final class TipDetailViewController: BaseViewController {
         
         commentTableView.rowHeight = UITableView.automaticDimension
         commentTableView.estimatedRowHeight = 78
-
         commentTableView.separatorStyle = .none
         commentTableView.isScrollEnabled = false
     }
@@ -349,7 +348,7 @@ final class TipDetailViewController: BaseViewController {
         )
         
         commentInputTextView.addSubViews(commnetPlaceholderLable)
-
+        
         commentInputBackgroundView.addSubViews(
             commentInputTextView,
             submitCommentButton
@@ -562,7 +561,7 @@ final class TipDetailViewController: BaseViewController {
             $0.trailing.equalTo(commentInputBackgroundView.snp.trailing).offset(-20)
         }
     }
-
+    
     private func updateLikeButton(for count: Int, isLiked: Bool) -> UIButton.Configuration {
         var configuration = UIButton.Configuration.plain()
         let likeImage: UIImage = isLiked ?
@@ -699,7 +698,7 @@ extension TipDetailViewController: View {
                     for: likeCount,
                     isLiked: tip.isLiked
                 )
-            
+                
                 // TODO: 이미지 업로드 api 적용 후 수정 및 사진 확대 가능하도록 개선
                 let images = tip.images
                 
@@ -755,12 +754,23 @@ extension TipDetailViewController: View {
                 cellType: CommentTableViewCell.self)
             ) { _, data, cell in
                 cell.configureCell(with: data)
-                 
-                // TODO: 현재 댓글 삭제 한번에 여러번 불가능 개선 필요
+                cell.setupAction()
+                
+                cell.likeButtonTapped
+                    .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
+                    .bind { [weak self] in
+                        self?.coordinator?.checkLoginBeforeAction {
+                            self?.reactor?.action.onNext(.commentLikeButtonTapped(commentID: data.id))
+                        }
+                    }
+                    .disposed(by: cell.disposeBag)
+                
                 cell.ellipsisTapped
                     .subscribe(onNext: { [weak self] in
-                        self?.showDeleteAlert(contentType: .comment) {
-                            reactor.action.onNext(.commnetEllipsisTapped(commentID: data.id))
+                        self?.coordinator?.checkLoginBeforeAction {
+                            self?.showDeleteAlert(contentType: .comment) {
+                                reactor.action.onNext(.commnetEllipsisTapped(commentID: data.id))
+                            }
                         }
                     })
                     .disposed(by: cell.disposeBag)
