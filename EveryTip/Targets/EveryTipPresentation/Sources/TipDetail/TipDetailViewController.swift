@@ -537,15 +537,9 @@ final class TipDetailViewController: BaseViewController {
             $0.trailing.equalTo(commentInputTextFieldView.snp.trailing).offset(-20)
         }
     }
-    
-    
-    
-    
+
     private func updateLikeButton(for count: Int, isLiked: Bool) -> UIButton.Configuration {
         var configuration = UIButton.Configuration.plain()
-        
-        
-        
         let likeImage: UIImage = isLiked ?
             .et_getImage(for: .likeImage_fill) :
             .et_getImage(for: .likeImage_empty)
@@ -618,16 +612,17 @@ extension TipDetailViewController: View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        // TODO: 로그인 안되어있는 경우 동작 불가능하도록 개선 필요
-        self.submitCommentButton.rx.tap
+        submitCommentButton.rx.tap
             .withLatestFrom(commentInputTextView.rx.text.orEmpty)
-            .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
-            .map { content in
-                // 대댓글 기능 임시 미지원
-                let parentID: Int? = nil
-                return Reactor.Action.commentSubmitTapped(content: content, parentID: parentID)
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+            .bind { [weak self] content in
+                self?.coordinator?.checkLoginBeforeAction {
+                    // 대댓글 기능 임시 미지원
+                    let parentID: Int? = nil
+                    self?.reactor?.action.onNext(.commentSubmitTapped(content: content, parentID: parentID))
+                }
             }
-            .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         ellipsisButton.rx.tap
