@@ -86,26 +86,6 @@ final class CommentTableViewCell: UITableViewCell, Reusable {
         return label
     }()
     
-    private let addReplyButton: UIButton = {
-        var configuration = UIButton.Configuration.plain()
-        configuration.image = .et_getImage(for: .reply)
-        configuration.imagePadding = 2
-        var attributedTitle = AttributedString("답글 쓰기")
-        attributedTitle.font = UIFont.et_pretendard(style: .bold, size: 10)
-        configuration.attributedTitle = attributedTitle
-        
-        configuration.contentInsets = NSDirectionalEdgeInsets(
-            top: 0,
-            leading: 0,
-            bottom: 0,
-            trailing: 0
-        )
-        
-        let button = UIButton(configuration: configuration)
-        button.tintColor = .et_textColorBlack30
-        return button
-    }()
-    
     private let commentsLikebutton: UIButton = {
         var configuration = UIButton.Configuration.plain()
         configuration.image = .et_getImage(for: .likeImage_empty)
@@ -184,7 +164,6 @@ final class CommentTableViewCell: UITableViewCell, Reusable {
             commenttedTimeLabel,
             writerBadgeLabel,
             commentLabel,
-            addReplyButton,
             commentsLikebutton,
             ellipsisButton,
             separator
@@ -218,19 +197,14 @@ final class CommentTableViewCell: UITableViewCell, Reusable {
             $0.leading.equalTo(commenterImageView.snp.trailing).offset(6)
             $0.trailing.equalTo(contentView.snp.trailing).offset(-40)
         }
-        
-        addReplyButton.snp.makeConstraints {
-            $0.leading.equalTo(contentView.snp.leading).offset(64)
-            $0.top.equalTo(commentLabel.snp.bottom).offset(6)
-        }
-        
+       
         commentsLikebutton.snp.makeConstraints {
             $0.top.equalTo(commentLabel.snp.bottom).offset(6)
-            $0.leading.equalTo(addReplyButton.snp.trailing).offset(6)
+            $0.leading.equalTo(contentView.snp.leading).offset(64)
         }
         
         separator.snp.makeConstraints {
-            $0.top.equalTo(addReplyButton.snp.bottom).offset(16)
+            $0.top.equalTo(commentsLikebutton.snp.bottom).offset(16)
             $0.leading.trailing.equalTo(contentView).inset(20)
             $0.bottom.equalTo(contentView.snp.bottom).priority(.required)
         }
@@ -268,20 +242,12 @@ final class CommentTableViewCell: UITableViewCell, Reusable {
             ellipsisButton.isHidden = false
         }
         
-        if data.isLiked == true {
-            commentsLikebutton.configuration?.image = .et_getImage(for: .likeImage_fill)
-        }
+        let likeImage: UIImage = data.isLiked ?
+            .et_getImage(for: .likeImage_fill) :
+            .et_getImage(for: .likeImage_empty)
+            
+        commentsLikebutton.configuration?.image = likeImage
         
         self.indentationWidth = data.parentID != nil ? 38 : 0
-    }
-    
-    func toggleLike() {
-        let currentConfig = commentsLikebutton.configuration
-        
-        let emptyImage = UIImage.et_getImage(for: .likeImage_empty)
-        let fillImage = UIImage.et_getImage(for: .likeImage_fill)
-        
-        let newImage = currentConfig?.image == fillImage ? emptyImage : fillImage
-        commentsLikebutton.configuration?.image = newImage
     }
 }
