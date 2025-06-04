@@ -13,5 +13,6 @@ import RxSwift
 public protocol TipRepository {
     func fetchTotalTips() -> Single<[Tip]>
     func fetchTip(forTipID tipID: Int) -> Single<Tip>
+    func likeTip(for tipID: Int) -> Completable
     func deleteTip(for tipID: Int) -> Completable
 }

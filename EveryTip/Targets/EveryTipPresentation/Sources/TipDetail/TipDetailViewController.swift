@@ -274,7 +274,6 @@ final class TipDetailViewController: BaseViewController {
         setupCommentTableView()
         commentInputTextView.delegate = self
         navigationItem.rightBarButtonItem = rightButtonItem
-        
     }
     
     private let ellipsisButton: UIButton = {
@@ -539,9 +538,19 @@ final class TipDetailViewController: BaseViewController {
         }
     }
     
-    private func updateLikeButton(for count: Int) -> UIButton.Configuration {
+    
+    
+    
+    private func updateLikeButton(for count: Int, isLiked: Bool) -> UIButton.Configuration {
         var configuration = UIButton.Configuration.plain()
-        configuration.image = .et_getImage(for: .likeImage_empty)
+        
+        
+        
+        let likeImage: UIImage = isLiked ?
+            .et_getImage(for: .likeImage_fill) :
+            .et_getImage(for: .likeImage_empty)
+        
+        configuration.image = likeImage
         configuration.imagePadding = 6
         
         let attributedTitle = AttributedString(
@@ -628,6 +637,15 @@ extension TipDetailViewController: View {
                 }
             }
             .disposed(by: disposeBag)
+        
+        likeButton.rx.tap
+            .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
+            .bind { [weak self] in
+                self?.coordinator?.checkLoginBeforeAction {
+                    self?.reactor?.action.onNext(.likeButtonTapped)
+                }
+            }
+            .disposed(by: disposeBag)
     }
     
     func bindOutput(reactor: TipDetailReactor) {
@@ -652,7 +670,10 @@ extension TipDetailViewController: View {
                 self?.titleLabel.text = tip.title
                 self?.mainTexLabel.text = tip.content
                 let likeCount = tip.likes
-                self?.likeButton.configuration = self?.updateLikeButton(for: likeCount)
+                self?.likeButton.configuration = self?.updateLikeButton(
+                    for: likeCount,
+                    isLiked: tip.isLiked
+                )
             
                 // TODO: 이미지 업로드 api 적용 후 수정 및 사진 확대 가능하도록 개선
                 let images = tip.images
@@ -744,6 +765,19 @@ extension TipDetailViewController: View {
                 self?.navigationController?.popViewController(animated: true)
                 self?.coordinator?.didFinish()
             }
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .compactMap { $0.tip }
+            .map { tip in (tip.isLiked, tip.likes) }
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] result in
+                let (isLiked, likeCount) = result
+                self?.likeButton.configuration = self?.updateLikeButton(
+                    for: likeCount,
+                    isLiked: isLiked
+                )
+            })
             .disposed(by: disposeBag)
     }
 }
