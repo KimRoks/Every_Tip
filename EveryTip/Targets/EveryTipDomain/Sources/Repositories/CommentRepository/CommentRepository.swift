@@ -20,4 +20,6 @@ public protocol CommentRepository {
     ) -> Completable
   
     func deleteComment(for commentID: Int) -> Completable
+    
+    func likeComment(for commentID: Int) -> Completable
 }

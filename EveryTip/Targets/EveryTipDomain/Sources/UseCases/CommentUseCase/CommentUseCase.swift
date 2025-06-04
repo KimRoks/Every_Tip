@@ -12,6 +12,7 @@ import RxSwift
 
 public protocol CommentUseCase {
     func fetchComments(tipID: Int) -> Single<[Comment]?>
+    
     func postComment(
         content: String,
         tipID: Int,
@@ -19,6 +20,8 @@ public protocol CommentUseCase {
     ) -> Completable
     
     func deleteComment(commentId: Int) -> Completable
+    
+    func likeComment(for commentID: Int) -> Completable
 }
 
 final class DefaultCommentUseCase: CommentUseCase {
@@ -47,5 +50,9 @@ final class DefaultCommentUseCase: CommentUseCase {
     
     func deleteComment(commentId: Int) -> Completable {
         commentRepository.deleteComment(for: commentId)
+    }
+    
+    func likeComment(for commentID: Int) -> Completable {
+        commentRepository.likeComment(for: commentID)
     }
 }
