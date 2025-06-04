@@ -12,6 +12,7 @@ enum TipTarget {
     case fetchTotalTip
     case fetchTipByTipID(Int)
     case postLikeTip(tipID: Int)
+    case postSaveTip(tipID: Int)
     case deleteTip(tipID: Int)
 }
 
@@ -26,6 +27,8 @@ extension TipTarget: TargetType {
                 .delete
         case .postLikeTip:
                 .post
+        case .postSaveTip:
+                .post
         }
     }
     
@@ -39,6 +42,8 @@ extension TipTarget: TargetType {
             return "/tips?id=\(tipID)"
         case .postLikeTip(tipID: let tipID):
             return "/tips/\(tipID)/likes"
+        case .postSaveTip(tipID: let tipID):
+            return "/tips/\(tipID)/save"
         }
     }
     
@@ -52,6 +57,8 @@ extension TipTarget: TargetType {
             return nil
         case .postLikeTip:
             return nil
+        case .postSaveTip:
+            return nil
         }
     }
         
@@ -64,6 +71,8 @@ extension TipTarget: TargetType {
         case .deleteTip:
             return nil
         case .postLikeTip:
+            return nil
+        case .postSaveTip:
             return nil
         }
     }

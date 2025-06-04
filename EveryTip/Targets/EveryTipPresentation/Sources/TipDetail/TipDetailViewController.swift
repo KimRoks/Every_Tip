@@ -670,6 +670,15 @@ extension TipDetailViewController: View {
                 }
             }
             .disposed(by: disposeBag)
+        
+        saveButton.rx.tap
+            .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
+            .bind { [weak self] in
+                self?.coordinator?.checkLoginBeforeAction {
+                    self?.reactor?.action.onNext(.tipSaveButtonTapped)
+                }
+            }
+            .disposed(by: disposeBag)
     }
     
     func bindOutput(reactor: TipDetailReactor) {
@@ -682,10 +691,16 @@ extension TipDetailViewController: View {
                         placeholder: UIImage.et_getImage(for: .blankImage)
                     )
                 }
-                
+            
                 if tip.isMine {
                     self?.ellipsisButton.isHidden = false
                 }
+                
+                let saveImage: UIImage = tip.isSaved
+                ? .et_getImage(for: .bookmark_fill)
+                : .et_getImage(for: .bookmark)
+                            
+                self?.saveButton.configuration?.image = saveImage
                 
                 self?.writerNameLabel.text = tip.writer.name
                 self?.categoryLabel.text = "\(tip.categoryName) ・ "

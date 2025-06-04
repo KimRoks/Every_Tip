@@ -21,6 +21,7 @@ final class TipDetailReactor: Reactor {
         case commnetEllipsisTapped(commentID: Int)
         case likeButtonTapped
         case commentLikeButtonTapped(commentID: Int)
+        case tipSaveButtonTapped
     }
     
     enum Mutation {
@@ -137,7 +138,6 @@ final class TipDetailReactor: Reactor {
                     return .just(.setToast("팁 좋아요를 실패했어요"))
                 }
             
-            
         case .commentLikeButtonTapped(commentID: let commentID):
             return commentUseCase.likeComment(for: commentID)
                 .andThen(
@@ -147,6 +147,24 @@ final class TipDetailReactor: Reactor {
                 .map { Mutation.setComments($0) }
                 .catch { _ in
                         .just(.setToast("댓글 좋아요를 실패했어요"))
+                }
+            
+        case .tipSaveButtonTapped:
+            return tipUseCase.saveTip(for: tipID)
+                .andThen(
+                    Observable.merge(
+                        tipUseCase
+                            .fetchTip(forTipID: tipID).map { Mutation.setTip($0) }
+                            .asObservable(),
+                        .just(
+                            currentState.tip?.isSaved == true
+                            ? .setToast("저장된 팁을 제거했어요")
+                            : .setToast("팁을 저장했어요")
+                        )
+                    )
+                )
+                .catch { _ in
+                        .just(.setToast("팁 저장에 실패했어요"))
                 }
         }
     }
