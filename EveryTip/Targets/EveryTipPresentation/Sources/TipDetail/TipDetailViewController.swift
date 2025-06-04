@@ -227,7 +227,7 @@ final class TipDetailViewController: BaseViewController {
         return tableView
     }()
     
-    private let commentInputTextFieldView: UIView = {
+    private let commentInputBackgroundView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
         view.layer.borderColor = UIColor.et_lineGray30.cgColor
@@ -334,7 +334,7 @@ final class TipDetailViewController: BaseViewController {
     private func setupLayout() {
         view.addSubViews(
             backgroundScrollView,
-            commentInputTextFieldView
+            commentInputBackgroundView
         )
         
         backgroundScrollView.addSubview(contentView)
@@ -350,7 +350,7 @@ final class TipDetailViewController: BaseViewController {
         
         commentInputTextView.addSubViews(commnetPlaceholderLable)
 
-        commentInputTextFieldView.addSubViews(
+        commentInputBackgroundView.addSubViews(
             commentInputTextView,
             submitCommentButton
         )
@@ -505,17 +505,6 @@ final class TipDetailViewController: BaseViewController {
             $0.height.equalTo(8)
         }
         
-        commentInputTextFieldView.snp.makeConstraints {
-            $0.bottom.equalTo(view.keyboardLayoutGuide.snp.top)
-            $0.leading.trailing.equalTo(view)
-            $0.height.equalTo(50)
-        }
-        
-        commnetPlaceholderLable.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
-            $0.leading.equalToSuperview().offset(5)
-        }
-        
         commentInfoView.snp.makeConstraints {
             $0.top.equalTo(bottomSeparator.snp.bottom)
             $0.height.equalTo(50)
@@ -539,17 +528,38 @@ final class TipDetailViewController: BaseViewController {
             $0.bottom.equalTo(contentView.snp.bottom).offset(-50)
         }
         
+        commentInputBackgroundView.snp.makeConstraints {
+            $0.bottom.equalTo(view.keyboardLayoutGuide.snp.top)
+            $0.leading.trailing.equalTo(view)
+            $0.height.greaterThanOrEqualTo(50)
+        }
+        
+        commnetPlaceholderLable.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalToSuperview().offset(5)
+        }
+        
         commentInputTextView.snp.makeConstraints {
-            $0.centerY.equalTo(commentInputTextFieldView.snp.centerY)
-            $0.leading.equalTo(commentInputTextFieldView.snp.leading).offset(20)
-            $0.trailing.equalTo(commentInputTextFieldView.snp.trailing).offset(-100)
+            $0.top.equalTo(commentInputBackgroundView.snp.top).offset(16)
+            $0.bottom.equalTo(commentInputBackgroundView.snp.bottom).offset(-10)
+            $0.leading.equalTo(commentInputBackgroundView.snp.leading).offset(20)
+            $0.trailing.equalTo(commentInputBackgroundView.snp.trailing).offset(-100)
+            
+            let size = commentInputTextView.sizeThatFits(
+                CGSize(
+                    width: commentInputTextView.frame.width,
+                    height: .greatestFiniteMagnitude
+                )
+            )
+            
+            $0.height.equalTo(size.height)
         }
         
         submitCommentButton.snp.makeConstraints {
             $0.width.equalTo(48)
             $0.height.equalTo(30)
-            $0.centerY.equalTo(commentInputTextFieldView.snp.centerY)
-            $0.trailing.equalTo(commentInputTextFieldView.snp.trailing).offset(-20)
+            $0.bottom.equalTo(commentInputBackgroundView.snp.bottom).offset(-10)
+            $0.trailing.equalTo(commentInputBackgroundView.snp.trailing).offset(-20)
         }
     }
 
@@ -795,5 +805,24 @@ extension TipDetailViewController: View {
 extension TipDetailViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         commnetPlaceholderLable.isHidden = !textView.text.isEmpty
+        
+        let maxHeight: CGFloat = 100
+        let size = textView.sizeThatFits(
+            CGSize(
+                width: textView.frame.width,
+                height: .greatestFiniteMagnitude
+            )
+        )
+        let newHeight = min(size.height, maxHeight)
+        
+        commentInputTextView.isScrollEnabled = size.height > maxHeight
+        
+        commentInputTextView.snp.updateConstraints { make in
+            make.height.equalTo(newHeight)
+        }
+        
+        UIView.animate(withDuration: 0.2) {
+            self.view.layoutIfNeeded()
+        }
     }
 }
