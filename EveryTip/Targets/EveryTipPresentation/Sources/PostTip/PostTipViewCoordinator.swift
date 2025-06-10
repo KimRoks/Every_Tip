@@ -36,7 +36,8 @@ final class DefaultPostTipViewCoordinator: PostTipViewCoordinator {
     //MARK: Internal Methods
     
     func start() {
-        postTipViewController = PostTipViewController()
+        let reactor = PostTipReactor()
+        postTipViewController = PostTipViewController(reactor: reactor)
         postTipViewController?.coordinator = self
         presentPostView()
     }

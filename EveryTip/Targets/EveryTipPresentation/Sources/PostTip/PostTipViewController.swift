@@ -11,12 +11,15 @@ import UIKit
 import EveryTipDesignSystem
 
 import SnapKit
+import ReactorKit
+import RxSwift
 
 final class PostTipViewController: BaseViewController {
     
     //MARK: Properties
     
     weak var coordinator: PostTipViewCoordinator?
+    var disposeBag: DisposeBag = DisposeBag()
     
     private let closeButton: UIButton = {
         let button = UIButton(type: .system)
@@ -184,6 +187,17 @@ final class PostTipViewController: BaseViewController {
         return button
     }()
     
+    // MARK: Init
+    
+    init(reactor: PostTipReactor) {
+        super.init(nibName: nil, bundle: nil)
+        self.reactor = reactor
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     //MARK: View Life Cycle
     
     public override func viewDidLoad() {
@@ -305,6 +319,39 @@ final class PostTipViewController: BaseViewController {
         }
     }
     
+    private func presentCategorySheet() -> Observable<Constants.Category> {
+        return Observable.create { [weak self] observer in
+            let alert = UIAlertController(
+                title: "카테고리 선택",
+                message: nil,
+                preferredStyle: .actionSheet
+            )
+            
+            for category in Constants.Category.allCases {
+                let action = UIAlertAction(
+                    title: category.title,
+                    style: .default
+                ) { _ in
+                    observer.onNext(category)
+                    observer.onCompleted()
+                }
+                alert.addAction(action)
+            }
+            
+            alert.addAction(
+                UIAlertAction(title: "취소", style: .cancel) { _ in
+                    observer.onCompleted()
+                }
+            )
+            
+            self?.present(alert, animated: true)
+            
+            return Disposables.create {
+                alert.dismiss(animated: true, completion: nil)
+            }
+        }
+    }
+    
     @objc
     private func dismissView() {
         coordinator?.didFinish()
@@ -324,5 +371,30 @@ extension PostTipViewController: UITextViewDelegate {
             textView.text = "내용 입력"
             textView.textColor = .placeholderText
         }
+    }
+}
+
+extension PostTipViewController: View {
+    func bind(reactor: PostTipReactor) {
+        bindInput(reactor: reactor)
+        bindOutput(reactor: reactor)
+    }
+    
+    func bindInput(reactor: PostTipReactor) {
+        choiceCategoryView.tap
+            .flatMapLatest{ [weak self] _ in
+                self?.presentCategorySheet() ?? .empty()
+            }
+            .map { Reactor.Action.setCategoryButtonTapped($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+    }
+    
+    func bindOutput(reactor: PostTipReactor) {
+        reactor.state
+            .compactMap { $0.category?.title }
+            .bind {
+                self.choiceCategoryView.updateTitle($0)
+            }.disposed(by: disposeBag)
     }
 }
