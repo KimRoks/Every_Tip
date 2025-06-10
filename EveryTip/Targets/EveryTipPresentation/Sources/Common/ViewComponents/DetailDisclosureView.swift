@@ -10,8 +10,17 @@ import UIKit
 
 import EveryTipDesignSystem
 
+import RxSwift
+
 final class DetailDisclosureView: UIStackView {
-    let titleLabel: UILabel = {
+    
+    private let tapSubject = PublishSubject<Void>()
+    
+    var tap: Observable<Void> {
+        return tapSubject.asObservable()
+    }
+    
+    private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.et_pretendard(
             style: .medium,
@@ -43,10 +52,19 @@ final class DetailDisclosureView: UIStackView {
         setupAttributes()
         setupLayout()
         setupConstraints()
+        detailDisclosureButton.addTarget(
+            self,
+            action: #selector(buttonTappped),
+            for: .touchUpInside
+        )
     }
 
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc private func buttonTappped() {
+        tapSubject.onNext(())
     }
     
     private func setupAttributes() {
