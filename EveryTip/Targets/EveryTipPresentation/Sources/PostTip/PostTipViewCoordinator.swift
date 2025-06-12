@@ -24,29 +24,24 @@ final class DefaultPostTipViewCoordinator: PostTipViewCoordinator {
     
     //MARK: Private Properties
     
-    private var postTipViewController: PostTipViewController?
-    private weak var presentingViewController: UIViewController?
-    
-    init(navigationController: UINavigationController,
-         presentingViewController: UIViewController) {
+    init(navigationController: UINavigationController) {
         self.navigationController = navigationController
-        self.presentingViewController = presentingViewController
     }
     
     //MARK: Internal Methods
     
     func start() {
         let reactor = PostTipReactor()
-        postTipViewController = PostTipViewController(reactor: reactor)
-        postTipViewController?.coordinator = self
-        presentPostView()
+        let postTipViewController = PostTipViewController(reactor: reactor)
+        postTipViewController.coordinator = self
+        
+        let navi = UINavigationController(rootViewController: postTipViewController)
+        navi.modalPresentationStyle = .fullScreen
+        navigationController.present(navi, animated: true)
     }
     
     func didFinish() {
-        guard let presentingViewController = presentingViewController else {
-            return
-        }
-        presentingViewController.dismiss(
+        navigationController.dismiss(
             animated: true,
             completion: removeSelfFromParentCoordinator
         )
@@ -56,31 +51,5 @@ final class DefaultPostTipViewCoordinator: PostTipViewCoordinator {
     
     private func removeSelfFromParentCoordinator() {
         parentCoordinator?.remove(child: self)
-    }
-    
-    private func presentPostView() {
-        guard let postTipViewController = postTipViewController else {
-            return
-        }
-        postTipViewController.modalPresentationStyle = .fullScreen
-        guard let presentingViewController = presentingViewController else {
-            return
-        }
-        presentingViewController.present(
-            postTipViewController,
-            animated: true,
-            completion: nil
-        )
-        
-        // TEST: 예시 테스트용
-        let exUseCase = Container.shared.resolve(ExUseCase.self)
-        exUseCase?.fetchUppercased(string: "ex usecase test") {
-            switch $0 {
-            case .success(let exModel):
-                print(exModel.text)
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }
     }
 }
