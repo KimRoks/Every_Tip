@@ -16,14 +16,17 @@ final class PostTipReactor: Reactor {
     
     enum Action {
         case setCategoryButtonTapped(Category)
+        case setTagButtonTapped([String])
     }
     
     enum Mutation {
         case setCategory(Category)
+        case setTag([String])
     }
     
     struct State {
         var category: Category?
+        var tags: [String]?
     }
     
     var initialState: State = State()
@@ -33,6 +36,8 @@ final class PostTipReactor: Reactor {
             
         case .setCategoryButtonTapped(let category):
             return .just(.setCategory(category))
+        case .setTagButtonTapped(let tags):
+            return .just(.setTag(tags))
         }
     }
     
@@ -42,6 +47,8 @@ final class PostTipReactor: Reactor {
             
         case .setCategory(let category):
             newState.category = category
+        case .setTag(let tags):
+            newState.tags = tags
         }
         
         return newState

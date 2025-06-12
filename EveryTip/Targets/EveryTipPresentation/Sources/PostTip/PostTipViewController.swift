@@ -210,6 +210,8 @@ final class PostTipViewController: BaseViewController {
             action: #selector(dismissView),
             for: .touchUpInside
         )
+        
+        self.navigationController?.isNavigationBarHidden = true
     }
     
     //MARK: Private Methods
@@ -388,6 +390,17 @@ extension PostTipViewController: View {
             .map { Reactor.Action.setCategoryButtonTapped($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+        
+        hashtagView.tap
+            .subscribe(onNext: { [weak self] in
+                let tagEditVC = EditTagViewController(tags: reactor.currentState.tags ?? [])
+                tagEditVC.onConfirmButtonTapped = { [weak self] tags in
+                    self?.reactor?.action.onNext(.setTagButtonTapped(tags))
+                }
+                
+                self?.present(tagEditVC, animated: true)
+            })
+            .disposed(by: disposeBag)
     }
     
     func bindOutput(reactor: PostTipReactor) {
@@ -396,5 +409,13 @@ extension PostTipViewController: View {
             .bind {
                 self.choiceCategoryView.updateTitle($0)
             }.disposed(by: disposeBag)
+        
+        reactor.state
+            .compactMap { $0.tags?.joined(separator: ",") }
+            .distinctUntilChanged()
+            .bind(to: Binder(self) { owner, tagString in
+                owner.hashtagView.updateTitle(tagString)
+            })
+            .disposed(by: disposeBag)
     }
 }
