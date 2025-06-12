@@ -10,7 +10,7 @@ import UIKit
 
 import SnapKit
 
-// TODO: 이 화면의 이동은 Coordinator를 통해 진행되고 있지않음. fullModal과 네비컨트롤러의 관계 학습 및 화면 이동 방식 최종 결정 후 조정 될 수 있음.
+// TODO: 이 화면의 이동은 Coordinator를 통해 진행되고 있지않음. 화면 이동 방식 및 액션 전달 방식의 최종 결정 후 조정 될 수 있음.
 
 final class EditTagViewController: BaseViewController {
     var onConfirmButtonTapped: (([String]) -> Void)?
