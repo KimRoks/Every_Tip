@@ -107,17 +107,33 @@ final class PostTipViewController: BaseViewController {
         return textView
     }()
     
-    private let addedImageView: UIButton = {
+    private let addPhotoCellButton: UIButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor = .black
-        button.layer.cornerRadius = 10
+        var configuration = UIButton.Configuration.plain()
+        configuration.image = .et_getImage(for: .addImage_fill)
+        
+        button.configuration = configuration
         
         return button
     }()
     
+    private let selectedPhotosCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: 70, height: 70)
+        layout.minimumInteritemSpacing = 13
+        layout.scrollDirection = .horizontal
+        
+        let collectionView = UICollectionView(
+            frame: .zero,
+            collectionViewLayout: layout
+        )
+ 
+        return collectionView
+    }()
+    
     private let bodyUnderLine: StraightLineView = StraightLineView(color: .et_brandColor4)
     
-    private let addImageButton: UIButton = {
+    private let addPhotoButton: UIButton = {
         var configuration = UIButton.Configuration.plain()
         let attributedTitle = AttributedString(
             "이미지",
@@ -137,52 +153,6 @@ final class PostTipViewController: BaseViewController {
             trailing: 0
         )
         let button = UIButton(configuration: configuration)
-        
-        return button
-    }()
-    
-    private let addLinkButton: UIButton = {
-        var configuration = UIButton.Configuration.plain()
-        let attributedTitle = AttributedString(
-            "링크",
-            attributes: AttributeContainer([
-                .font: UIFont.et_pretendard(style: .medium, size: 18)
-            ])
-        )
-        configuration.baseForegroundColor = .et_textColor5
-        
-        configuration.attributedTitle = attributedTitle
-        configuration.image = .et_getImage(for: .link)
-        configuration.imagePadding = 4
-        configuration.contentInsets = NSDirectionalEdgeInsets(
-            top: 0,
-            leading: 0,
-            bottom: 0,
-            trailing: 0
-        )
-        let button = UIButton(configuration: configuration)
-        
-        return button
-    }()
-    
-    private lazy var attachmentStackView: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.distribution = .fillEqually
-        stack.spacing = 10
-        
-        return stack
-    }()
-    
-    // TODO: 저장 숫자 카운팅 설정
-    private let temporaryStorageButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle(
-            "임시 저장 0",
-            for: .normal
-        )
-        button.titleLabel?.font = .et_pretendard(style: .bold, size: 14)
-        button.tintColor = .et_textColor5
         
         return button
     }()
@@ -212,6 +182,7 @@ final class PostTipViewController: BaseViewController {
         )
         
         self.navigationController?.isNavigationBarHidden = true
+        setupCollectionView()
     }
     
     //MARK: Private Methods
@@ -225,11 +196,10 @@ final class PostTipViewController: BaseViewController {
             hashTagUnderLine,
             titleTextField,
             bodyTextView,
-            addedImageView,
             bodyUnderLine,
-            addImageButton,
-            addLinkButton,
-            temporaryStorageButton
+            addPhotoCellButton,
+            selectedPhotosCollectionView,
+            addPhotoButton
         )
         
         topStackView.addArrangedSubViews(
@@ -287,38 +257,39 @@ final class PostTipViewController: BaseViewController {
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
         
-        addedImageView.snp.makeConstraints {
-            $0.top.equalTo(bodyTextView.snp.bottom).offset(30)
-            $0.leading.equalTo(view.safeAreaLayoutGuide).offset(20)
-            
-            $0.height.equalTo(70)
-            $0.width.equalTo(70)
-            $0.bottom.equalTo(bodyUnderLine.snp.top).offset(-30)
-        }
-        
         bodyUnderLine.snp.makeConstraints {
-            $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(-46)
+            $0.bottom.equalTo(addPhotoButton.snp.top).offset(-120)
             $0.leading.equalTo(view.safeAreaLayoutGuide)
             $0.trailing.equalTo(view.safeAreaLayoutGuide)
         }
         
-        addImageButton.snp.makeConstraints {
-            $0.top.equalTo(bodyUnderLine.snp.bottom).offset(12)
+        addPhotoCellButton.snp.makeConstraints {
+            $0.top.equalTo(bodyUnderLine.snp.bottom).offset(16)
+            $0.leading.equalTo(view.safeAreaLayoutGuide).offset(20)
+            $0.height.width.equalTo(70)
+            $0.bottom.equalTo(addPhotoButton.snp.top).offset(-20)
+        }
+        
+        selectedPhotosCollectionView.snp.makeConstraints {
+            $0.top.equalTo(bodyUnderLine.snp.bottom).offset(16)
+            $0.leading.equalTo(addPhotoCellButton.snp.trailing).offset(10)
+            $0.trailing.equalTo(view.safeAreaLayoutGuide).offset(-20)
+            $0.height.equalTo(80)
+            $0.bottom.equalTo(addPhotoButton.snp.top).offset(-20)
+        }
+        
+        addPhotoButton.snp.makeConstraints {
+            $0.top.equalTo(selectedPhotosCollectionView.snp.bottom).offset(20)
             $0.leading.equalTo(view.safeAreaLayoutGuide).offset(20)
             $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(-12)
         }
-        
-        addLinkButton.snp.makeConstraints {
-            $0.top.equalTo(bodyUnderLine.snp.bottom).offset(12)
-            $0.leading.equalTo(addImageButton.snp.trailing).offset(10)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(-12)
-        }
-        
-        temporaryStorageButton.snp.makeConstraints {
-            $0.top.equalTo(bodyUnderLine.snp.bottom).offset(15)
-            $0.trailing.equalTo(view.safeAreaLayoutGuide).offset(-20)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(-15)
-        }
+    }
+    
+    private func setupCollectionView() {
+        selectedPhotosCollectionView.register(
+            SelectedPhotoCell.self,
+            forCellWithReuseIdentifier: SelectedPhotoCell.reuseIdentifier
+        )
     }
     
     private func presentCategorySheet() -> Observable<Constants.Category> {
@@ -401,6 +372,23 @@ extension PostTipViewController: View {
                 self?.present(tagEditVC, animated: true)
             })
             .disposed(by: disposeBag)
+        
+        addPhotoCellButton.rx.tap
+            .map {
+                Reactor.Action.addImageButtonTapped
+            }.bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        addPhotoButton.rx.tap
+            .map {
+                Reactor.Action.addImageButtonTapped
+            }.bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        registerButton.rx.tap
+            .map { Reactor.Action.confirmButtonTapped }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
     
     func bindOutput(reactor: PostTipReactor) {
@@ -416,6 +404,38 @@ extension PostTipViewController: View {
             .bind(to: Binder(self) { owner, tagString in
                 owner.hashtagView.updateTitle(tagString)
             })
+            .disposed(by: disposeBag)
+        
+        reactor.state.map { $0.selectedPhotos }
+            .bind(to: selectedPhotosCollectionView.rx.items(cellIdentifier: SelectedPhotoCell.reuseIdentifier, cellType: SelectedPhotoCell.self)) { index, imageData, cell in
+                
+                let image = UIImage(data: imageData.originalData)
+                cell.updatePhoto(image)
+                
+                if index == 0 {
+                    cell.setThumnail()
+                } else {
+                    cell.clearThumnail()
+                }
+            }.disposed(by: disposeBag)
+
+        reactor.pulse(\.$imageSignal)
+            .filter { $0 == true }
+            .subscribe(onNext: { [weak self] _ in
+                let vc = PhotoPickerViewController()
+                vc.onConfirm = { [weak self] selectedPhotos in
+                    self?.reactor?.action.onNext(.savePhoto(selectedPhotos)
+                    )
+                }
+                self?.present(vc, animated: true)
+            })
+            .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$confirmSignal)
+            .filter { $0 == true }
+            .subscribe { _ in
+                print("dd")
+            }
             .disposed(by: disposeBag)
     }
 }
