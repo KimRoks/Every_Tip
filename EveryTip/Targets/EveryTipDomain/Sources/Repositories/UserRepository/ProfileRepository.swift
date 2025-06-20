@@ -13,4 +13,5 @@ import RxSwift
 public protocol ProfileRepository {
     func fetchMyProfile() -> Single<MyProfile>
     func fetchUserProfile(userID: Int) -> Single<UserProfile>
+    func toggleSubscription(to userID: Int) -> Completable
 }

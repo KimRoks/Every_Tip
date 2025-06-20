@@ -16,9 +16,11 @@ public protocol UserUseCase {
     func fetchMyProfile() -> Single<MyProfile>
     func fetchUserProfile(for userID: Int) -> Single<UserProfile>
     func isNicknameDuplicated(_ nickname: String) -> Single<Bool>
+    func toggleSubscription(to userID: Int) -> Completable
 }
 
 final class DefaultUserUseCase: UserUseCase {
+    
     private let nickNameRepository: NickNameRepository
     private let categoryRepository: CategoryRepository
     private let profileRepository: ProfileRepository
@@ -51,5 +53,9 @@ final class DefaultUserUseCase: UserUseCase {
     
     func isNicknameDuplicated(_ nickname: String) -> RxSwift.Single<Bool> {
         nickNameRepository.isNicknameDuplicated(nickname)
+    }
+    
+    func toggleSubscription(to userID: Int) -> Completable {
+        profileRepository.toggleSubscription(to: userID)
     }
 }
