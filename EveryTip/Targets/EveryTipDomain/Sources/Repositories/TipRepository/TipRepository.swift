@@ -16,4 +16,5 @@ public protocol TipRepository {
     func likeTip(for tipID: Int) -> Completable
     func saveTip(for tipID: Int) -> Completable
     func deleteTip(for tipID: Int) -> Completable
+    func fetchSavedTips() -> Single<[Tip]>
 }
