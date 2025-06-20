@@ -67,6 +67,31 @@ struct DefaultTipRepository: TipRepository, SessionInjectable {
         }
     }
     
+    func fetchTips(forUserID userID: Int) -> RxSwift.Single<[EveryTipDomain.Tip]> {
+        guard let request = try? TipTarget.fetchTipByUserID(userID).asURLRequest() else {
+            return Single.error(NetworkError.invalidURLError)
+        }
+        
+        return Single.create { single in
+            let task = session?.request(request)
+                .validate(statusCode: 200..<300)
+                .responseDecodable(of: TipDTO.self) { response in
+                    switch response.result {
+                        
+                    case .success(let tipDTO):
+                        let tips = tipDTO.data.tips.map { $0.toDomain() }
+                        return single(.success(tips))
+                    case .failure(let error):
+                        return single(.failure(error))
+                    }
+                }
+            
+            return Disposables.create {
+                task?.cancel()
+            }
+        }
+    }
+    
     func deleteTip(for tipID: Int) -> Completable {
         guard let request = try? TipTarget.deleteTip(tipID: tipID).asURLRequest() else{ return Completable.error(NetworkError.invalidURLError)}
         return Completable.create { completable in
