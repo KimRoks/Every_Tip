@@ -14,6 +14,7 @@ enum TipTarget {
     case postLikeTip(tipID: Int)
     case postSaveTip(tipID: Int)
     case deleteTip(tipID: Int)
+    case getSavedTips
 }
 
 extension TipTarget: TargetType {
@@ -29,6 +30,8 @@ extension TipTarget: TargetType {
                 .post
         case .postSaveTip:
                 .post
+        case .getSavedTips:
+                .get
         }
     }
     
@@ -44,6 +47,8 @@ extension TipTarget: TargetType {
             return "/tips/\(tipID)/likes"
         case .postSaveTip(tipID: let tipID):
             return "/tips/\(tipID)/save"
+        case .getSavedTips:
+            return "/user/saved-tips"
         }
     }
     
@@ -59,6 +64,8 @@ extension TipTarget: TargetType {
             return nil
         case .postSaveTip:
             return nil
+        case .getSavedTips:
+            return nil
         }
     }
         
@@ -73,6 +80,8 @@ extension TipTarget: TargetType {
         case .postLikeTip:
             return nil
         case .postSaveTip:
+            return nil
+        case .getSavedTips:
             return nil
         }
     }

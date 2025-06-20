@@ -14,6 +14,7 @@ import Alamofire
 import RxSwift
 
 struct DefaultTipRepository: TipRepository, SessionInjectable {
+ 
     var session: Session?
     private let interceptor = TokenInterceptor()
     
@@ -122,6 +123,35 @@ struct DefaultTipRepository: TipRepository, SessionInjectable {
                         return completable(.completed)
                     case .failure(let error):
                         return completable(.error(error))
+                    }
+                }
+            
+            return Disposables.create {
+                task?.cancel()
+            }
+        }
+    }
+    
+    // TODO: DTO 바꿔야할수있음 서버랑 협의 중
+    func fetchSavedTips() -> Single<[Tip]> {
+        guard let request = try? TipTarget.getSavedTips.asURLRequest() else {
+            return Single.error(NetworkError.invalidURLError)
+        }
+        
+        return Single.create { single in
+            let task = session?.request(request, interceptor: interceptor)
+                .validate(statusCode: 200..<500)
+                .responseDecodable(of: TipDTO.self) { response in
+                    switch response.result {
+                    case .success(let tipData):
+                        let tips = tipData.data.tips.map { $0.toDomain() }
+                        
+                        return single(.success(tips))
+                        
+                    case .failure(let error):
+                        print(error)
+                        print(error.localizedDescription)
+                        return single(.failure(error))
                     }
                 }
             
