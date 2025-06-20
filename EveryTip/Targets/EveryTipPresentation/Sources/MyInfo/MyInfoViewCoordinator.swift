@@ -16,7 +16,7 @@ import RxSwift
 protocol MyInfoViewCoordinator: AuthenticationCoordinator {
     func start() -> UIViewController
     func pushToAgreementViewcontroller()
-    func pushToUserContentsView()
+    func pushToUserContentsView(myID: Int)
     
     func popToRootView()
 }
@@ -57,8 +57,11 @@ final class DefaultMyInfoViewCoordinator: MyInfoViewCoordinator {
         agreementCoordinator.start()
     }
     
-    func pushToUserContentsView() {
-        let userContentsCoordinator = DefaultUserContentsCoordinator(navigationController: navigationController)
+    func pushToUserContentsView(myID: Int) {
+        let userContentsCoordinator = DefaultUserContentsCoordinator(
+            myID: myID,
+            navigationController: navigationController
+        )
             userContentsCoordinator.parentCoordinator = self
             self.append(child: userContentsCoordinator)
             userContentsCoordinator.start()

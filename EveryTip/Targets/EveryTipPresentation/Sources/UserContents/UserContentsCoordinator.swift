@@ -25,7 +25,12 @@ final class DefaultUserContentsCoordinator: UserContentsCoordinator {
     
     var navigationController: UINavigationController
     
-    init(navigationController: UINavigationController) {
+    private let myID: Int
+    
+    init(
+        myID: Int,
+        navigationController: UINavigationController) {
+            self.myID = myID
         self.navigationController = navigationController
     }
         
@@ -35,13 +40,17 @@ final class DefaultUserContentsCoordinator: UserContentsCoordinator {
         }
         
         let savedTipReactor = SavedTipReactor(tipUseCase: tipUseCase)
+        let myTipReactor = MyTipReactor(
+            myID: myID,
+            tipUseCase: tipUseCase
+        )
         
         // TODO: 각 탭에 맞는 뷰컨 주입
         let userContentsViewController: UserContentsViewController = UserContentsViewController(
             viewControllers: [
                 UIViewController(),
                 UIViewController(),
-                UIViewController(),
+                MyTipViewController(reactor: myTipReactor),
                 SavedTipViewController(reactor: savedTipReactor)
             ]
         )

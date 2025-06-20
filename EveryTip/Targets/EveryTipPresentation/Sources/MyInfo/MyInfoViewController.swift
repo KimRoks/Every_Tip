@@ -316,7 +316,7 @@ extension MyInfoViewController: View {
         tapGesture.rx.event
             .bind { [weak self] _ in
                 self?.coordinator?.checkLoginBeforeAction(onLoggedIn: { [weak self] in
-                    self?.coordinator?.pushToUserContentsView()
+                    self?.coordinator?.pushToUserContentsView(myID: reactor.currentState.myProfile.id)
                 })
             }
             .disposed(by: disposeBag)
@@ -400,7 +400,7 @@ extension MyInfoViewController: View {
                 case .logout:
                     self?.showLogoutAlert()
                 case .userContents:
-                    self?.coordinator?.pushToUserContentsView()
+                    self?.coordinator?.pushToUserContentsView(myID: reactor.currentState.myProfile.id)
                 }
             })
             .disposed(by: disposeBag)
