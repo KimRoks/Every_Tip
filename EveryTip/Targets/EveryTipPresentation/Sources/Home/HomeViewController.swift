@@ -103,19 +103,8 @@ final class HomeViewController: BaseViewController {
                 withIdentifier: TipListCell.reuseIdentifier,
                 for: indexPath
             ) as? TipListCell else { return UITableViewCell() }
-            
-            let thumbnailURL = item.images.first(where: { $0.isThumbnail == 1 })?.url
-            cell.updateThumbnailImage(with: thumbnailURL)
-            cell.updateLikeImage(isLiked: item.isLiked)
-            cell.configureCategoryLabel(id: item.categoryId)
-            cell.configureTitleLabelText(item.title)
-            
-            cell.mainTextLabel.text = item.content
-            cell.userNameLabel.text = "by \(item.writer.name)"
-            cell.commentsCountLabel.text = "\(item.commentsCount)"
-            cell.viewsCountLabel.text = "\(item.views)"
-            cell.likesCountLabel.text = "\(item.likes)"
-            
+
+            cell.configureTipListCell(with: item)
             return cell
         }
     )
