@@ -14,6 +14,7 @@ enum UserTarget {
     case getMyProfile
     case getUserProfile(userID: Int)
     case getIsDuplicatedNickname(String)
+    case postSubscribe(userID: Int)
 }
 
 extension UserTarget: TargetType {
@@ -29,6 +30,8 @@ extension UserTarget: TargetType {
                 .get
         case .getIsDuplicatedNickname:
                 .get
+        case .postSubscribe:
+                .post
         }
     }
     
@@ -44,6 +47,8 @@ extension UserTarget: TargetType {
             return "/user/\(userID)"
         case .getIsDuplicatedNickname(let nickname):
             return "/user/nick-name-check?nick_name=\(nickname)"
+        case .postSubscribe(userID: let userID):
+            return "/user/\(userID)/subscription"
         }
     }
     
@@ -59,6 +64,8 @@ extension UserTarget: TargetType {
             return nil
         case .getIsDuplicatedNickname:
             return nil
+        case .postSubscribe:
+            return nil
         }
     }
     
@@ -73,6 +80,8 @@ extension UserTarget: TargetType {
         case .getUserProfile:
             return nil
         case .getIsDuplicatedNickname:
+            return nil
+        case .postSubscribe:
             return nil
         }
     }
