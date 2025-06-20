@@ -29,7 +29,15 @@ final class DefaultUserContentsCoordinator: UserContentsCoordinator {
     }
         
     func start() {
-        let userContentsViewController: UserContentsViewController = UserContentsViewController()
+        // TODO: 각 탭에 맞는 뷰컨 주입
+        let userContentsViewController: UserContentsViewController = UserContentsViewController(
+            viewControllers: [
+                UIViewController(),
+                UIViewController(),
+                UIViewController(),
+                UIViewController()
+            ]
+        )
         userContentsViewController.coordinator = self
         navigationController.pushViewController(
             userContentsViewController,
