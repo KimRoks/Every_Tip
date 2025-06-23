@@ -48,8 +48,6 @@ final class SetCategoryViewController: BaseViewController {
     
     private let categoriesTableView: UITableView = {
         let tableView = UITableView()
-        tableView.backgroundColor = .blue
-        
         
         return tableView
     }()
