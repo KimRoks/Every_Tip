@@ -73,6 +73,27 @@ public struct Constants {
             }
         }
         
+        var id: Int {
+            switch self {
+            case .hobby:
+                return 1
+            case .it:
+                return 2
+            case .health:
+                return 3
+            case .finance:
+                return 4
+            case .entertainment:
+                return 5
+            case .sports:
+                return 6
+            case .games:
+                return 7
+            case .social:
+                return 8
+            }
+        }
+        
         public static let allCategoriesItems: [Category] = Category.allCases
         
         public static let interestSuggestItems: [Category] = [.hobby, .it, .health, .finance, .entertainment, .games]
