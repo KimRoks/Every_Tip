@@ -10,10 +10,9 @@ import Foundation
 import ReactorKit
 import RxSwift
 
-typealias Category = Constants.Category
-
 final class PostTipReactor: Reactor {
-    
+    typealias Category = Constants.Category
+
     enum Action {
         case setCategoryButtonTapped(Category)
         case setTagButtonTapped([String])

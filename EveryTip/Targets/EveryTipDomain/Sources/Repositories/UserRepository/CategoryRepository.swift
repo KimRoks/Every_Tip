@@ -11,5 +11,6 @@ import Foundation
 import RxSwift
 
 public protocol CategoryRepository {
-    func setCategory(categoryIDs: [Int]) -> Completable
+    func fetchMyCategories(IDs: [Int]) -> Single<[Category]>
+    func setMyCategories(categoryIDs: [Int]) -> Completable
 }

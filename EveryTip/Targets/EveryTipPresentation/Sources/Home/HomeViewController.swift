@@ -299,7 +299,8 @@ extension HomeViewController: UITableViewDelegate {
             /*|| 선택된 카테고리가 없다면.. */ {
                 return 250
             } else {
-                return 0
+                // TODO: 현재 선택 카테고리를 정상적으로 불러올 수 없어서 추후 수정필요
+                return 250
             }
         }
     }
@@ -308,9 +309,8 @@ extension HomeViewController: UITableViewDelegate {
 // MARK: Button Delegate
 extension HomeViewController: FooterDelegate {
     func buttonTapped() {
-        coordinator?.checkLoginBeforeAction(onLoggedIn: {
-            // TODO: 실제 코디네이터 동작 삽임 필요
-            print("coordinator.moveToSetCategoryView")
+        coordinator?.checkLoginBeforeAction(onLoggedIn: { [weak self]  in
+            self?.coordinator?.pushToSetCategoryView()
         })
     }
 }
