@@ -218,6 +218,11 @@ extension HomeViewController: View {
         
         tipListTableView.rx.setDelegate(self)
             .disposed(by: disposeBag)
+        
+        searchBarButton.rx.tap
+            .map { Reactor.Action.searchButtonTapped}
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
     
     private func bindOutputs(to reactor: HomeReactor) {
@@ -254,6 +259,13 @@ extension HomeViewController: View {
             .subscribe { [weak self] message in
                 self?.showToast(message: message)
             }
+            .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$seachSignal)
+            .filter { $0 == true }
+            .subscribe(onNext: { _ in
+                self.coordinator?.pushToSearchView()
+            })
             .disposed(by: disposeBag)
     }
 }

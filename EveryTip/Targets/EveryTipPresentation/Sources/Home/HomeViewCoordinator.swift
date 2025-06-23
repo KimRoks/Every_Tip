@@ -16,6 +16,7 @@ protocol HomeViewCoordinator: AuthenticationCoordinator {
     func start() -> UIViewController
     func pushToTipDetailView(with tipID: Int)
     func pushToSetCategoryView()
+    func pushToSearchView()
 }
 
 final class DefaultHomeViewCoordinator: HomeViewCoordinator {
@@ -71,5 +72,13 @@ final class DefaultHomeViewCoordinator: HomeViewCoordinator {
         )
         append(child: setCategoryCoordinator)
         setCategoryCoordinator.start()
+    }
+    
+    func pushToSearchView() {
+        let searchCoordinator = DefaultSearchCoordinator(navigationController: navigationController)
+        append(child: searchCoordinator)
+        searchCoordinator.parentCoordinator = self
+        searchCoordinator.start()
+        
     }
 }
