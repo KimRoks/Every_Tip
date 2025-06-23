@@ -15,6 +15,7 @@ import Swinject
 protocol HomeViewCoordinator: AuthenticationCoordinator {
     func start() -> UIViewController
     func pushToTipDetailView(with tipID: Int)
+    func pushToSetCategoryView()
 }
 
 final class DefaultHomeViewCoordinator: HomeViewCoordinator {
@@ -62,5 +63,13 @@ final class DefaultHomeViewCoordinator: HomeViewCoordinator {
         append(child: tipDetailCoordinator)
         
         tipDetailCoordinator.start()
+    }
+    
+    func pushToSetCategoryView() {
+        let setCategoryCoordinator = DefaultSetCategoryCoordinator(
+            navigationController: navigationController
+        )
+        append(child: setCategoryCoordinator)
+        setCategoryCoordinator.start()
     }
 }
