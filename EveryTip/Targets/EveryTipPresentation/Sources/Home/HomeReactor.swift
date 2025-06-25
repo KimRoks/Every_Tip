@@ -17,6 +17,7 @@ class HomeReactor: Reactor {
         case viewDidLoad
         case itemSeleted(IndexPath)
         case refesh
+        case searchButtonTapped
     }
     
     enum Mutation {
@@ -24,6 +25,7 @@ class HomeReactor: Reactor {
         case setSelectedTip(Tip)
         case setToast(String)
         case setPushSignal(Bool)
+        case setSearchSiganl(Bool)
     }
     
     struct State {
@@ -31,6 +33,7 @@ class HomeReactor: Reactor {
         var selectedTip: Tip?
         @Pulse var pushSignal: Bool = false
         @Pulse var toastMessage: String?
+        @Pulse var seachSignal: Bool = false
     }
     
     let initialState: State
@@ -66,6 +69,8 @@ class HomeReactor: Reactor {
                 .catch { _ in
                     return Observable.just(.setToast("팁 목록을 불러오는데 실패했어요. 잠시 후 다시 시도해주세요"))
                 }
+        case .searchButtonTapped:
+            return .just(.setSearchSiganl(true))
         }
     }
     
@@ -81,6 +86,8 @@ class HomeReactor: Reactor {
             newState.toastMessage = message
         case .setPushSignal(let signal):
             newState.pushSignal = signal
+        case .setSearchSiganl(let signal):
+            newState.seachSignal = signal
         }
         
         return newState

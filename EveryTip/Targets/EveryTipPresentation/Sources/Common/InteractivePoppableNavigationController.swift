@@ -124,17 +124,20 @@ public final class InteractivePoppableNavigationController: UINavigationControll
         
         // 왼쪽 타이틀
         topViewController?.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLogoLabel)
+
         
-        // 오른쪽 버튼들
-        let stackView = UIStackView(
-            arrangedSubviews: [
-                searchButton,
-                notificationButton
-            ]
-        )
-        stackView.axis = .horizontal
-        stackView.spacing = 14
-        topViewController?.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: stackView)
+        
+        // TODO: 알림 기능 업데이트 시 업데이트
+//        // 오른쪽 버튼들
+//        let stackView = UIStackView(
+//            arrangedSubviews: [
+//                searchButton,
+//                notificationButton
+//            ]
+//        )
+//        stackView.axis = .horizontal
+//        stackView.spacing = 14
+//        topViewController?.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: stackView)
     }
 }
 
