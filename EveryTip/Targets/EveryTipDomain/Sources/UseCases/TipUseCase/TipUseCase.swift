@@ -18,6 +18,7 @@ public protocol TipUseCase {
     func saveTip(for tipID: Int) -> Completable
     func deleteTip(for tipID: Int) -> Completable
     func fetchSavedTips() -> Single<[Tip]>
+    func searchTip(with keyword: String) -> Single<[Tip]>
 }
 
 final class DefaultTipUseCase: TipUseCase {
@@ -54,5 +55,9 @@ final class DefaultTipUseCase: TipUseCase {
     
     func fetchSavedTips() -> Single<[Tip]> {
         tipRepository.fetchSavedTips()
+    }
+    
+    func searchTip(with keyword: String) -> Single<[Tip]> {
+        tipRepository.searchTip(with: keyword)
     }
 }
