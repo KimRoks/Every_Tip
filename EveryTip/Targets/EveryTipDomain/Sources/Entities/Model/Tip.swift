@@ -81,3 +81,20 @@ public struct Tip {
         }
     }
 }
+
+// MARK: Business Logic
+
+public enum TipFilter {
+    case category(Int)
+}
+
+public extension Array where Element == Tip {
+    func filtered(using filter: TipFilter) -> [Tip] {
+        switch filter {
+        case .category(let categoryID):
+            return self.filter {
+                $0.categoryId == categoryID
+            }
+        }
+    }
+}
