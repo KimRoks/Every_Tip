@@ -159,6 +159,16 @@ extension CategoryViewController: UITableViewDataSource {
         )
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedCategory = categories[indexPath.row]
+        let id = selectedCategory.id
+        coordinator?.pushToCategorizedTip(with: id)
+        tableView.deselectRow(
+            at: indexPath,
+            animated: true
+        )
+    }
 }
 
 extension CategoryViewController: UITableViewDelegate {
