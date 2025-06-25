@@ -8,8 +8,13 @@
 
 import UIKit
 
+import EveryTipDomain
+
+import Swinject
+
 protocol SearchCoordinator: Coordinator {
-    
+    func popView()
+    func pushToTipDetailView(with tipID: Int)
 }
 
 final class DefaultSearchCoordinator: SearchCoordinator {
@@ -24,14 +29,32 @@ final class DefaultSearchCoordinator: SearchCoordinator {
     }
     
     func start() {
-        let searchView = SearchViewController()
+        guard let tipUseCase = Container.shared.resolve(TipUseCase.self) else {
+            fatalError("의존성 주입이 옳바르지 않습니다")
+        }
+        let searchReactor = SearchReactor(tipUseCase: tipUseCase)
+        let searchView = SearchViewController(reactor: searchReactor)
         searchView.coordinator = self
         navigationController.pushViewController(searchView, animated: true)
     }
     
+    func popView() {
+        navigationController.popViewController(animated: true)
+        didFinish()
+    }
+    
+    func pushToTipDetailView(with tipID: Int) {
+        let tipDetailCoordinator = DefaultTipDetailCoordinator(
+            tipId: tipID,
+            navigationController: navigationController
+        )
+        tipDetailCoordinator.parentCoordinator = self
+        append(child: tipDetailCoordinator)
+        
+        tipDetailCoordinator.start()
+    }
+
     func didFinish() {
         parentCoordinator?.remove(child: self)
     }
-    
-    
 }
