@@ -16,6 +16,7 @@ enum TipTarget {
     case postSaveTip(tipID: Int)
     case deleteTip(tipID: Int)
     case getSavedTips
+    case getSearchTips(keyword: String)
 }
 
 extension TipTarget: TargetType {
@@ -34,6 +35,8 @@ extension TipTarget: TargetType {
         case .postSaveTip:
                 .post
         case .getSavedTips:
+                .get
+        case .getSearchTips:
                 .get
         }
     }
@@ -54,6 +57,8 @@ extension TipTarget: TargetType {
             return "/tips/\(tipID)/save"
         case .getSavedTips:
             return "/user/saved-tips"
+        case .getSearchTips(keyword: let keyword):
+            return "/tips/search?keyword=\(keyword)"
         }
     }
     
@@ -73,6 +78,8 @@ extension TipTarget: TargetType {
             return nil
         case .fetchTipByUserID:
             return nil
+        case .getSearchTips:
+            return nil
         }
     }
         
@@ -91,6 +98,8 @@ extension TipTarget: TargetType {
         case .getSavedTips:
             return nil
         case .fetchTipByUserID:
+            return nil
+        case .getSearchTips:
             return nil
         }
     }
