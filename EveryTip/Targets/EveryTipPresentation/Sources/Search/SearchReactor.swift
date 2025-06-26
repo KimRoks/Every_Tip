@@ -22,6 +22,7 @@ final class SearchReactor: Reactor {
         case backButtonTapped
         
         case tipSelected(IndexPath)
+        case sortButtonTapped(SortOptions)
     }
     
     enum Mutation {
@@ -31,7 +32,9 @@ final class SearchReactor: Reactor {
         case setRecentKeywords([String])
         case setIsSearched(Bool)
         case setSelectedTip(Tip)
+        case setSortButton(SortOptions)
 
+        
         case setPushSignal(Bool)
         case setDismissSignal(Bool)
     }
@@ -41,7 +44,7 @@ final class SearchReactor: Reactor {
         var tips: [Tip] = []
         var recentKeywords: [String] = []
         var isSearched: Bool = false
-        
+        var sortOption: SortOptions = .latest
         var selectedTip: Tip?
         
         @Pulse var toastMessage: String?
@@ -99,6 +102,12 @@ final class SearchReactor: Reactor {
             )
         case .backButtonTapped:
             return .just(.setDismissSignal(true))
+        case .sortButtonTapped(let option):
+            let sortedTips = currentState.tips.sorted(by: option.toTipOrder())
+            return Observable.merge(
+                .just(.setTips(sortedTips)),
+                .just(.setSortButton(option))
+            )
         }
     }
     
@@ -125,6 +134,8 @@ final class SearchReactor: Reactor {
             newState.dismissSignal = signal
         case .setSelectedTip(let tip):
             newState.selectedTip = tip
+        case .setSortButton(let option):
+            newState.sortOption = option
         }
         
         return newState

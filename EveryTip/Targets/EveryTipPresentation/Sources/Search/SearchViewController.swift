@@ -211,7 +211,7 @@ final class SearchViewController: BaseViewController {
         }
         
         tipsTableView.snp.makeConstraints {
-            $0.top.equalTo(middleView.snp.bottom).offset(20)
+            $0.top.equalTo(middleView.snp.bottom)
             $0.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
@@ -268,6 +268,14 @@ extension SearchViewController: View {
         tipsTableView.rx.itemSelected
             .map{Reactor.Action.tipSelected($0)}
             .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        sortButton.rx.tap
+            .subscribe { [weak self] _ in
+                self?.presentSortAlert { selectedOption in
+                    self?.reactor?.action.onNext(.sortButtonTapped(selectedOption))
+                }
+            }
             .disposed(by: disposeBag)
     }
     
@@ -343,5 +351,14 @@ extension SearchViewController: View {
                 vc.coordinator?.pushToTipDetailView(with: tip.id)
                
             }.disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.sortOption }
+            .distinctUntilChanged()
+            .bind { [weak self] sortOption in
+                guard let self = self else { return }
+                self.sortButton.configureButtonStyle(with: sortOption)
+            }
+            .disposed(by: disposeBag)
     }
 }
