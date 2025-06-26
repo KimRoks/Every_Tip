@@ -14,6 +14,7 @@ import SnapKit
 import ReactorKit
 import RxCocoa
 import RxSwift
+import EveryTipDomain
 
 final class ExploreViewController: BaseViewController, View {
     weak var coordinator: ExploreCoordinator?
@@ -180,6 +181,11 @@ final class ExploreViewController: BaseViewController, View {
             .map{ story in Reactor.Action.storyCellTapped(selectedStory: story) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+        
+        tipListTableView.rx.modelSelected(Tip.self)
+            .map { Reactor.Action.itemSelected($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
 
     private func bindOutput(to reactor: ExploreReactor) {
@@ -231,5 +237,15 @@ final class ExploreViewController: BaseViewController, View {
                 cell.configureTipListCell(with: tip)
             }
             .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$pushSignal)
+            .filter { $0 }
+            .withUnretained(self)
+            .bind { vc, _ in
+                guard let tip = vc.reactor?.currentState.selectedTip else {
+                    return
+                }
+                vc.coordinator?.pushToTipDetailView(with: tip.id)
+            }.disposed(by: disposeBag)
     }
 }

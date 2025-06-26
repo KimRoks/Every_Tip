@@ -15,6 +15,7 @@ import ReactorKit
 
 protocol ExploreCoordinator: Coordinator {
     func start() -> UIViewController
+    func pushToTipDetailView(with tipID: Int)
 }
 
 final class DefaultExploreCoordinator: ExploreCoordinator {
@@ -44,5 +45,16 @@ final class DefaultExploreCoordinator: ExploreCoordinator {
 
     func didFinish() {
         remove(child: self)
+    }
+    
+    func pushToTipDetailView(with tipID: Int) {
+        let tipDetailCoordinator = DefaultTipDetailCoordinator(
+            tipId: tipID,
+            navigationController: navigationController
+        )
+        tipDetailCoordinator.parentCoordinator = self
+        append(child: tipDetailCoordinator)
+        
+        tipDetailCoordinator.start()
     }
 }

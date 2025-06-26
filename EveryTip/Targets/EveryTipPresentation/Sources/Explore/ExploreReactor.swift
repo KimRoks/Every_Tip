@@ -17,6 +17,7 @@ final class ExploreReactor: Reactor {
         case sortButtonTapped(SortOptions)
         case refresh
         case storyCellTapped(selectedStory: DummyStory)
+        case itemSelected(Tip)
     }
     
     enum Mutation {
@@ -25,6 +26,8 @@ final class ExploreReactor: Reactor {
         case setSelectedStory(DummyStory)
         case setAllTips([Tip])
         case setVisibleTips([Tip])
+        case setSelectedTip(Tip)
+        case setPushSignal(Bool)
     }
     
     struct State {
@@ -33,6 +36,8 @@ final class ExploreReactor: Reactor {
         var selectedStory: DummyStory
         var allTips: [Tip] = []        // 원본 전체 tips 저장
         var visibleTips: [Tip] = []    // 현재 UI에 보여줄 tips
+        var selectedTip: Tip?
+        @Pulse var pushSignal: Bool = false
     }
     
     private let tipUseCase: TipUseCase
@@ -89,6 +94,11 @@ final class ExploreReactor: Reactor {
                 .just(.setSelectedStory(story)),
                 .just(.setVisibleTips(filteredTips))
             ])
+        case .itemSelected(let tip):
+            return Observable.concat([
+                .just(.setSelectedTip(tip)),
+                .just(.setPushSignal(true))
+            ])
         }
     }
     
@@ -110,6 +120,10 @@ final class ExploreReactor: Reactor {
             
         case .setVisibleTips(let tips):
             newState.visibleTips = tips
+        case .setSelectedTip(let tip):
+            newState.selectedTip = tip
+        case .setPushSignal(let flag):
+            newState.pushSignal = flag
         }
         
         return newState
