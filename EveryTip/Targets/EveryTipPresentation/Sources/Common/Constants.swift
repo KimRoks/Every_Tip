@@ -11,8 +11,6 @@ import UIKit
 public struct Constants {
     public struct MyInfo {
         public static let tableViewItems: [String] = [
-            "공지사항",
-            "고객센터",
             "구독 설정",
             "관심사 설정",
             "이용약관",
