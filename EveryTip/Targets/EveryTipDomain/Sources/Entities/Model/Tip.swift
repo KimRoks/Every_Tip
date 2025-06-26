@@ -86,6 +86,13 @@ public struct Tip {
 
 public enum TipFilter {
     case category(Int)
+    case userID(Int)
+}
+
+public enum TipOrder {
+    case latest
+    case views
+    case likes
 }
 
 public extension Array where Element == Tip {
@@ -94,6 +101,32 @@ public extension Array where Element == Tip {
         case .category(let categoryID):
             return self.filter {
                 $0.categoryId == categoryID
+            }
+        case .userID(let userID):
+            
+            if userID == 0 {
+                return self
+            }
+            
+            return self.filter {
+                $0.writer.id == userID
+            }
+        }
+    }
+    
+    func sorted(by sort: TipOrder) -> [Tip] {
+        switch sort {
+        case .latest:
+            return self.sorted {
+                $0.createdAt > $1.createdAt
+            }
+        case .views:
+            return self.sorted {
+                $0.views > $1.views
+            }
+        case .likes:
+            return self.sorted {
+                $0.likes > $1.likes
             }
         }
     }
