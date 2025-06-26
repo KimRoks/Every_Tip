@@ -30,7 +30,7 @@ final class HomeViewController: BaseViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-        
+    
     private let roundedBackgroundView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
@@ -103,7 +103,7 @@ final class HomeViewController: BaseViewController {
                 withIdentifier: TipListCell.reuseIdentifier,
                 for: indexPath
             ) as? TipListCell else { return UITableViewCell() }
-
+            
             cell.configureTipListCell(with: item)
             return cell
         }
@@ -211,8 +211,8 @@ extension HomeViewController: View {
             }.bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        tipListTableView.rx.itemSelected
-            .map{Reactor.Action.itemSeleted($0)}
+        tipListTableView.rx.modelSelected(Tip.self)
+            .map { Reactor.Action.itemSelected($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -236,19 +236,11 @@ extension HomeViewController: View {
                 vc.coordinator?.pushToTipDetailView(with: tip.id)
             }.disposed(by: disposeBag)
         
-        reactor.state.map { $0.posts }
-            .map { posts in
-                // TODO: api 출시후 리액터 재정의 필요
-                let empty: [Tip] = []
-                return [
-                    HomeTableViewSection(
-                        sectionType: .popular,
-                        items: posts
-                    ),
-                    HomeTableViewSection(
-                        sectionType: .interestCategory,
-                        items: empty
-                    )
+        reactor.state
+            .map { state -> [HomeTableViewSection] in
+                [
+                    HomeTableViewSection(sectionType: .popular, items: state.popularTips),
+                    HomeTableViewSection(sectionType: .interestCategory, items: [])
                 ]
             }
             .bind(to: tipListTableView.rx.items(dataSource: dataSource))

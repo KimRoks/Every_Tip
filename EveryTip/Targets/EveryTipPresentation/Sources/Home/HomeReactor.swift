@@ -15,7 +15,7 @@ import RxSwift
 class HomeReactor: Reactor {
     enum Action {
         case viewDidLoad
-        case itemSeleted(IndexPath)
+        case itemSelected(Tip)
         case refesh
         case searchButtonTapped
     }
@@ -29,8 +29,11 @@ class HomeReactor: Reactor {
     }
     
     struct State {
-        var posts: [Tip] = []
+        var tips: [Tip] = []
         var selectedTip: Tip?
+        
+        var popularTips: [Tip] = []
+        
         @Pulse var pushSignal: Bool = false
         @Pulse var toastMessage: String?
         @Pulse var seachSignal: Bool = false
@@ -54,9 +57,7 @@ class HomeReactor: Reactor {
                     return Observable.just(.setToast("팁 목록을 불러오는데 실패했어요. 잠시 후 다시 시도해주세요"))
                 }
             
-        case .itemSeleted(let indexPath):
-            guard indexPath.row < currentState.posts.count else { return .empty() }
-            let tip = currentState.posts[indexPath.row]
+        case .itemSelected(let tip):
             return Observable.concat(
                 .just(.setSelectedTip(tip)),
                 .just(.setPushSignal(true))
@@ -78,8 +79,10 @@ class HomeReactor: Reactor {
         var newState = state
         
         switch mutation {
-        case .setTips(let posts):
-            newState.posts = posts
+        case .setTips(let tips):
+            newState.tips = tips
+            newState.popularTips = tips.topPopular()
+            
         case .setSelectedTip(let tip):
             newState.selectedTip = tip
         case .setToast(let message):

@@ -93,6 +93,7 @@ public enum TipOrder {
     case latest
     case views
     case likes
+    case popularity
 }
 
 public extension Array where Element == Tip {
@@ -128,6 +129,14 @@ public extension Array where Element == Tip {
             return self.sorted {
                 $0.likes > $1.likes
             }
+        case .popularity:
+            return self.sorted {
+                ($0.likes * 10 + $0.views) > ($1.likes * 10 + $1.views)
+            }
         }
+    }
+    
+    func topPopular(limit: Int = 3) -> [Tip] {
+        return self.sorted(by: .popularity).prefix(limit).map { $0 }
     }
 }
