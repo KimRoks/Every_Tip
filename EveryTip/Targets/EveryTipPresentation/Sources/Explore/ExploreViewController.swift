@@ -29,9 +29,7 @@ final class ExploreViewController: BaseViewController, View {
         
         return view
     }()
-    
-    // TODO: 타이틀 변경 동적이게 변경
-    
+        
     private let exploreTitleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.et_pretendard(
@@ -78,9 +76,8 @@ final class ExploreViewController: BaseViewController, View {
         return button
     }()
     
-    private let postListTableView: UITableView = {
+    private let tipListTableView: UITableView = {
         let tableView = UITableView()
-        tableView.backgroundColor = .blue
         
         return tableView
     }()
@@ -110,7 +107,7 @@ final class ExploreViewController: BaseViewController, View {
             exploreTitleLabel,
             storyCollectionView,
             sortButton,
-            postListTableView
+            tipListTableView
         )
     }
     
@@ -137,24 +134,22 @@ final class ExploreViewController: BaseViewController, View {
             $0.trailing.equalTo(roundedBackgroundView.snp.trailing).offset(-20)
         }
         
-        postListTableView.snp.makeConstraints {
-            $0.top.equalTo(sortButton.snp.bottom).offset(20)
+        tipListTableView.snp.makeConstraints {
+            $0.top.equalTo(sortButton.snp.bottom)
             $0.leading.trailing.equalTo(roundedBackgroundView)
             $0.bottom.equalTo(roundedBackgroundView)
         }
     }
     
     private func setupTableView() {
-        postListTableView.register(
+        tipListTableView.register(
             TipListCell.self,
             forCellReuseIdentifier: TipListCell.reuseIdentifier
         )
-        postListTableView.rowHeight = UITableView.automaticDimension
-        postListTableView.estimatedRowHeight = 110
+        tipListTableView.rowHeight = UITableView.automaticDimension
+        tipListTableView.estimatedRowHeight = 110
     }
-    
-    }
-       
+
     // MARK: Reactor
     
     func bind(reactor: ExploreReactor) {
@@ -172,7 +167,12 @@ final class ExploreViewController: BaseViewController, View {
             .disposed(by: disposeBag)
         
         rx.viewDidLoad
-            .map { _ in Reactor.Action.viewDidLoad }
+            .map { _ in Reactor.Action.refresh }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        rx.viewWillAppear
+            .map { _ in Reactor.Action.refresh }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -220,6 +220,15 @@ final class ExploreViewController: BaseViewController, View {
                 } else {
                     self.exploreTitleLabel.text = "\(selectedStory.userData?.userName ?? "unknown")님 팁 목록 👀"
                 }
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.state.map { $0.visibleTips }
+            .bind(to: tipListTableView.rx.items(
+                cellIdentifier: TipListCell.reuseIdentifier,
+                cellType: TipListCell.self)
+            ) { row, tip, cell in
+                cell.configureTipListCell(with: tip)
             }
             .disposed(by: disposeBag)
     }

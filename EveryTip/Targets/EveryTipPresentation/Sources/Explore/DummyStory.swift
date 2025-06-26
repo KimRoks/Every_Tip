@@ -31,8 +31,8 @@ struct DummyStory {
 
 final class DefaultDummyStory: DummyStoryUseCase {
     let dummy = [
-            DummyStory(type: .user, userData: DummyUser(userID: 1, userName: "강백호", userProfileImage: .add)),
-            DummyStory(type: .user, userData: DummyUser(userID: 2, userName: "서태웅", userProfileImage: .remove)),
+            DummyStory(type: .user, userData: DummyUser(userID: 32, userName: "강백호", userProfileImage: .add)),
+            DummyStory(type: .user, userData: DummyUser(userID: 1, userName: "서태웅", userProfileImage: .remove)),
             DummyStory(type: .user, userData: DummyUser(userID: 3, userName: "채치수", userProfileImage: .actions)),
             DummyStory(type: .user, userData: DummyUser(userID: 4, userName: "정대만", userProfileImage: .strokedCheckmark)),
             DummyStory(type: .user, userData: DummyUser(userID: 5, userName: "송태섭", userProfileImage: .remove)),

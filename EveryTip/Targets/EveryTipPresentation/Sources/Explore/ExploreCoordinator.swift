@@ -8,6 +8,9 @@
 
 import UIKit
 
+import EveryTipDomain
+
+import Swinject
 import ReactorKit
 
 protocol ExploreCoordinator: Coordinator {
@@ -25,15 +28,14 @@ final class DefaultExploreCoordinator: ExploreCoordinator {
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
-        
-    private let reactor = ExploreReactor()
     
-    func start() {
-        let exploreViewController = ExploreViewController(reactor: reactor)
-        exploreViewController.coordinator = self
-    }
+    func start() { }
     
     func start() -> UIViewController {
+        guard let tipUseCase = Container.shared.resolve(TipUseCase.self) else {
+            fatalError("의존성 주입이 옳바르지 않습니다!")
+        }
+        let reactor = ExploreReactor(tipUseCase: tipUseCase)
         let exploreViewController = ExploreViewController(reactor: reactor)
         exploreViewController.coordinator = self
         
