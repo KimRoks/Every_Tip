@@ -153,31 +153,6 @@ final class ExploreViewController: BaseViewController, View {
         postListTableView.estimatedRowHeight = 110
     }
     
-    @objc
-    private func presentSortAlert() {
-        let alertController = UIAlertController(
-            title: nil,
-            message: nil,
-            preferredStyle: .actionSheet
-        )
-        
-        let actions: [(String, SortOptions)] = [
-            ("최신순", .latest),
-            ("조회순", .views),
-            ("추천순", .likes)
-        ]
-        
-        actions.forEach { title, option in
-            let action = UIAlertAction(
-                title: title,
-                style: .default
-            ) { [weak self] _ in
-                self?.reactor?.action.onNext(.sortButtonTapped(option))
-            }
-            alertController.addAction(action)
-        }
-        
-        self.present(alertController, animated: true)
     }
        
     // MARK: Reactor
@@ -190,7 +165,9 @@ final class ExploreViewController: BaseViewController, View {
     private func bindInput(to reactor: ExploreReactor) {
         sortButton.rx.tap
             .subscribe { [weak self] _ in
-                self?.presentSortAlert()
+                self?.presentSortAlert { selectedOption in
+                    self?.reactor?.action.onNext(.sortButtonTapped(selectedOption))
+                }
             }
             .disposed(by: disposeBag)
         
