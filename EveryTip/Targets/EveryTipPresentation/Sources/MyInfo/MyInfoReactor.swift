@@ -26,6 +26,7 @@ class MyInfoReactor: Reactor {
         case agreementCellTapped
         case logoutCellTapped
         case logoutConfirmTapped
+        case setCategoryButtonTapped
     }
     
     enum Mutation {
@@ -35,6 +36,7 @@ class MyInfoReactor: Reactor {
         // Set Navigation Signal
         case setLogoutCellSignal
         case setAgreementCellSignal
+        case setCategorySignal
         case setLogoutConfirmSignal(Bool)
     }
     
@@ -48,6 +50,7 @@ class MyInfoReactor: Reactor {
             case agreement
             case logout
             case userContents
+            case setCategories
         }
         @Pulse var logoutConfirmSignal: Bool = false
     }
@@ -119,6 +122,8 @@ class MyInfoReactor: Reactor {
             
         case .agreementCellTapped:
             return .just(.setAgreementCellSignal)
+        case .setCategoryButtonTapped:
+            return .just(.setCategorySignal)
         }
     }
     
@@ -137,6 +142,8 @@ class MyInfoReactor: Reactor {
             newState.navigationSignal = .agreement
         case .setLogoutCellSignal:
             newState.navigationSignal = .logout
+        case .setCategorySignal:
+            newState.navigationSignal = .setCategories
         }
         
         return newState

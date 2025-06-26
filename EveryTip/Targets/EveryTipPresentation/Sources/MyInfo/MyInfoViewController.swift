@@ -327,6 +327,7 @@ extension MyInfoViewController: View {
         
         tableViewCellTapped.map { row -> Reactor.Action? in
             switch row {
+            case 1: return .setCategoryButtonTapped
             case 2: return .agreementCellTapped
             case 4: return .logoutCellTapped
                 
@@ -401,6 +402,8 @@ extension MyInfoViewController: View {
                     self?.showLogoutAlert()
                 case .userContents:
                     self?.coordinator?.pushToUserContentsView(myID: reactor.currentState.myProfile.id)
+                case .setCategories:
+                    self?.coordinator?.pushToSetCategory()
                 }
             })
             .disposed(by: disposeBag)
