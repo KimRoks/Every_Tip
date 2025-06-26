@@ -8,10 +8,14 @@
 
 import UIKit
 
+import EveryTipDomain
+
+import Swinject
 import ReactorKit
 
 protocol ExploreCoordinator: Coordinator {
     func start() -> UIViewController
+    func pushToTipDetailView(with tipID: Int)
 }
 
 final class DefaultExploreCoordinator: ExploreCoordinator {
@@ -25,15 +29,14 @@ final class DefaultExploreCoordinator: ExploreCoordinator {
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
-        
-    private let reactor = ExploreReactor()
     
-    func start() {
-        let exploreViewController = ExploreViewController(reactor: reactor)
-        exploreViewController.coordinator = self
-    }
+    func start() { }
     
     func start() -> UIViewController {
+        guard let tipUseCase = Container.shared.resolve(TipUseCase.self) else {
+            fatalError("의존성 주입이 옳바르지 않습니다!")
+        }
+        let reactor = ExploreReactor(tipUseCase: tipUseCase)
         let exploreViewController = ExploreViewController(reactor: reactor)
         exploreViewController.coordinator = self
         
@@ -42,5 +45,16 @@ final class DefaultExploreCoordinator: ExploreCoordinator {
 
     func didFinish() {
         remove(child: self)
+    }
+    
+    func pushToTipDetailView(with tipID: Int) {
+        let tipDetailCoordinator = DefaultTipDetailCoordinator(
+            tipId: tipID,
+            navigationController: navigationController
+        )
+        tipDetailCoordinator.parentCoordinator = self
+        append(child: tipDetailCoordinator)
+        
+        tipDetailCoordinator.start()
     }
 }

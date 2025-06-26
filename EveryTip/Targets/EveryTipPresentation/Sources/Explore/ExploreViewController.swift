@@ -14,6 +14,7 @@ import SnapKit
 import ReactorKit
 import RxCocoa
 import RxSwift
+import EveryTipDomain
 
 final class ExploreViewController: BaseViewController, View {
     weak var coordinator: ExploreCoordinator?
@@ -29,9 +30,7 @@ final class ExploreViewController: BaseViewController, View {
         
         return view
     }()
-    
-    // TODO: 타이틀 변경 동적이게 변경
-    
+        
     private let exploreTitleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.et_pretendard(
@@ -78,9 +77,8 @@ final class ExploreViewController: BaseViewController, View {
         return button
     }()
     
-    private let postListTableView: UITableView = {
+    private let tipListTableView: UITableView = {
         let tableView = UITableView()
-        tableView.backgroundColor = .blue
         
         return tableView
     }()
@@ -110,7 +108,7 @@ final class ExploreViewController: BaseViewController, View {
             exploreTitleLabel,
             storyCollectionView,
             sortButton,
-            postListTableView
+            tipListTableView
         )
     }
     
@@ -137,49 +135,22 @@ final class ExploreViewController: BaseViewController, View {
             $0.trailing.equalTo(roundedBackgroundView.snp.trailing).offset(-20)
         }
         
-        postListTableView.snp.makeConstraints {
-            $0.top.equalTo(sortButton.snp.bottom).offset(20)
+        tipListTableView.snp.makeConstraints {
+            $0.top.equalTo(sortButton.snp.bottom)
             $0.leading.trailing.equalTo(roundedBackgroundView)
             $0.bottom.equalTo(roundedBackgroundView)
         }
     }
     
     private func setupTableView() {
-        postListTableView.register(
+        tipListTableView.register(
             TipListCell.self,
             forCellReuseIdentifier: TipListCell.reuseIdentifier
         )
-        postListTableView.rowHeight = UITableView.automaticDimension
-        postListTableView.estimatedRowHeight = 110
+        tipListTableView.rowHeight = UITableView.automaticDimension
+        tipListTableView.estimatedRowHeight = 110
     }
-    
-    @objc
-    private func presentSortAlert() {
-        let alertController = UIAlertController(
-            title: nil,
-            message: nil,
-            preferredStyle: .actionSheet
-        )
-        
-        let actions: [(String, SortOptions)] = [
-            ("최신순", .latest),
-            ("조회순", .views),
-            ("추천순", .likes)
-        ]
-        
-        actions.forEach { title, option in
-            let action = UIAlertAction(
-                title: title,
-                style: .default
-            ) { [weak self] _ in
-                self?.reactor?.action.onNext(.sortButtonTapped(option))
-            }
-            alertController.addAction(action)
-        }
-        
-        self.present(alertController, animated: true)
-    }
-       
+
     // MARK: Reactor
     
     func bind(reactor: ExploreReactor) {
@@ -190,17 +161,29 @@ final class ExploreViewController: BaseViewController, View {
     private func bindInput(to reactor: ExploreReactor) {
         sortButton.rx.tap
             .subscribe { [weak self] _ in
-                self?.presentSortAlert()
+                self?.presentSortAlert { selectedOption in
+                    self?.reactor?.action.onNext(.sortButtonTapped(selectedOption))
+                }
             }
             .disposed(by: disposeBag)
         
         rx.viewDidLoad
-            .map { _ in Reactor.Action.viewDidLoad }
+            .map { _ in Reactor.Action.refresh }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        rx.viewWillAppear
+            .map { _ in Reactor.Action.refresh }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         storyCollectionView.rx.modelSelected(DummyStory.self)
             .map{ story in Reactor.Action.storyCellTapped(selectedStory: story) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        tipListTableView.rx.modelSelected(Tip.self)
+            .map { Reactor.Action.itemSelected($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
     }
@@ -245,5 +228,24 @@ final class ExploreViewController: BaseViewController, View {
                 }
             }
             .disposed(by: disposeBag)
+        
+        reactor.state.map { $0.visibleTips }
+            .bind(to: tipListTableView.rx.items(
+                cellIdentifier: TipListCell.reuseIdentifier,
+                cellType: TipListCell.self)
+            ) { row, tip, cell in
+                cell.configureTipListCell(with: tip)
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$pushSignal)
+            .filter { $0 }
+            .withUnretained(self)
+            .bind { vc, _ in
+                guard let tip = vc.reactor?.currentState.selectedTip else {
+                    return
+                }
+                vc.coordinator?.pushToTipDetailView(with: tip.id)
+            }.disposed(by: disposeBag)
     }
 }
