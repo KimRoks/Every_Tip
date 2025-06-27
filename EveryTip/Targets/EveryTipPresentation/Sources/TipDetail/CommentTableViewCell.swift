@@ -16,11 +16,13 @@ import RxSwift
 
 final class CommentTableViewCell: UITableViewCell, Reusable {
     
+    let profileImageTapped = PublishSubject<Void>()
     let ellipsisTapped = PublishSubject<Void>()
     let likeButtonTapped = PublishSubject<Void>()
 
     var disposeBag = DisposeBag()
-    
+    private let userProfileTapGesture = UITapGestureRecognizer()
+
     private let commenterImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = .et_getImage(for: .blankImage)
@@ -139,6 +141,7 @@ final class CommentTableViewCell: UITableViewCell, Reusable {
         setupLayout()
         setupConstraints()
         self.selectionStyle = .none
+        setupGesture()
     }
     
     required init?(coder: NSCoder) {
@@ -210,6 +213,11 @@ final class CommentTableViewCell: UITableViewCell, Reusable {
         }
     }
     
+    private func setupGesture() {
+        commenterImageView.addGestureRecognizer(userProfileTapGesture)
+        commenterImageView.isUserInteractionEnabled = true
+    }
+    
     // MARK: Internal Method
     
     func setupAction() {
@@ -220,6 +228,11 @@ final class CommentTableViewCell: UITableViewCell, Reusable {
         commentsLikebutton.rx.tap
             .bind(to: likeButtonTapped)
             .disposed(by: disposeBag)
+        
+        userProfileTapGesture.rx.event
+              .map { _ in }
+              .bind(to: profileImageTapped)
+              .disposed(by: disposeBag)
     }
     
     func configureCell(with data: Comment) {

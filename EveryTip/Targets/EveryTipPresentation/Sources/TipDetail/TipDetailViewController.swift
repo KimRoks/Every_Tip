@@ -37,6 +37,7 @@ final class TipDetailViewController: BaseViewController {
     }()
     
     // MARK: 작성자
+    private let writerTapGesture = UITapGestureRecognizer()
     
     private let writerView: UIView = {
         let view = UIView()
@@ -282,6 +283,7 @@ final class TipDetailViewController: BaseViewController {
         setupCommentTableView()
         commentInputTextView.delegate = self
         navigationItem.rightBarButtonItem = rightButtonItem
+        setupGesture()
     }
     
     private let ellipsisButton: UIButton = {
@@ -562,6 +564,11 @@ final class TipDetailViewController: BaseViewController {
         }
     }
     
+    private func setupGesture() {
+        writerView.addGestureRecognizer(writerTapGesture)
+        writerView.isUserInteractionEnabled = true
+    }
+    
     private func updateLikeButton(for count: Int, isLiked: Bool) -> UIButton.Configuration {
         var configuration = UIButton.Configuration.plain()
         let likeImage: UIImage = isLiked ?
@@ -679,6 +686,11 @@ extension TipDetailViewController: View {
                 }
             }
             .disposed(by: disposeBag)
+
+        writerTapGesture.rx.event
+            .map { _ in Reactor.Action.userProfileTapped }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
     
     func bindOutput(reactor: TipDetailReactor) {
@@ -780,6 +792,13 @@ extension TipDetailViewController: View {
                     }
                     .disposed(by: cell.disposeBag)
                 
+                if let reactor = self.reactor {
+                    cell.profileImageTapped
+                        .map { Reactor.Action.userProfileTapped }
+                        .bind(to: reactor.action)
+                        .disposed(by: cell.disposeBag)
+                }
+                
                 cell.ellipsisTapped
                     .subscribe(onNext: { [weak self] in
                         self?.coordinator?.checkLoginBeforeAction {
@@ -837,6 +856,16 @@ extension TipDetailViewController: View {
                 self?.commentInputTextView.text = nil
                 self?.commnetPlaceholderLable.isHidden = false
             }
+            .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$userTappedSignal)
+            .filter { $0 == true }
+            .subscribe(onNext: { [weak self] _ in
+                guard let userID = reactor.currentState.tip?.writer.id else {
+                    return
+                }
+                self?.coordinator?.pushToUserProrfileView(userID: userID)
+            })
             .disposed(by: disposeBag)
     }
 }
