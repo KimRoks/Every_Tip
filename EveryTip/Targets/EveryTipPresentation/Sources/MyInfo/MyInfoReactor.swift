@@ -28,6 +28,7 @@ class MyInfoReactor: Reactor {
         case logoutConfirmTapped
         case editProfileButtonTapped
         case setCategoryButtonTapped
+        case setSubscribeButtonTapped
     }
     
     enum Mutation {
@@ -39,6 +40,8 @@ class MyInfoReactor: Reactor {
         case setAgreementCellSignal
         case setEditProfileSignal
         case setCategorySignal
+        case setSubscribeSignal
+        
         case setLogoutConfirmSignal(Bool)
     }
     
@@ -54,6 +57,7 @@ class MyInfoReactor: Reactor {
             case userContents
             case setCategories
             case editProfile
+            case setSubscribe
         }
         @Pulse var logoutConfirmSignal: Bool = false
     }
@@ -129,6 +133,8 @@ class MyInfoReactor: Reactor {
             return .just(.setEditProfileSignal)
         case .setCategoryButtonTapped:
             return .just(.setCategorySignal)
+        case .setSubscribeButtonTapped:
+            return .just(.setSubscribeSignal)
         }
     }
     
@@ -151,6 +157,8 @@ class MyInfoReactor: Reactor {
             newState.navigationSignal = .editProfile
         case .setCategorySignal:
             newState.navigationSignal = .setCategories
+        case .setSubscribeSignal:
+            newState.navigationSignal = .setSubscribe
         }
         
         return newState

@@ -327,6 +327,7 @@ extension MyInfoViewController: View {
         
         tableViewCellTapped.map { row -> Reactor.Action? in
             switch row {
+            case 0: return .setSubscribeButtonTapped
             case 1: return .setCategoryButtonTapped
             case 2: return .agreementCellTapped
             case 4: return .logoutCellTapped
@@ -416,6 +417,10 @@ extension MyInfoViewController: View {
                 case .setCategories:
                     self?.coordinator?.checkLoginBeforeAction {
                         self?.coordinator?.pushToSetCategory()
+                    }
+                case .setSubscribe:
+                    self?.coordinator?.checkLoginBeforeAction {
+                        self?.coordinator?.pushToUserContentsView(myID: reactor.currentState.myProfile.id)
                     }
                 }
             })
