@@ -330,7 +330,7 @@ extension MyInfoViewController: View {
             case 1: return .setCategoryButtonTapped
             case 2: return .agreementCellTapped
             case 4: return .logoutCellTapped
-                
+        
             default:
                 return nil
             }
@@ -338,6 +338,13 @@ extension MyInfoViewController: View {
         .compactMap { $0 }
         .bind(to: reactor.action)
         .disposed(by: disposeBag)
+        
+        editProfileButton.rx.tap
+            .map { Reactor.Action.editProfileButtonTapped }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+            
+        
     }
     
     private func bindOutputs(to reactor: MyInfoReactor) {
@@ -402,6 +409,8 @@ extension MyInfoViewController: View {
                     self?.showLogoutAlert()
                 case .userContents:
                     self?.coordinator?.pushToUserContentsView(myID: reactor.currentState.myProfile.id)
+                case .editProfile:
+                    self?.coordinator?.pushToEditProfileView(myNickName: reactor.currentState.myProfile.nickName)
                 case .setCategories:
                     self?.coordinator?.pushToSetCategory()
                 }

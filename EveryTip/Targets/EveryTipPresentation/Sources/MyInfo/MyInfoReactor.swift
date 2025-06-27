@@ -26,6 +26,7 @@ class MyInfoReactor: Reactor {
         case agreementCellTapped
         case logoutCellTapped
         case logoutConfirmTapped
+        case editProfileButtonTapped
         case setCategoryButtonTapped
     }
     
@@ -36,6 +37,7 @@ class MyInfoReactor: Reactor {
         // Set Navigation Signal
         case setLogoutCellSignal
         case setAgreementCellSignal
+        case setEditProfileSignal
         case setCategorySignal
         case setLogoutConfirmSignal(Bool)
     }
@@ -51,6 +53,7 @@ class MyInfoReactor: Reactor {
             case logout
             case userContents
             case setCategories
+            case editProfile
         }
         @Pulse var logoutConfirmSignal: Bool = false
     }
@@ -122,6 +125,8 @@ class MyInfoReactor: Reactor {
             
         case .agreementCellTapped:
             return .just(.setAgreementCellSignal)
+        case .editProfileButtonTapped:
+            return .just(.setEditProfileSignal)
         case .setCategoryButtonTapped:
             return .just(.setCategorySignal)
         }
@@ -142,6 +147,8 @@ class MyInfoReactor: Reactor {
             newState.navigationSignal = .agreement
         case .setLogoutCellSignal:
             newState.navigationSignal = .logout
+        case .setEditProfileSignal:
+            newState.navigationSignal = .editProfile
         case .setCategorySignal:
             newState.navigationSignal = .setCategories
         }
