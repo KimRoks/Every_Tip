@@ -17,7 +17,8 @@ protocol MyInfoViewCoordinator: AuthenticationCoordinator {
     func start() -> UIViewController
     func pushToAgreementViewcontroller()
     func pushToUserContentsView(myID: Int)
-    
+    func pushToEditProfileView(myNickName: String)
+    func pushToSetCategory()
     func popToRootView()
 }
 
@@ -65,6 +66,24 @@ final class DefaultMyInfoViewCoordinator: MyInfoViewCoordinator {
             userContentsCoordinator.parentCoordinator = self
             self.append(child: userContentsCoordinator)
             userContentsCoordinator.start()
+    }
+    
+    func pushToSetCategory() {
+        let setCategoryCoordinator = DefaultSetCategoryCoordinator(navigationController: navigationController)
+        self.append(child: setCategoryCoordinator)
+        setCategoryCoordinator.parentCoordinator = self
+        setCategoryCoordinator.start()
+    }
+    
+    func pushToEditProfileView(myNickName: String) {
+        let editProfileCoordinator = DefaultEditProfileCoordinator(
+            navigationController: navigationController,
+            myNickName: myNickName
+        )
+        editProfileCoordinator.parentCoordinator = self
+        self.append(child: editProfileCoordinator)
+        
+        editProfileCoordinator.start()
     }
     
     func popToRootView() {
