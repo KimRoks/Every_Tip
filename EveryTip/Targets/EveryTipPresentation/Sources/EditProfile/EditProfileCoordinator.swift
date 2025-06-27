@@ -12,7 +12,7 @@ import EveryTipDomain
 
 import Swinject
 
-protocol EditProfileCoordinator: Coordinator {
+protocol EditProfileCoordinator: AuthenticationCoordinator {
     
 }
 

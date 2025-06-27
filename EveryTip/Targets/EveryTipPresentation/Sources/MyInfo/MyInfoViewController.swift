@@ -343,8 +343,6 @@ extension MyInfoViewController: View {
             .map { Reactor.Action.editProfileButtonTapped }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
-            
-        
     }
     
     private func bindOutputs(to reactor: MyInfoReactor) {
@@ -408,11 +406,17 @@ extension MyInfoViewController: View {
                 case .logout:
                     self?.showLogoutAlert()
                 case .userContents:
-                    self?.coordinator?.pushToUserContentsView(myID: reactor.currentState.myProfile.id)
+                    self?.coordinator?.checkLoginBeforeAction {
+                        self?.coordinator?.pushToUserContentsView(myID: reactor.currentState.myProfile.id)
+                    }
                 case .editProfile:
-                    self?.coordinator?.pushToEditProfileView(myNickName: reactor.currentState.myProfile.nickName)
+                    self?.coordinator?.checkLoginBeforeAction {
+                        self?.coordinator?.pushToEditProfileView(myNickName: reactor.currentState.myProfile.nickName)
+                    }
                 case .setCategories:
-                    self?.coordinator?.pushToSetCategory()
+                    self?.coordinator?.checkLoginBeforeAction {
+                        self?.coordinator?.pushToSetCategory()
+                    }
                 }
             })
             .disposed(by: disposeBag)
