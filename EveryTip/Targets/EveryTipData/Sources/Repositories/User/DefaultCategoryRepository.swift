@@ -47,9 +47,7 @@ struct DefaultCategoryRepository: CategoryRepository, SessionInjectable {
         }
     }
     
-    // TODO: 현재 API 오류로 categoryIDs를 바디에 담아야해서 정상 작동 불가함
-    
-    func fetchMyCategories(IDs: [Int]) -> Single<[EveryTipDomain.Category]> {
+    func fetchMyCategories() -> Single<[EveryTipDomain.Category]> {
         guard let request = try? UserTarget.getMyCategories.asURLRequest() else {
             return Single.error(NetworkError.invalidURLError)
         }

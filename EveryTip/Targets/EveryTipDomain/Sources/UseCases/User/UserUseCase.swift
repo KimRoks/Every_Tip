@@ -18,7 +18,7 @@ public protocol UserUseCase {
     func toggleSubscription(to userID: Int) -> Completable
 
     func setMyCategories(categoryIds: [Int]) -> Completable
-    func fetchMyCategories(IDs: [Int]) -> Single<[Category]>
+    func fetchMyCategories() -> Single<[Category]>
 }
 
 final class DefaultUserUseCase: UserUseCase {
@@ -61,7 +61,7 @@ final class DefaultUserUseCase: UserUseCase {
         profileRepository.toggleSubscription(to: userID)
     }
     
-    func fetchMyCategories(IDs: [Int]) -> Single<[Category]> {
-        categoryRepository.fetchMyCategories(IDs: IDs)
+    func fetchMyCategories() -> Single<[Category]> {
+        categoryRepository.fetchMyCategories()
     }
 }
