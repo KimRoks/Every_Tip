@@ -165,16 +165,16 @@ struct DefaultTipRepository: TipRepository, SessionInjectable {
         
         return Single.create { single in
             let task = session?.request(request, interceptor: interceptor)
-                .validate(statusCode: 200..<500)
-                .responseDecodable(of: TipDTO.self) { response in
+                .validate(statusCode: 200..<300)
+                .responseDecodable(of: SavedTipDTO.self) { response in
                     switch response.result {
                     case .success(let tipData):
-                        let tips = tipData.data.tips.map { $0.toDomain() }
+                        let tips = tipData.data.map { $0.toDomain() }
                         
                         return single(.success(tips))
                         
                     case .failure(let error):
-                       
+                        print(error.localizedDescription)
                         return single(.failure(error))
                     }
                 }
