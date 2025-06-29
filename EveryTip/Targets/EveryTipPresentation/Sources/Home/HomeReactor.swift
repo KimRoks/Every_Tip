@@ -13,6 +13,8 @@ import ReactorKit
 import RxSwift
 
 class HomeReactor: Reactor {
+    typealias Category = EveryTipDomain.Category
+    
     enum Action {
         case viewDidLoad
         case itemSelected(Tip)
@@ -26,6 +28,7 @@ class HomeReactor: Reactor {
         case setToast(String)
         case setPushSignal(Bool)
         case setSearchSiganl(Bool)
+        case setMyCategories([Category])
     }
     
     struct State {
@@ -33,6 +36,8 @@ class HomeReactor: Reactor {
         var selectedTip: Tip?
         
         var popularTips: [Tip] = []
+        var categorizedTips: [Tip] = []
+        var myCategories: [Category] = []
         
         @Pulse var pushSignal: Bool = false
         @Pulse var toastMessage: String?
@@ -41,21 +46,33 @@ class HomeReactor: Reactor {
     
     let initialState: State
     private let tipUseCase: TipUseCase
+    private let userUseCase: UserUseCase
     
-    init(tipUseCase: TipUseCase) {
+    init(
+        tipUseCase: TipUseCase,
+        userUseCase: UserUseCase
+    ) {
         self.tipUseCase = tipUseCase
+        self.userUseCase = userUseCase
         self.initialState = State()
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .viewDidLoad:
-            return tipUseCase.fetchTotalTips()
+            
+            let categories = userUseCase.fetchMyCategories()
                 .asObservable()
-                .map { return Mutation.setTips($0) }
+                .map { Mutation.setMyCategories($0) }
+                        
+            let tips = tipUseCase.fetchTotalTips()
+                .asObservable()
+                .map { Mutation.setTips($0) }
                 .catch { _ in
                     return Observable.just(.setToast("팁 목록을 불러오는데 실패했어요. 잠시 후 다시 시도해주세요"))
                 }
+            
+            return Observable.merge(categories,tips)
             
         case .itemSelected(let tip):
             return Observable.concat(
@@ -83,6 +100,10 @@ class HomeReactor: Reactor {
             newState.tips = tips
             newState.popularTips = tips.topPopular()
             
+            let categoryIDs = newState.myCategories.map { $0.id }
+            let filtered = tips.filter { categoryIDs.contains($0.categoryId) }
+            newState.categorizedTips = Array(filtered.prefix(3))
+            
         case .setSelectedTip(let tip):
             newState.selectedTip = tip
         case .setToast(let message):
@@ -91,6 +112,13 @@ class HomeReactor: Reactor {
             newState.pushSignal = signal
         case .setSearchSiganl(let signal):
             newState.seachSignal = signal
+        case .setMyCategories(let categories):
+            newState.myCategories = categories
+            
+            
+            let categoryIDs = categories.map { $0.id }
+            let filtered = newState.tips.filter { categoryIDs.contains($0.categoryId) }
+            newState.categorizedTips = Array(filtered.prefix(3))
         }
         
         return newState

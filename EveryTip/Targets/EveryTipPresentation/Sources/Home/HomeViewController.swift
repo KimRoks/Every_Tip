@@ -240,7 +240,7 @@ extension HomeViewController: View {
             .map { state -> [HomeTableViewSection] in
                 [
                     HomeTableViewSection(sectionType: .popular, items: state.popularTips),
-                    HomeTableViewSection(sectionType: .interestCategory, items: [])
+                    HomeTableViewSection(sectionType: .interestCategory, items: state.categorizedTips)
                 ]
             }
             .bind(to: tipListTableView.rx.items(dataSource: dataSource))
@@ -298,13 +298,17 @@ extension HomeViewController: UITableViewDelegate {
         case .popular:
             return 50
             
+            
         case .interestCategory:
-            if coordinator?.checkIsLoggedin() == false
-            /*|| 선택된 카테고리가 없다면.. */ {
+            guard let reactor = reactor else {
+                return 250
+            }
+            if coordinator?.checkIsLoggedin() == false ||
+                reactor.currentState.myCategories.isEmpty
+            {
                 return 250
             } else {
-                // TODO: 현재 선택 카테고리를 정상적으로 불러올 수 없어서 추후 수정필요
-                return 250
+                return 0
             }
         }
     }

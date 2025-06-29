@@ -146,7 +146,6 @@ final class InterestSuggestFooterView: UITableViewHeaderFooterView {
             $0.top.equalTo(categoryImageStackView.snp.bottom).offset(20)
             $0.leading.trailing.equalTo(roundedBackgroundView).inset(18)
             $0.height.equalTo(roundedBackgroundView.snp.height).multipliedBy(0.21)
-            $0.bottomMargin.equalTo(roundedBackgroundView.snp.bottom).offset(-18)
         }
     }
 }
