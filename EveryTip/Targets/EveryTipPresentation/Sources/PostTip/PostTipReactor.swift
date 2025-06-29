@@ -7,6 +7,8 @@
 //
 import Foundation
 
+import EveryTipDomain
+
 import ReactorKit
 import RxSwift
 
@@ -29,6 +31,12 @@ final class PostTipReactor: Reactor {
     }
     
     var initialState: State = State()
+    
+    private let tipUseCase: TipUseCase
+    
+    init(tipUseCase: TipUseCase) {
+        self.tipUseCase = tipUseCase
+    }
     
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {

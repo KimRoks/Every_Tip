@@ -31,7 +31,11 @@ final class DefaultPostTipViewCoordinator: PostTipViewCoordinator {
     //MARK: Internal Methods
     
     func start() {
-        let reactor = PostTipReactor()
+        guard let tipUseCase = Container.shared.resolve(TipUseCase.self) else {
+            fatalError("의존성 주입이 올바르지않습니다!")
+        }
+        
+        let reactor = PostTipReactor(tipUseCase: tipUseCase)
         let postTipViewController = PostTipViewController(reactor: reactor)
         postTipViewController.coordinator = self
         
