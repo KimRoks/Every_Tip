@@ -17,6 +17,10 @@ enum TipTarget {
     case deleteTip(tipID: Int)
     case getSavedTips
     case getSearchTips(keyword: String)
+    case postPresignedURL(
+        categoryID: Int,
+        fileType: String
+    )
 }
 
 extension TipTarget: TargetType {
@@ -38,6 +42,8 @@ extension TipTarget: TargetType {
                 .get
         case .getSearchTips:
                 .get
+        case .postPresignedURL:
+                .post
         }
     }
     
@@ -59,6 +65,8 @@ extension TipTarget: TargetType {
             return "/user/saved-tips"
         case .getSearchTips(keyword: let keyword):
             return "/tips/search?keyword=\(keyword)"
+        case .postPresignedURL(categoryID: let categoryID, fileType: let fileType):
+            return "/tips/image/url"
         }
     }
     
@@ -79,6 +87,8 @@ extension TipTarget: TargetType {
         case .fetchTipByUserID:
             return nil
         case .getSearchTips:
+            return nil
+        case .postPresignedURL:
             return nil
         }
     }
@@ -101,6 +111,11 @@ extension TipTarget: TargetType {
             return nil
         case .getSearchTips:
             return nil
+        case .postPresignedURL(categoryID: let categoryID, fileType: let fileType):
+            return [
+                "category_id" : categoryID,
+                "file_type": fileType
+            ]
         }
     }
 }
