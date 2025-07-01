@@ -35,7 +35,6 @@ public final class DefaultMainCoordinator: MainCoordinator {
     public func didFinish() {}
     
     private func startMainTab() {
-        // TODO: 메인 탭 구현 & 연결
         guard let mainTabCoordinator = container.resolve(MainTabCoordinator.self) else {
             return
         }

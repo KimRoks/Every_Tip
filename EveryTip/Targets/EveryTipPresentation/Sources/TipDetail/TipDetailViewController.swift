@@ -741,6 +741,7 @@ extension TipDetailViewController: View {
                         $0.width.height.equalTo(70)
                     }
                     button.layer.cornerRadius = 10
+                    button.contentMode = .scaleAspectFill
                     button.clipsToBounds = true
                     
                     button.kf.setBackgroundImage(

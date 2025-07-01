@@ -46,8 +46,9 @@ final class TipListCell: UITableViewCell, Reusable {
     private let thumbnailImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 10
-        imageView.clipsToBounds = true
         imageView.image = .et_getImage(for: .blankImage)
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         
         return imageView
     }()
@@ -132,6 +133,13 @@ final class TipListCell: UITableViewCell, Reusable {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        thumbnailImageView.kf.cancelDownloadTask()
+        thumbnailImageView.image = UIImage.et_getImage(for: .blankImage)
+    }
+
+    
     // MARK: Private Methods
 
     private func configureTitleLabelText(_ text: String) {
@@ -164,7 +172,8 @@ final class TipListCell: UITableViewCell, Reusable {
             placeholder: UIImage.et_getImage(for: .blankImage),
             options: [
                 .transition(.fade(0.3)),
-                .forceTransition
+                .forceTransition,
+                .cacheOriginalImage
               ]
         )
     }

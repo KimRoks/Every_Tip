@@ -20,9 +20,7 @@ struct DefaultCategoryRepository: CategoryRepository, SessionInjectable {
     init(session: Session? = .default) {
         self.session = session
     }
-    
-    // TODO: 현재 API에러로 6,7,8번은 설정되지않음에 주의
-    
+        
     func setMyCategories(categoryIDs: [Int]) -> Completable {
         return Completable.create { completable in
             guard let request = try? UserTarget.postSetCategory(categoryIDs: categoryIDs).asURLRequest() else {
