@@ -209,33 +209,6 @@ struct DefaultTipRepository: TipRepository, SessionInjectable {
         }
     }
     
-    func fetchPresignedURL(categoryID: Int, fileType: String) -> Single<String> {
-        guard let request = try? TipTarget.postPresignedURL(
-            categoryID: categoryID,
-            fileType: fileType
-        ).asURLRequest() else {
-            return Single.error(NetworkError.invalidURLError)
-        }
-        
-        return Single.create { single in
-            
-            let task = session?.request(request, interceptor: interceptor)
-                .validate(statusCode: 200..<300)
-                .responseDecodable(of: PresignedUrlDTO.self) { response in
-                    switch response.result {
-                    case .success(let response):
-                        let url = response.data.url
-                        return single(.success(url))
-                        
-                    case .failure(let error):
-                        return single(.failure(error))
-                    }
-                }
-            return Disposables.create {
-                task?.cancel()
-            }
-        }
-    }
     func getPresignedURL(categoryID: Int, mimeType: String) -> RxSwift.Single<String> {
         guard let request = try? TipTarget.postPresignedURL(
             categoryID: categoryID,
@@ -247,12 +220,10 @@ struct DefaultTipRepository: TipRepository, SessionInjectable {
         return Single.create { single in
             let task = session?.request(request, interceptor: interceptor)
                 .validate(statusCode: 200..<300)
-                .responseDecodable(of: PresignedURLDTO.self) { response in
+                .responseDecodable(of: PresignedUrlDTO.self) { response in
                     switch response.result {
                     case .success(let response):
-                        guard let url = response.data?.url else {
-                            return single(.failure(NetworkError.emptyResponseData))
-                        }
+                        let url = response.data.url 
                         return single(.success(url))
                     case .failure(let error):
                         return single(.failure(error))
