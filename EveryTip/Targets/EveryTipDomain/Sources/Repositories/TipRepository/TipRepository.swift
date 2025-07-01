@@ -16,4 +16,22 @@ public protocol TipRepository {
     func likeTip(for tipID: Int) -> Completable
     func saveTip(for tipID: Int) -> Completable
     func deleteTip(for tipID: Int) -> Completable
+    
+    func getPresignedURL(
+        categoryID: Int,
+        mimeType: String
+    ) -> Single<String>
+    
+    func uploadImage(
+        to url: String,
+        imageData: Data
+    ) -> Completable
+    
+    func postTip(
+        categoryID: Int,
+        tags: [String],
+        title: String,
+        content: String,
+        images: [Tip.Image]
+    ) -> Completable
 }

@@ -16,10 +16,25 @@ public protocol TipUseCase {
     func likeTip(for tipID: Int) -> Completable
     func saveTip(for tipID: Int) -> Completable
     func deleteTip(for tipID: Int) -> Completable
+    func getPresignedURL(
+        categoryID: Int,
+        mimeType: String
+    ) -> Single<String>
+    func uploadImage(
+        to url: String,
+        imageData: Data
+    ) -> Completable
+    func postTip(
+        categoryID: Int,
+        tags: [String],
+        title: String,
+        content: String,
+        images: [Tip.Image]
+    ) -> Completable
 }
 
 final class DefaultTipUseCase: TipUseCase {
-
+   
     private let tipRepository: TipRepository
     
     init(tipRepository: TipRepository) {
@@ -44,5 +59,23 @@ final class DefaultTipUseCase: TipUseCase {
     
     func deleteTip(for tipID: Int) -> Completable {
         tipRepository.deleteTip(for: tipID)
+    }
+    
+    func getPresignedURL(categoryID: Int, mimeType: String) -> Single<String> {
+        tipRepository.getPresignedURL(categoryID: categoryID, mimeType: mimeType)
+    }
+    
+    func uploadImage(to url: String, imageData: Data) -> Completable {
+        tipRepository.uploadImage(to: url, imageData: imageData)
+    }
+    
+    func postTip(categoryID: Int, tags: [String], title: String, content: String, images: [Tip.Image]) -> Completable {
+        tipRepository.postTip(
+            categoryID: categoryID,
+            tags: tags,
+            title: title,
+            content: content,
+            images: images
+        )
     }
 }
