@@ -278,10 +278,10 @@ extension MyInfoViewController: UITableViewDataSource {
         cell.leftLabel.text = reactor?.getInfoTableViewItems()[indexPath.row]
         
         switch indexPath.row {
-        case 0...4:
+        case 0...2:
             cell.accessoryType = .disclosureIndicator
             cell.rightLabel.text = nil
-        case 5:
+        case 3:
             // TODO: 버전정보 및 공지사항등 api 연결
             cell.accessoryType = .none
             cell.rightLabel.text = "1.01"
@@ -316,7 +316,7 @@ extension MyInfoViewController: View {
         tapGesture.rx.event
             .bind { [weak self] _ in
                 self?.coordinator?.checkLoginBeforeAction(onLoggedIn: { [weak self] in
-                    self?.coordinator?.pushToUserContentsView()
+                    self?.coordinator?.pushToUserContentsView(myID: reactor.currentState.myProfile.id)
                 })
             }
             .disposed(by: disposeBag)
@@ -327,9 +327,11 @@ extension MyInfoViewController: View {
         
         tableViewCellTapped.map { row -> Reactor.Action? in
             switch row {
-            case 4: return .agreementCellTapped
-            case 6: return .logoutCellTapped
-                
+            case 0: return .setSubscribeButtonTapped
+            case 1: return .setCategoryButtonTapped
+            case 2: return .agreementCellTapped
+            case 4: return .logoutCellTapped
+        
             default:
                 return nil
             }
@@ -337,6 +339,11 @@ extension MyInfoViewController: View {
         .compactMap { $0 }
         .bind(to: reactor.action)
         .disposed(by: disposeBag)
+        
+        editProfileButton.rx.tap
+            .map { Reactor.Action.editProfileButtonTapped }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
     
     private func bindOutputs(to reactor: MyInfoReactor) {
@@ -400,7 +407,21 @@ extension MyInfoViewController: View {
                 case .logout:
                     self?.showLogoutAlert()
                 case .userContents:
-                    self?.coordinator?.pushToUserContentsView()
+                    self?.coordinator?.checkLoginBeforeAction {
+                        self?.coordinator?.pushToUserContentsView(myID: reactor.currentState.myProfile.id)
+                    }
+                case .editProfile:
+                    self?.coordinator?.checkLoginBeforeAction {
+                        self?.coordinator?.pushToEditProfileView(myNickName: reactor.currentState.myProfile.nickName)
+                    }
+                case .setCategories:
+                    self?.coordinator?.checkLoginBeforeAction {
+                        self?.coordinator?.pushToSetCategory()
+                    }
+                case .setSubscribe:
+                    self?.coordinator?.checkLoginBeforeAction {
+                        self?.coordinator?.pushToUserContentsView(myID: reactor.currentState.myProfile.id)
+                    }
                 }
             })
             .disposed(by: disposeBag)

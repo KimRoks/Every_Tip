@@ -30,7 +30,7 @@ final class HomeViewController: BaseViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-        
+    
     private let roundedBackgroundView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
@@ -104,18 +104,7 @@ final class HomeViewController: BaseViewController {
                 for: indexPath
             ) as? TipListCell else { return UITableViewCell() }
             
-            let thumbnailURL = item.images.first(where: { $0.isThumbnail == 1 })?.url
-            cell.updateThumbnailImage(with: thumbnailURL)
-            cell.updateLikeImage(isLiked: item.isLiked)
-            cell.configureCategoryLabel(id: item.categoryId)
-            cell.configureTitleLabelText(item.title)
-            
-            cell.mainTextLabel.text = item.content
-            cell.userNameLabel.text = "by \(item.writer.name)"
-            cell.commentsCountLabel.text = "\(item.commentsCount)"
-            cell.viewsCountLabel.text = "\(item.views)"
-            cell.likesCountLabel.text = "\(item.likes)"
-            
+            cell.configureTipListCell(with: item)
             return cell
         }
     )
@@ -222,12 +211,17 @@ extension HomeViewController: View {
             }.bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        tipListTableView.rx.itemSelected
-            .map{Reactor.Action.itemSeleted($0)}
+        tipListTableView.rx.modelSelected(Tip.self)
+            .map { Reactor.Action.itemSelected($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         tipListTableView.rx.setDelegate(self)
+            .disposed(by: disposeBag)
+        
+        searchBarButton.rx.tap
+            .map { Reactor.Action.searchButtonTapped}
+            .bind(to: reactor.action)
             .disposed(by: disposeBag)
     }
     
@@ -242,19 +236,11 @@ extension HomeViewController: View {
                 vc.coordinator?.pushToTipDetailView(with: tip.id)
             }.disposed(by: disposeBag)
         
-        reactor.state.map { $0.posts }
-            .map { posts in
-                // TODO: api 출시후 리액터 재정의 필요
-                let empty: [Tip] = []
-                return [
-                    HomeTableViewSection(
-                        sectionType: .popular,
-                        items: posts
-                    ),
-                    HomeTableViewSection(
-                        sectionType: .interestCategory,
-                        items: empty
-                    )
+        reactor.state
+            .map { state -> [HomeTableViewSection] in
+                [
+                    HomeTableViewSection(sectionType: .popular, items: state.popularTips),
+                    HomeTableViewSection(sectionType: .interestCategory, items: state.categorizedTips)
                 ]
             }
             .bind(to: tipListTableView.rx.items(dataSource: dataSource))
@@ -265,6 +251,13 @@ extension HomeViewController: View {
             .subscribe { [weak self] message in
                 self?.showToast(message: message)
             }
+            .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$seachSignal)
+            .filter { $0 == true }
+            .subscribe(onNext: { _ in
+                self.coordinator?.pushToSearchView()
+            })
             .disposed(by: disposeBag)
     }
 }
@@ -305,9 +298,14 @@ extension HomeViewController: UITableViewDelegate {
         case .popular:
             return 50
             
+            
         case .interestCategory:
-            if coordinator?.checkIsLoggedin() == false
-            /*|| 선택된 카테고리가 없다면.. */ {
+            guard let reactor = reactor else {
+                return 250
+            }
+            if coordinator?.checkIsLoggedin() == false ||
+                reactor.currentState.myCategories.isEmpty
+            {
                 return 250
             } else {
                 return 0
@@ -319,9 +317,8 @@ extension HomeViewController: UITableViewDelegate {
 // MARK: Button Delegate
 extension HomeViewController: FooterDelegate {
     func buttonTapped() {
-        coordinator?.checkLoginBeforeAction(onLoggedIn: {
-            // TODO: 실제 코디네이터 동작 삽임 필요
-            print("coordinator.moveToSetCategoryView")
+        coordinator?.checkLoginBeforeAction(onLoggedIn: { [weak self]  in
+            self?.coordinator?.pushToSetCategoryView()
         })
     }
 }

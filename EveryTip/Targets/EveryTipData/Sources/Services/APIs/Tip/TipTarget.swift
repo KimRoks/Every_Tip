@@ -12,9 +12,12 @@ import EveryTipDomain
 enum TipTarget {
     case fetchTotalTip
     case fetchTipByTipID(Int)
+    case fetchTipByUserID(Int)
     case postLikeTip(tipID: Int)
     case postSaveTip(tipID: Int)
     case deleteTip(tipID: Int)
+    case getSavedTips
+    case getSearchTips(keyword: String)
     case postPresignedURL(
         categoryID: Int,
         fileType: String
@@ -29,23 +32,22 @@ enum TipTarget {
 }
 
 extension TipTarget: TargetType {
+    
     var method: HTTPMethods {
         switch self {
-        case .fetchTotalTip:
-                .get
-        case .fetchTipByTipID:
-                .get
+        case .fetchTotalTip,
+             .fetchTipByTipID,
+             .fetchTipByUserID,
+             .getSavedTips,
+             .getSearchTips:
+            return .get
         case .deleteTip:
-                .delete
-        case .postLikeTip:
-                .post
-        case .postSaveTip:
-                .post
-       
-        case .postTip:
-                .post
-        case .postPresignedURL:
-                .post
+            return .delete
+        case .postLikeTip,
+             .postSaveTip,
+             .postTip,
+             .postPresignedURL:
+            return .post
         }
     }
     
@@ -55,71 +57,59 @@ extension TipTarget: TargetType {
             return "/tips"
         case .fetchTipByTipID(let tipID):
             return "/tips?tip_id=\(tipID)"
-        case .deleteTip(tipID: let tipID):
+        case .fetchTipByUserID(let userID):
+            return "/tips?user_id=\(userID)"
+        case .deleteTip(let tipID):
             return "/tips?id=\(tipID)"
-        case .postLikeTip(tipID: let tipID):
+        case .postLikeTip(let tipID):
             return "/tips/\(tipID)/likes"
-        case .postSaveTip(tipID: let tipID):
+        case .postSaveTip(let tipID):
             return "/tips/\(tipID)/save"
-        case .postTip:
-            return "/tips"
+        case .getSavedTips:
+            return "/user/saved-tips"
+        case .getSearchTips(let keyword):
+            return "/tips/search?keyword=\(keyword)"
         case .postPresignedURL:
             return "/tips/image/url"
+        case .postTip:
+            return "/tips"
         }
     }
     
     var headers: [String : String]? {
-        switch self {
-        case .fetchTotalTip:
-            return nil
-        case .fetchTipByTipID:
-            return nil
-        case .deleteTip:
-            return nil
-        case .postLikeTip:
-            return nil
-        case .postSaveTip:
-            return nil
-        case .postTip:
-            return nil
-        case .postPresignedURL:
-            return nil
-        }
+        // 모두 기본값(nil) 사용
+        return nil
     }
         
     var parameters: [String : Any]? {
         switch self {
-        case .fetchTotalTip:
+        case .fetchTotalTip,
+             .fetchTipByTipID,
+             .fetchTipByUserID,
+             .deleteTip,
+             .postLikeTip,
+             .postSaveTip,
+             .getSavedTips,
+             .getSearchTips:
             return nil
-        case .fetchTipByTipID:
-            return nil
-        case .deleteTip:
-            return nil
-        case .postLikeTip:
-            return nil
-        case .postSaveTip:
-            return nil
-        case .postTip(
-            categoryID: let categoryID,
-            tags: let tags,
-            title: let title,
-            content: let content,
-            images: let images
-        ):
+            
+        case .postTip(let categoryID, let tags, let title, let content, let images):
             return [
-                "category_id" : categoryID,
-                "tags" : tags,
+                "category_id": categoryID,
+                "tags": tags,
                 "title": title,
                 "content": content,
-                "images": images.map{
-                    ["url": $0.url,
-                     "is_thumbnail": $0.isThumbnail
+                "images": images.map {
+                    [
+                        "url": $0.url,
+                        "is_thumbnail": $0.isThumbnail
                     ]
                 }
             ]
-        case .postPresignedURL(categoryID: let categoryID, fileType: let fileType):
+            
+        case .postPresignedURL(let categoryID, let fileType):
             return [
-                "category_id" : categoryID,
+                "category_id": categoryID,
                 "file_type": fileType
             ]
         }

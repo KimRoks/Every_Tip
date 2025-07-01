@@ -5,11 +5,10 @@
 //  Created by 김경록 on 6/10/25.
 //  Copyright © 2025 EveryTip. All rights reserved.
 //
+
 import Foundation
 
 import EveryTipDomain
-
-import EveryTipCore
 
 import ReactorKit
 import RxSwift
@@ -63,12 +62,16 @@ final class PostTipReactor: Reactor {
         switch action {
         case .setCategoryButtonTapped(let category):
             return .just(.setCategory(category))
+            
         case .setTagButtonTapped(let tags):
             return .just(.setTag(tags))
+            
         case .addImageButtonTapped:
             return .just(.setImageViewSignal(true))
+            
         case .savePhoto(let photos):
             return .just(.setPhotos(photos))
+            
         case .confirmButtonTapped:
             guard let category = currentState.category else {
                 return .just(.setToast("카테고리를 선택해주세요"))
@@ -76,17 +79,15 @@ final class PostTipReactor: Reactor {
             guard let tags = currentState.tags else {
                 return .just(.setToast("태그를 하나 이상 입력해주세요"))
             }
-
             guard let title = currentState.title else {
                 return .just(.setToast("제목을 입력해주세요"))
             }
-            
             guard let content = currentState.content else {
                 return .just(.setToast("본문을 입력해주세요"))
             }
-           
+            
             let photos = currentState.selectedPhotos
-
+            
             let uploadImages: Single<[Tip.Image]> = {
                 let uploadTasks = photos.enumerated().map { index, photo in
                     tipUseCase.getPresignedURL(categoryID: category.id, mimeType: photo.mimeType)
@@ -101,7 +102,7 @@ final class PostTipReactor: Reactor {
                             )))
                         }
                 }
-
+                
                 return Single.zip(uploadTasks)
                     .map { resultTuples in
                         resultTuples.map { tuple in
@@ -113,7 +114,7 @@ final class PostTipReactor: Reactor {
                         }
                     }
             }()
-
+            
             let postTip = uploadImages
                 .flatMapCompletable { uploadedImages in
                     return self.tipUseCase.postTip(
@@ -124,19 +125,19 @@ final class PostTipReactor: Reactor {
                         images: uploadedImages
                     )
                 }
-
+            
             return postTip
                 .andThen(Observable.concat(
                     .just(.setToast("팁 업로드 성공")),
                     .just(.setConfirmSignal(true)))
                 )
-                .catch { error in
+                .catch { _ in
                     return .just(.setToast("팁 업로드에 실패했어요. 다시 시도해주세요."))
                 }
-
             
         case .titleChanged(let title):
             return .just(.setTitle(title))
+            
         case .contentChanged(let content):
             return .just(.setContent(content))
         }
@@ -145,7 +146,6 @@ final class PostTipReactor: Reactor {
     func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
         switch mutation {
-            
         case .setCategory(let category):
             newState.category = category
         case .setTag(let tags):
@@ -163,7 +163,6 @@ final class PostTipReactor: Reactor {
         case .setContent(let content):
             newState.content = content
         }
-        
         return newState
     }
 }

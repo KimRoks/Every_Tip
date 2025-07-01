@@ -12,13 +12,17 @@ import RxSwift
 
 public protocol UserUseCase {
     func fetchRamdomNickName() -> Single<String>
-    func configureTipCategory(categoryIds: [Int]) -> Completable
     func fetchMyProfile() -> Single<MyProfile>
     func fetchUserProfile(for userID: Int) -> Single<UserProfile>
     func isNicknameDuplicated(_ nickname: String) -> Single<Bool>
+    func toggleSubscription(to userID: Int) -> Completable
+
+    func setMyCategories(categoryIds: [Int]) -> Completable
+    func fetchMyCategories() -> Single<[Category]>
 }
 
 final class DefaultUserUseCase: UserUseCase {
+    
     private let nickNameRepository: NickNameRepository
     private let categoryRepository: CategoryRepository
     private let profileRepository: ProfileRepository
@@ -37,8 +41,8 @@ final class DefaultUserUseCase: UserUseCase {
         nickNameRepository.fetchRandomNickName()
     }
     
-    public func configureTipCategory(categoryIds: [Int]) -> Completable {
-        categoryRepository.setCategory(categoryIDs: categoryIds)
+    public func setMyCategories(categoryIds: [Int]) -> Completable {
+        categoryRepository.setMyCategories(categoryIDs: categoryIds)
     }
     
     public func fetchMyProfile() -> Single<MyProfile> {
@@ -51,5 +55,13 @@ final class DefaultUserUseCase: UserUseCase {
     
     func isNicknameDuplicated(_ nickname: String) -> RxSwift.Single<Bool> {
         nickNameRepository.isNicknameDuplicated(nickname)
+    }
+    
+    func toggleSubscription(to userID: Int) -> Completable {
+        profileRepository.toggleSubscription(to: userID)
+    }
+    
+    func fetchMyCategories() -> Single<[Category]> {
+        categoryRepository.fetchMyCategories()
     }
 }

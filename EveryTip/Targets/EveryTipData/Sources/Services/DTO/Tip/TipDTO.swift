@@ -63,6 +63,26 @@ public struct TipDTO: Codable {
                 case isLiked = "is_liked"
                 case isSaved = "is_saved"
             }
+            public init(from decoder: Decoder) throws {
+                   let container = try decoder.container(keyedBy: CodingKeys.self)
+
+                   self.id = try container.decode(Int.self, forKey: .id)
+                   self.title = try container.decode(String.self, forKey: .title)
+                   self.content = try container.decode(String.self, forKey: .content)
+                   self.categoryName = try container.decode(String.self, forKey: .categoryName)
+                   self.categoryId = try container.decode(Int.self, forKey: .categoryId)
+                   self.views = try container.decode(Int.self, forKey: .views)
+                   self.createdAt = try container.decode(String.self, forKey: .createdAt)
+                   self.tags = (try? container.decode([String].self, forKey: .tags)) ?? []
+                    // nil or array or null-safe
+                   self.images = try? container.decode([Image].self, forKey: .images)
+                   self.writer = try container.decode(Writer.self, forKey: .writer)
+                   self.likes = try container.decode(Int.self, forKey: .likes)
+                   self.commentsCount = try container.decode(Int.self, forKey: .commentsCount)
+                   self.isMine = try container.decode(Bool.self, forKey: .isMine)
+                   self.isLiked = try container.decode(Bool.self, forKey: .isLiked)
+                   self.isSaved = try container.decode(Bool.self, forKey: .isSaved)
+               }
 
             public init(
                 id: Int,

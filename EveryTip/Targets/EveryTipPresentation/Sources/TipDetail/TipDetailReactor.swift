@@ -22,6 +22,7 @@ final class TipDetailReactor: Reactor {
         case likeButtonTapped
         case commentLikeButtonTapped(commentID: Int)
         case tipSaveButtonTapped
+        case userProfileTapped
     }
     
     enum Mutation {
@@ -31,6 +32,7 @@ final class TipDetailReactor: Reactor {
         case setCommentInput(message: String, parentID: Int?)
         case setPopSignal(Bool)
         case setCommentSignal(Bool)
+        case setUserTappedSignal(Bool)
     }
     
     struct State {
@@ -40,6 +42,7 @@ final class TipDetailReactor: Reactor {
         @Pulse var commentSubmittedSignal: Bool = false
         @Pulse var toastMessage: String?
         @Pulse var popSignal: Bool = false
+        @Pulse var userTappedSignal: Bool = false
     }
     
     var initialState: State = State()
@@ -166,6 +169,8 @@ final class TipDetailReactor: Reactor {
                 .catch { _ in
                         .just(.setToast("팁 저장에 실패했어요"))
                 }
+        case .userProfileTapped:
+            return .just(.setUserTappedSignal(true))
         }
     }
     
@@ -184,6 +189,8 @@ final class TipDetailReactor: Reactor {
             newState.popSignal = signal
         case .setCommentSignal(let signal):
             newState.commentSubmittedSignal = signal
+        case .setUserTappedSignal(let signal):
+            newState.userTappedSignal = signal
         }
         
         return newState

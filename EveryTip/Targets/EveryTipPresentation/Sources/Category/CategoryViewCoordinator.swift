@@ -14,10 +14,11 @@ import Swinject
 
 protocol CategoryViewCoordinator: Coordinator {
     func start() -> UIViewController
+    func pushToCategorizedTip(with categoryID: Int)
 }
 
 final class DefaultCategoryViewCoordinator: CategoryViewCoordinator {
-
+   
     //MARK: Internal Properties
 
     weak var parentCoordinator: Coordinator?
@@ -45,5 +46,15 @@ final class DefaultCategoryViewCoordinator: CategoryViewCoordinator {
 
     func didFinish() {
         parentCoordinator?.remove(child: self)
+    }
+    
+    func pushToCategorizedTip(with categoryID: Int) {
+        let selectedCoordinator = DefaultCategorizedTipCoordinator(
+            navigationController: navigationController,
+            categoryID: categoryID
+        )
+        self.append(child: selectedCoordinator)
+        
+        selectedCoordinator.start()
     }
 }

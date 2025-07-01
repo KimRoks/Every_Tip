@@ -11,6 +11,7 @@ import UIKit
 import EveryTipDomain
 import EveryTipCore
 
+import Swinject
 import RxSwift
 
 protocol UserContentsCoordinator: AuthenticationCoordinator {
@@ -24,12 +25,35 @@ final class DefaultUserContentsCoordinator: UserContentsCoordinator {
     
     var navigationController: UINavigationController
     
-    init(navigationController: UINavigationController) {
+    private let myID: Int
+    
+    init(
+        myID: Int,
+        navigationController: UINavigationController) {
+            self.myID = myID
         self.navigationController = navigationController
     }
         
     func start() {
-        let userContentsViewController: UserContentsViewController = UserContentsViewController()
+        guard let tipUseCase = Container.shared.resolve(TipUseCase.self) else {
+            fatalError("의존성 주입이 옳바르지 않습니다!")
+        }
+        
+        let savedTipReactor = SavedTipReactor(tipUseCase: tipUseCase)
+        let myTipReactor = MyTipReactor(
+            myID: myID,
+            tipUseCase: tipUseCase
+        )
+        
+        // TODO: 각 탭에 맞는 뷰컨 주입
+        let userContentsViewController: UserContentsViewController = UserContentsViewController(
+            viewControllers: [
+                UIViewController(),
+                UIViewController(),
+                MyTipViewController(reactor: myTipReactor),
+                SavedTipViewController(reactor: savedTipReactor)
+            ]
+        )
         userContentsViewController.coordinator = self
         navigationController.pushViewController(
             userContentsViewController,

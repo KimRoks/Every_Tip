@@ -124,18 +124,49 @@ public final class InteractivePoppableNavigationController: UINavigationControll
         
         // 왼쪽 타이틀
         topViewController?.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLogoLabel)
+
         
-        // 오른쪽 버튼들
-        let stackView = UIStackView(
-            arrangedSubviews: [
-                searchButton,
-                notificationButton
-            ]
-        )
-        stackView.axis = .horizontal
-        stackView.spacing = 14
-        topViewController?.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: stackView)
+        
+        // TODO: 알림 기능 업데이트 시 업데이트
+//        // 오른쪽 버튼들
+//        let stackView = UIStackView(
+//            arrangedSubviews: [
+//                searchButton,
+//                notificationButton
+//            ]
+//        )
+//        stackView.axis = .horizontal
+//        stackView.spacing = 14
+//        topViewController?.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: stackView)
     }
+    
+    // MARK: 스타일: Edit Profile
+    
+    private func setupEditProfileNavigationBar() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .et_brandColor2
+        appearance.shadowColor = .clear
+        
+        appearance.titleTextAttributes = [
+               .foregroundColor: UIColor.white,
+               .font: UIFont.et_pretendard(style: .semiBold, size: 18)
+           ]
+        appearance.setBackIndicatorImage(
+            backButtonImage,
+            transitionMaskImage: backButtonImage
+        )
+        appearance.backButtonAppearance = backButtonAppearance
+
+        topViewController?.navigationItem.title = "프로필 편집"
+        navigationBar.tintColor = .white
+        navigationBar.standardAppearance = appearance
+        navigationBar.compactAppearance = appearance
+        navigationBar.scrollEdgeAppearance = appearance
+        navigationBar.isTranslucent = false
+        
+    }
+    
 }
 
 extension InteractivePoppableNavigationController: UIGestureRecognizerDelegate {
@@ -162,6 +193,8 @@ extension InteractivePoppableNavigationController: UINavigationControllerDelegat
     ) {
         if viewController == viewControllers.first {
             setupRootNavigationBar()
+        } else if viewController is EditProfileViewController {
+            setupEditProfileNavigationBar()
         } else {
             setupNavigationBar()
         }

@@ -13,10 +13,11 @@ import EveryTipDomain
 import Swinject
 
 protocol TipDetailCoordinator: AuthenticationCoordinator {
-
+    func pushToUserProrfileView(userID: Int)
 }
 
 final class DefaultTipDetailCoordinator: TipDetailCoordinator {
+    
     var parentCoordinator: (any Coordinator)?
     
     var childCoordinators: [any Coordinator] = []
@@ -47,6 +48,16 @@ final class DefaultTipDetailCoordinator: TipDetailCoordinator {
         let tipDetailVC = TipDetailViewController(reactor: reactor)
         tipDetailVC.coordinator = self
         navigationController.pushViewController(tipDetailVC, animated: true)
+    }
+    
+    func pushToUserProrfileView(userID: Int) {
+        let userProfileCoordinator = DefaultUserProfileCoordinator(
+            navigationController: navigationController,
+            userID: userID
+        )
+        self.append(child: userProfileCoordinator)
+        userProfileCoordinator.parentCoordinator = self
+        userProfileCoordinator.start()
     }
     
     func didFinish() {

@@ -8,63 +8,97 @@
 
 import UIKit
 
-import EveryTipDesignSystem
+import EveryTipDomain
 
 import ReactorKit
 import RxSwift
-
 final class ExploreReactor: Reactor {
     enum Action {
         case sortButtonTapped(SortOptions)
-        case viewDidLoad
+        case refresh
         case storyCellTapped(selectedStory: DummyStory)
+        case itemSelected(Tip)
     }
     
     enum Mutation {
         case setStory([DummyStory])
         case setSortButton(SortOptions)
         case setSelectedStory(DummyStory)
+        case setAllTips([Tip])
+        case setVisibleTips([Tip])
+        case setSelectedTip(Tip)
+        case setPushSignal(Bool)
     }
     
     struct State {
         var stories: [DummyStory]
         var sortOption: SortOptions = .latest
         var selectedStory: DummyStory
+        var allTips: [Tip] = []        // 원본 전체 tips 저장
+        var visibleTips: [Tip] = []    // 현재 UI에 보여줄 tips
+        var selectedTip: Tip?
+        @Pulse var pushSignal: Bool = false
     }
+    
+    private let tipUseCase: TipUseCase
+    let storyUseCase = DefaultDummyStory()
     
     let initialState: State
     
-    // ID 0번의 전체팁을 기본으로 가짐
+    // 0번은 항상 전체팁
     var initialStory: [DummyStory] = [
-        DummyStory(
-            type: .everyTip
-        )
+        DummyStory(type: .everyTip)
     ]
     
-    // TODO: real useCase로 변경
-    let useCase = DefaultDummyStory()
-    
-    init() {
+    init(tipUseCase: TipUseCase) {
         self.initialState = State(
             stories: initialStory,
             selectedStory: initialStory[0]
         )
+        self.tipUseCase = tipUseCase
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
             
         case .sortButtonTapped(let option):
-            return .just(.setSortButton(option))
+            let sortedTips = currentState.visibleTips.sorted(by: option.toTipOrder())
+            return Observable.merge(
+                .just(.setVisibleTips(sortedTips)),
+                .just(.setSortButton(option))
+            )
+                    
+        case .refresh:
+            let dummyStories = storyUseCase.getDummy().asObservable()
+            let tips = tipUseCase.fetchTotalTips().asObservable()
             
-        case .viewDidLoad:
-            return useCase
-                .getDummy()
-                .asObservable()
-                .map(Mutation.setStory)
+            return Observable.zip(dummyStories, tips)
+                .flatMap { stories, tips in
+                    Observable.from([
+                        .setStory(stories),
+                        .setAllTips(tips),
+                        .setVisibleTips(tips)
+                    ])
+                }
             
-        case .storyCellTapped(selectedStory: let story):
-            return .just(Mutation.setSelectedStory(story))
+        case .storyCellTapped(let story):
+            let userID = story.userData?.userID ?? 0
+            let filteredTips: [Tip]
+            if userID == 0 {
+                filteredTips = currentState.allTips
+            } else {
+                filteredTips = currentState.allTips.filtered(using: .userID(userID))
+            }
+            
+            return Observable.concat([
+                .just(.setSelectedStory(story)),
+                .just(.setVisibleTips(filteredTips))
+            ])
+        case .itemSelected(let tip):
+            return Observable.concat([
+                .just(.setSelectedTip(tip)),
+                .just(.setPushSignal(true))
+            ])
         }
     }
     
@@ -74,11 +108,34 @@ final class ExploreReactor: Reactor {
         switch mutation {
         case .setSortButton(let option):
             newState.sortOption = option
+            
         case .setStory(let stories):
             newState.stories += stories
+            
         case .setSelectedStory(let story):
             newState.selectedStory = story
+            
+        case .setAllTips(let tips):
+            newState.allTips = tips
+            
+        case .setVisibleTips(let tips):
+            newState.visibleTips = tips
+        case .setSelectedTip(let tip):
+            newState.selectedTip = tip
+        case .setPushSignal(let flag):
+            newState.pushSignal = flag
         }
+        
         return newState
+    }
+}
+
+extension SortOptions {
+    func toTipOrder() -> TipOrder {
+        switch self {
+        case .latest: return .latest
+        case .views: return .views
+        case .likes: return .likes
+        }
     }
 }

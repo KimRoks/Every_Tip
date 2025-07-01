@@ -67,6 +67,31 @@ struct DefaultTipRepository: TipRepository, SessionInjectable {
         }
     }
     
+    func fetchTips(forUserID userID: Int) -> RxSwift.Single<[EveryTipDomain.Tip]> {
+        guard let request = try? TipTarget.fetchTipByUserID(userID).asURLRequest() else {
+            return Single.error(NetworkError.invalidURLError)
+        }
+        
+        return Single.create { single in
+            let task = session?.request(request)
+                .validate(statusCode: 200..<300)
+                .responseDecodable(of: TipDTO.self) { response in
+                    switch response.result {
+                        
+                    case .success(let tipDTO):
+                        let tips = tipDTO.data.tips.map { $0.toDomain() }
+                        return single(.success(tips))
+                    case .failure(let error):
+                        return single(.failure(error))
+                    }
+                }
+            
+            return Disposables.create {
+                task?.cancel()
+            }
+        }
+    }
+    
     func deleteTip(for tipID: Int) -> Completable {
         guard let request = try? TipTarget.deleteTip(tipID: tipID).asURLRequest() else{ return Completable.error(NetworkError.invalidURLError)}
         return Completable.create { completable in
@@ -132,6 +157,85 @@ struct DefaultTipRepository: TipRepository, SessionInjectable {
         }
     }
     
+    // TODO: DTO 바꿔야할수있음 서버랑 협의 중
+    func fetchSavedTips() -> Single<[Tip]> {
+        guard let request = try? TipTarget.getSavedTips.asURLRequest() else {
+            return Single.error(NetworkError.invalidURLError)
+        }
+        
+        return Single.create { single in
+            let task = session?.request(request, interceptor: interceptor)
+                .validate(statusCode: 200..<300)
+                .responseDecodable(of: SavedTipDTO.self) { response in
+                    switch response.result {
+                    case .success(let tipData):
+                        let tips = tipData.data.map { $0.toDomain() }
+                        
+                        return single(.success(tips))
+                        
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                        return single(.failure(error))
+                    }
+                }
+            
+            return Disposables.create {
+                task?.cancel()
+            }
+        }
+    }
+    
+    func searchTip(with keyword: String) -> Single<[EveryTipDomain.Tip]> {
+        guard let request = try? TipTarget.getSearchTips(keyword: keyword).asURLRequest() else {
+            return Single.error(NetworkError.invalidURLError)
+        }
+        
+        return Single.create { single in
+            let task = session?.request(request)
+                .validate(statusCode: 200..<300)
+                .responseDecodable(of: TipDTO.self) { response in
+                    switch response.result {
+                    case .success(let tipDTO):
+                        let tips = tipDTO.data.tips.map { $0.toDomain() }
+                        
+                        return single(.success(tips))
+                    case .failure(let error):
+                        return single(.failure(error))
+                    }
+                }
+            return Disposables.create {
+                task?.cancel()
+            }
+        }
+    }
+    
+    func fetchPresignedURL(categoryID: Int, fileType: String) -> Single<String> {
+        guard let request = try? TipTarget.postPresignedURL(
+            categoryID: categoryID,
+            fileType: fileType
+        ).asURLRequest() else {
+            return Single.error(NetworkError.invalidURLError)
+        }
+        
+        return Single.create { single in
+            
+            let task = session?.request(request, interceptor: interceptor)
+                .validate(statusCode: 200..<300)
+                .responseDecodable(of: PresignedUrlDTO.self) { response in
+                    switch response.result {
+                    case .success(let response):
+                        let url = response.data.url
+                        return single(.success(url))
+                        
+                    case .failure(let error):
+                        return single(.failure(error))
+                    }
+                }
+            return Disposables.create {
+                task?.cancel()
+            }
+        }
+    }
     func getPresignedURL(categoryID: Int, mimeType: String) -> RxSwift.Single<String> {
         guard let request = try? TipTarget.postPresignedURL(
             categoryID: categoryID,

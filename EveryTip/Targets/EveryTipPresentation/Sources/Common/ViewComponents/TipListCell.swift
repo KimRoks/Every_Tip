@@ -11,6 +11,7 @@ import SnapKit
 import Kingfisher
 
 import EveryTipDesignSystem
+import EveryTipDomain
 
 final class TipListCell: UITableViewCell, Reusable {
     
@@ -30,7 +31,7 @@ final class TipListCell: UITableViewCell, Reusable {
         return label
     }()
     
-    let mainTextLabel: UILabel = {
+    private let mainTextLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.et_pretendard(
             style: .medium,
@@ -51,7 +52,7 @@ final class TipListCell: UITableViewCell, Reusable {
         return imageView
     }()
     
-    let userNameLabel: UILabel = {
+    private let userNameLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .right
         label.font = UIFont.et_pretendard(
@@ -70,7 +71,7 @@ final class TipListCell: UITableViewCell, Reusable {
         return imageview
     }()
     
-    let viewsCountLabel: UILabel = {
+    private let viewsCountLabel: UILabel = {
         let label = UILabel()
         label.text = "0"
         label.font = UIFont.et_pretendard(style: .medium, size: 12)
@@ -86,7 +87,7 @@ final class TipListCell: UITableViewCell, Reusable {
         return imageview
     }()
     
-    let commentsCountLabel: UILabel = {
+    private let commentsCountLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.et_pretendard(style: .medium, size: 12)
         label.text = "0"
@@ -103,7 +104,7 @@ final class TipListCell: UITableViewCell, Reusable {
         return imageview
     }()
     
-    let likesCountLabel: UILabel = {
+    private let likesCountLabel: UILabel = {
         let label = UILabel()
         label.text = "0"
         label.font = UIFont.et_pretendard(style: .medium, size: 12)
@@ -131,20 +132,20 @@ final class TipListCell: UITableViewCell, Reusable {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: Internal Methods
-    
-    func configureTitleLabelText(_ text: String) {
+    // MARK: Private Methods
+
+    private func configureTitleLabelText(_ text: String) {
         let categoryWidth = calculateLabelWidth(for: categoryLabel)
         let space = createDynamicSpace(forWidth: categoryWidth, withFont: titleLabel.font)
         let titleText = text
         titleLabel.text = space + titleText
     }
     
-    func configureCategoryLabel(id: Int) {
+    private func configureCategoryLabel(id: Int) {
         categoryLabel.setCategory(with: id)
     }
     
-    func updateLikeImage(isLiked: Bool) {
+    private func updateLikeImage(isLiked: Bool) {
         let image = isLiked
         ? UIImage.et_getImage(for: .likeImage_fill)
         : UIImage.et_getImage(for: .likeImage_empty)
@@ -152,7 +153,7 @@ final class TipListCell: UITableViewCell, Reusable {
         likesImage.image = image
     }
     
-    func updateThumbnailImage(with urlString: String?) {
+    private func updateThumbnailImage(with urlString: String?) {
         guard let urlString = urlString,
               let url = URL(string: urlString) else {
             return
@@ -167,9 +168,7 @@ final class TipListCell: UITableViewCell, Reusable {
               ]
         )
     }
-    
-    // MARK: Private Methods
-    
+        
     private func calculateLabelWidth(for label: UILabel) -> CGFloat {
         guard let text = label.text else { return 0 }
         let font = label.font ?? UIFont.et_pretendard(style: .bold, size: 12)
@@ -273,5 +272,21 @@ final class TipListCell: UITableViewCell, Reusable {
             $0.leading.trailing.equalTo(contentView).inset(20)
             $0.height.equalTo(1)
         }
+    }
+    
+    // MARK: internal methods
+    
+    func configureTipListCell(with item: Tip) {
+        let thumbnailURL = item.images.first(where: { $0.isThumbnail == 1 })?.url
+        self.updateThumbnailImage(with: thumbnailURL)
+        self.updateLikeImage(isLiked: item.isLiked)
+        self.configureCategoryLabel(id: item.categoryId)
+        self.configureTitleLabelText(item.title)
+        
+        self.mainTextLabel.text = item.content
+        self.userNameLabel.text = "by \(item.writer.name)"
+        self.commentsCountLabel.text = "\(item.commentsCount)"
+        self.viewsCountLabel.text = "\(item.views)"
+        self.likesCountLabel.text = "\(item.likes)"
     }
 }

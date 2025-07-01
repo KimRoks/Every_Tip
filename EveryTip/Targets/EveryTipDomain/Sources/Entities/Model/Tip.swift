@@ -81,3 +81,62 @@ public struct Tip {
         }
     }
 }
+
+// MARK: Business Logic
+
+public enum TipFilter {
+    case category(Int)
+    case userID(Int)
+}
+
+public enum TipOrder {
+    case latest
+    case views
+    case likes
+    case popularity
+}
+
+public extension Array where Element == Tip {
+    func filtered(using filter: TipFilter) -> [Tip] {
+        switch filter {
+        case .category(let categoryID):
+            return self.filter {
+                $0.categoryId == categoryID
+            }
+        case .userID(let userID):
+            
+            if userID == 0 {
+                return self
+            }
+            
+            return self.filter {
+                $0.writer.id == userID
+            }
+        }
+    }
+    
+    func sorted(by sort: TipOrder) -> [Tip] {
+        switch sort {
+        case .latest:
+            return self.sorted {
+                $0.createdAt > $1.createdAt
+            }
+        case .views:
+            return self.sorted {
+                $0.views > $1.views
+            }
+        case .likes:
+            return self.sorted {
+                $0.likes > $1.likes
+            }
+        case .popularity:
+            return self.sorted {
+                ($0.likes * 10 + $0.views) > ($1.likes * 10 + $1.views)
+            }
+        }
+    }
+    
+    func topPopular(limit: Int = 3) -> [Tip] {
+        return self.sorted(by: .popularity).prefix(limit).map { $0 }
+    }
+}
