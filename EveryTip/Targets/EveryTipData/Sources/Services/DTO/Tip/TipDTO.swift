@@ -100,14 +100,14 @@ public struct TipDTO: Codable {
 
             public struct Image: Codable {
                 public let url: String
-                public let isThumbnail: Bool
+                public let isThumbnail: Int
 
                 enum CodingKeys: String, CodingKey {
                     case url
                     case isThumbnail = "is_thumbnail"
                 }
 
-                public init(url: String, isThumbnail: Bool) {
+                public init(url: String, isThumbnail: Int) {
                     self.url = url
                     self.isThumbnail = isThumbnail
                 }
@@ -161,7 +161,7 @@ public extension TipDTO.TipData.Tip.Image {
     func toDomain() -> Tip.Image {
         return Tip.Image(
             url: url,
-            isThumbnail: isThumbnail ? 1 : 0
+            isThumbnail: isThumbnail
         )
     }
 }
@@ -173,13 +173,5 @@ public extension TipDTO.TipData.Tip.Writer {
             name: name,
             profileImage: profileImage
         )
-    }
-}
-
-// MARK: - Mapper
-
-struct TipMapper {
-    static func toDTO(_ image: Tip.Image) -> TipDTO.TipData.Tip.Image {
-        return TipDTO.TipData.Tip.Image(url: image.url, isThumbnail: image.isThumbnail == 1)
     }
 }
