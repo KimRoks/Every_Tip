@@ -132,6 +132,13 @@ final class TipListCell: UITableViewCell, Reusable {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        thumbnailImageView.kf.cancelDownloadTask()
+        thumbnailImageView.image = UIImage.et_getImage(for: .blankImage)
+    }
+
+    
     // MARK: Private Methods
 
     private func configureTitleLabelText(_ text: String) {
@@ -164,7 +171,8 @@ final class TipListCell: UITableViewCell, Reusable {
             placeholder: UIImage.et_getImage(for: .blankImage),
             options: [
                 .transition(.fade(0.3)),
-                .forceTransition
+                .forceTransition,
+                .cacheOriginalImage
               ]
         )
     }
