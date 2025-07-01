@@ -37,9 +37,4 @@ public protocol TipRepository {
 
     func fetchSavedTips() -> Single<[Tip]>
     func searchTip(with keyword: String) -> Single<[Tip]>
-
-    func fetchPresignedURL(
-        categoryID: Int,
-        fileType: String
-    ) -> Single<String>
 }
