@@ -9,7 +9,6 @@
 import Foundation
 
 import RxSwift
-
 public protocol TipRepository {
     func fetchTotalTips() -> Single<[Tip]>
     func fetchTip(forTipID tipID: Int) -> Single<Tip>
@@ -17,7 +16,30 @@ public protocol TipRepository {
     func likeTip(for tipID: Int) -> Completable
     func saveTip(for tipID: Int) -> Completable
     func deleteTip(for tipID: Int) -> Completable
+
+    func getPresignedURL(
+        categoryID: Int,
+        mimeType: String
+    ) -> Single<String>
+
+    func uploadImage(
+        to url: String,
+        imageData: Data
+    ) -> Completable
+
+    func postTip(
+        categoryID: Int,
+        tags: [String],
+        title: String,
+        content: String,
+        images: [Tip.Image]
+    ) -> Completable
+
     func fetchSavedTips() -> Single<[Tip]>
     func searchTip(with keyword: String) -> Single<[Tip]>
-    func fetchPresignedURL(categoryID: Int, fileType: String) -> Single<String>
+
+    func fetchPresignedURL(
+        categoryID: Int,
+        fileType: String
+    ) -> Single<String>
 }

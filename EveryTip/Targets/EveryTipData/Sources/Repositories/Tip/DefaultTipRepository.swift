@@ -14,7 +14,7 @@ import Alamofire
 import RxSwift
 
 struct DefaultTipRepository: TipRepository, SessionInjectable {
- 
+    
     var session: Session?
     private let interceptor = TokenInterceptor()
     
@@ -229,6 +229,81 @@ struct DefaultTipRepository: TipRepository, SessionInjectable {
                         
                     case .failure(let error):
                         return single(.failure(error))
+                    }
+                }
+            return Disposables.create {
+                task?.cancel()
+            }
+        }
+    }
+    func getPresignedURL(categoryID: Int, mimeType: String) -> RxSwift.Single<String> {
+        guard let request = try? TipTarget.postPresignedURL(
+            categoryID: categoryID,
+            fileType: mimeType
+        ).asURLRequest() else {
+            return Single.error(NetworkError.invalidURLError)
+        }
+        
+        return Single.create { single in
+            let task = session?.request(request, interceptor: interceptor)
+                .validate(statusCode: 200..<300)
+                .responseDecodable(of: PresignedURLDTO.self) { response in
+                    switch response.result {
+                    case .success(let response):
+                        guard let url = response.data?.url else {
+                            return single(.failure(NetworkError.emptyResponseData))
+                        }
+                        return single(.success(url))
+                    case .failure(let error):
+                        return single(.failure(error))
+                    }
+                }
+            
+            return Disposables.create {
+                task?.cancel()
+            }
+        }
+    }
+    
+    func uploadImage(to url: String, imageData: Data) -> Completable {
+        guard let url = URL(string: url) else {
+            return Completable.error(NetworkError.invalidURLError)
+        }
+        return Completable.create { completable in
+            var request = URLRequest(url: url)
+            request.httpMethod = "PUT"
+            request.httpBody = imageData
+            
+            let task = session?.request(request)
+                .validate(statusCode: 200..<500)
+                .response { response in
+                    switch response.result {
+                    case .success(_):
+                        return completable(.completed)
+                    case .failure(let error):
+                        return completable(.error(error))
+                    }
+                }
+            return Disposables.create {
+                task?.cancel()
+            }
+        }
+    }
+    
+    func postTip(categoryID: Int, tags: [String], title: String, content: String, images: [Tip.Image]) -> RxSwift.Completable {
+        guard let request = try? TipTarget.postTip(categoryID: categoryID, tags: tags, title: title, content: content, images: images).asURLRequest() else {
+            return Completable.error(NetworkError.invalidURLError)
+        }
+        
+        return Completable.create { completable in
+            let task = session?.request(request, interceptor: interceptor)
+                .validate(statusCode: 200..<500)
+                .response { response in
+                    switch response.result {
+                    case .success(_):
+                        return completable(.completed)
+                    case .failure(let error):
+                        return completable(.error(error))
                     }
                 }
             return Disposables.create {

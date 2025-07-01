@@ -54,6 +54,7 @@ public enum ImageAssetType {
     case reply
     case ellipsis
     case ellipsis_black
+    case removePhoto
     case recent
 }
 
@@ -146,8 +147,12 @@ extension UIImage {
             EveryTipDesignSystemAsset.ellipsis.image
         case .ellipsis_black:
             EveryTipDesignSystemAsset.ellipsisBlack.image
+        case .removePhoto:
+            EveryTipDesignSystemAsset.removePhoto.image
+
         case .recent:
             EveryTipDesignSystemAsset.recent.image
+
         }
     }
 }
