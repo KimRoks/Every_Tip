@@ -43,7 +43,7 @@ final class PostTipViewController: BaseViewController {
         return label
     }()
     
-    private let registerButton: UIButton = {
+    private let confirmButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle(
             "등록",
@@ -205,13 +205,13 @@ final class PostTipViewController: BaseViewController {
         topStackView.addArrangedSubViews(
             closeButton,
             topTitleLabel,
-            registerButton
+            confirmButton
         )
     }
     
     private func setupConstraints() {
         closeButton.snp.makeConstraints {
-            $0.width.equalTo(registerButton.snp.width)
+            $0.width.equalTo(confirmButton.snp.width)
         }
         
         topTitleLabel.snp.makeConstraints {
@@ -255,6 +255,7 @@ final class PostTipViewController: BaseViewController {
         bodyTextView.snp.makeConstraints {
             $0.top.equalTo(titleTextField.snp.bottom).offset(10)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
+            $0.bottom.equalTo(bodyUnderLine.snp.top).offset(5)
         }
         
         bodyUnderLine.snp.makeConstraints {
@@ -385,7 +386,19 @@ extension PostTipViewController: View {
             }.bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        registerButton.rx.tap
+        titleTextField.rx.text.orEmpty
+            .distinctUntilChanged()
+            .map { Reactor.Action.titleChanged($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        bodyTextView.rx.text.orEmpty
+            .distinctUntilChanged()
+            .map { Reactor.Action.contentChanged($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        confirmButton.rx.tap
             .map { Reactor.Action.confirmButtonTapped }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -407,7 +420,10 @@ extension PostTipViewController: View {
             .disposed(by: disposeBag)
         
         reactor.state.map { $0.selectedPhotos }
-            .bind(to: selectedPhotosCollectionView.rx.items(cellIdentifier: SelectedPhotoCell.reuseIdentifier, cellType: SelectedPhotoCell.self)) { index, imageData, cell in
+            .bind(to: selectedPhotosCollectionView.rx.items(
+                cellIdentifier: SelectedPhotoCell.reuseIdentifier,
+                cellType: SelectedPhotoCell.self)
+            ) { index, imageData, cell in
                 
                 let image = UIImage(data: imageData.originalData)
                 cell.updatePhoto(image)
@@ -433,8 +449,16 @@ extension PostTipViewController: View {
         
         reactor.pulse(\.$confirmSignal)
             .filter { $0 == true }
-            .subscribe { _ in
-                print("dd")
+            .subscribe { [weak self] _ in
+                self?.coordinator?.didFinish()
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$toastMessage)
+            .compactMap { $0 }
+            .observe(on: MainScheduler.instance)
+            .bind { [weak self] message in
+                self?.showToast(message: message)
             }
             .disposed(by: disposeBag)
     }
