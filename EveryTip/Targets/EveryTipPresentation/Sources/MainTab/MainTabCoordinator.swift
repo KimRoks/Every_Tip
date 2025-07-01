@@ -31,7 +31,6 @@ final class DefaultMainTabCoordinator: MainTabCoordinator {
     //MARK: Internal Methods
     
     func start() {
-        // TODO: 각 ViewController, Coordinator 정의 및 start 메서드 실행
         let emptyVC = UIViewController()
         emptyVC.tabBarItem.isEnabled = false
         

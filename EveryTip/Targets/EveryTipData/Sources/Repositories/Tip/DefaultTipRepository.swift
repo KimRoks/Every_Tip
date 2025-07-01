@@ -157,7 +157,6 @@ struct DefaultTipRepository: TipRepository, SessionInjectable {
         }
     }
     
-    // TODO: DTO 바꿔야할수있음 서버랑 협의 중
     func fetchSavedTips() -> Single<[Tip]> {
         guard let request = try? TipTarget.getSavedTips.asURLRequest() else {
             return Single.error(NetworkError.invalidURLError)
