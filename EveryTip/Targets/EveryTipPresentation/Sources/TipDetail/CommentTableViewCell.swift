@@ -19,10 +19,10 @@ final class CommentTableViewCell: UITableViewCell, Reusable {
     let profileImageTapped = PublishSubject<Void>()
     let ellipsisTapped = PublishSubject<Void>()
     let likeButtonTapped = PublishSubject<Void>()
-
+    
     var disposeBag = DisposeBag()
     private let userProfileTapGesture = UITapGestureRecognizer()
-
+    
     private let commenterImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = .et_getImage(for: .blankImage)
@@ -194,7 +194,7 @@ final class CommentTableViewCell: UITableViewCell, Reusable {
             $0.leading.equalTo(commenterImageView.snp.trailing).offset(6)
             $0.trailing.equalTo(contentView.snp.trailing).offset(-40)
         }
-       
+        
         commentsLikebutton.snp.makeConstraints {
             $0.top.equalTo(commentLabel.snp.bottom).offset(6)
             $0.leading.equalTo(contentView.snp.leading).offset(64)
@@ -230,9 +230,9 @@ final class CommentTableViewCell: UITableViewCell, Reusable {
             .disposed(by: disposeBag)
         
         userProfileTapGesture.rx.event
-              .map { _ in }
-              .bind(to: profileImageTapped)
-              .disposed(by: disposeBag)
+            .map { _ in }
+            .bind(to: profileImageTapped)
+            .disposed(by: disposeBag)
     }
     
     func configureCell(with data: Comment) {
@@ -262,7 +262,7 @@ final class CommentTableViewCell: UITableViewCell, Reusable {
         let likeImage: UIImage = data.isLiked ?
             .et_getImage(for: .likeImage_fill) :
             .et_getImage(for: .likeImage_empty)
-            
+        
         commentsLikebutton.configuration?.image = likeImage
         
         self.indentationWidth = data.parentID != nil ? 38 : 0

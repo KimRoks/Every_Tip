@@ -24,6 +24,7 @@ final class PostTipReactor: Reactor {
         case confirmButtonTapped
         case titleChanged(String)
         case contentChanged(String)
+        case deleteSelectedPhoto(index: Int)
     }
     
     enum Mutation {
@@ -140,6 +141,14 @@ final class PostTipReactor: Reactor {
             
         case .contentChanged(let content):
             return .just(.setContent(content))
+        case .deleteSelectedPhoto(let index):
+            var photos = currentState.selectedPhotos
+            guard index < photos.count else {
+                return .empty()
+            }
+            photos.remove(at: index)
+            
+            return .just(.setPhotos(photos))
         }
     }
     

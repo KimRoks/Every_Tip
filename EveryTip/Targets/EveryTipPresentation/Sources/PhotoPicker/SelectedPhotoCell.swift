@@ -10,7 +10,17 @@ import UIKit
 
 import SnapKit
 
+import RxSwift
+
+// TODO: 삭제 버튼 영역이 좀 작은듯
+
 final class SelectedPhotoCell: UICollectionViewCell, Reusable {
+    
+    var disposeBag = DisposeBag()
+    
+    let removeSignalSubject = PublishSubject<Int>()
+    private var currentIndex: Int?
+
     private let selectedPhotoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 10
@@ -67,15 +77,15 @@ final class SelectedPhotoCell: UICollectionViewCell, Reusable {
 
         setupLayout()
         setupConstraints()
-        removeButton.addTarget(
-            self,
-            action: #selector(removeButtonTapped),
-            for: .touchUpInside
-        )
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        disposeBag = DisposeBag()
     }
     
     private func setupLayout() {
@@ -110,12 +120,6 @@ final class SelectedPhotoCell: UICollectionViewCell, Reusable {
         }
     }
     
-    // TODO: 각 사진 삭제 메서드 구현
-    @objc
-    func removeButtonTapped() {
-        print("dddd")
-    }
-    
     func setThumnail() {
         thumnailOverlayTextLabel.isHidden = false
     }
@@ -128,5 +132,20 @@ final class SelectedPhotoCell: UICollectionViewCell, Reusable {
     func updatePhoto(_ image: UIImage?) {
         guard let image = image else { return }
         selectedPhotoImageView.image = image
+    }
+    
+    func configure(with image: UIImage?, index: Int, isThumbnail: Bool) {
+        currentIndex = index
+        updatePhoto(image)
+        isThumbnail ? setThumnail() : clearThumnail()
+    }
+    
+    func bindRemoveButton() {
+        removeButton.rx.tap
+            .compactMap {
+                [weak self] in self?.currentIndex
+            }
+            .bind(to: removeSignalSubject)
+            .disposed(by: disposeBag)
     }
 }

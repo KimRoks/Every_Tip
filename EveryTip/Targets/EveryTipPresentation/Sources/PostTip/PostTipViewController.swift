@@ -75,7 +75,7 @@ final class PostTipViewController: BaseViewController {
     private let categoryUnderLine: StraightLineView = StraightLineView(color: .et_brandColor4)
     
     private let hashtagView: DetailDisclosureView = {
-        return DetailDisclosureView(title: "#태그 입력(최대 00개)")
+        return DetailDisclosureView(title: "#태그 입력(최대 20개)")
     }()
     
     private let hashTagUnderLine: StraightLineView = StraightLineView(color: .et_brandColor4)
@@ -127,7 +127,7 @@ final class PostTipViewController: BaseViewController {
             frame: .zero,
             collectionViewLayout: layout
         )
- 
+        
         return collectionView
     }()
     
@@ -259,7 +259,6 @@ final class PostTipViewController: BaseViewController {
         }
         
         bodyUnderLine.snp.makeConstraints {
-            $0.bottom.equalTo(addPhotoButton.snp.top).offset(-120)
             $0.leading.equalTo(view.safeAreaLayoutGuide)
             $0.trailing.equalTo(view.safeAreaLayoutGuide)
         }
@@ -268,7 +267,6 @@ final class PostTipViewController: BaseViewController {
             $0.top.equalTo(bodyUnderLine.snp.bottom).offset(16)
             $0.leading.equalTo(view.safeAreaLayoutGuide).offset(20)
             $0.height.width.equalTo(70)
-            $0.bottom.equalTo(addPhotoButton.snp.top).offset(-20)
         }
         
         selectedPhotosCollectionView.snp.makeConstraints {
@@ -276,13 +274,12 @@ final class PostTipViewController: BaseViewController {
             $0.leading.equalTo(addPhotoCellButton.snp.trailing).offset(10)
             $0.trailing.equalTo(view.safeAreaLayoutGuide).offset(-20)
             $0.height.equalTo(80)
-            $0.bottom.equalTo(addPhotoButton.snp.top).offset(-20)
         }
         
         addPhotoButton.snp.makeConstraints {
             $0.top.equalTo(selectedPhotosCollectionView.snp.bottom).offset(20)
             $0.leading.equalTo(view.safeAreaLayoutGuide).offset(20)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(-12)
+            $0.bottom.equalTo(view.keyboardLayoutGuide.snp.top).offset(-12)
         }
     }
     
@@ -426,15 +423,20 @@ extension PostTipViewController: View {
             ) { index, imageData, cell in
                 
                 let image = UIImage(data: imageData.originalData)
-                cell.updatePhoto(image)
                 
-                if index == 0 {
-                    cell.setThumnail()
-                } else {
-                    cell.clearThumnail()
-                }
+                cell.bindRemoveButton()
+                cell.configure(
+                    with: image,
+                    index: index,
+                    isThumbnail: index == 0
+                )
+                cell.removeSignalSubject
+                    .subscribe(onNext: { [weak self] index in
+                        self?.reactor?.action.onNext(.deleteSelectedPhoto(index: index))
+                    })
+                    .disposed(by: cell.disposeBag)
             }.disposed(by: disposeBag)
-
+        
         reactor.pulse(\.$imageSignal)
             .filter { $0 == true }
             .subscribe(onNext: { [weak self] _ in
