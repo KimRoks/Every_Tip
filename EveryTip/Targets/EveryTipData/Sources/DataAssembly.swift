@@ -51,5 +51,9 @@ public struct DataAssembly: Assembly {
         container.register(CommentRepository.self) { _ in
             return DefaultCommentRepository()
         }
+        
+        container.register(UserFollowRepository.self) { _ in
+            return DefaultUserFollowRepository()
+        }
     }
 }
