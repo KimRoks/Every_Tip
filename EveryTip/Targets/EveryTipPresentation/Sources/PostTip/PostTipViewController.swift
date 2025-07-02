@@ -259,7 +259,6 @@ final class PostTipViewController: BaseViewController {
         }
         
         bodyUnderLine.snp.makeConstraints {
-            $0.bottom.equalTo(addPhotoButton.snp.top).offset(-120)
             $0.leading.equalTo(view.safeAreaLayoutGuide)
             $0.trailing.equalTo(view.safeAreaLayoutGuide)
         }
@@ -268,7 +267,6 @@ final class PostTipViewController: BaseViewController {
             $0.top.equalTo(bodyUnderLine.snp.bottom).offset(16)
             $0.leading.equalTo(view.safeAreaLayoutGuide).offset(20)
             $0.height.width.equalTo(70)
-            $0.bottom.equalTo(addPhotoButton.snp.top).offset(-20)
         }
         
         selectedPhotosCollectionView.snp.makeConstraints {
@@ -276,13 +274,12 @@ final class PostTipViewController: BaseViewController {
             $0.leading.equalTo(addPhotoCellButton.snp.trailing).offset(10)
             $0.trailing.equalTo(view.safeAreaLayoutGuide).offset(-20)
             $0.height.equalTo(80)
-            $0.bottom.equalTo(addPhotoButton.snp.top).offset(-20)
         }
         
         addPhotoButton.snp.makeConstraints {
             $0.top.equalTo(selectedPhotosCollectionView.snp.bottom).offset(20)
             $0.leading.equalTo(view.safeAreaLayoutGuide).offset(20)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(-12)
+            $0.bottom.equalTo(view.keyboardLayoutGuide.snp.top).offset(-12)
         }
     }
     
