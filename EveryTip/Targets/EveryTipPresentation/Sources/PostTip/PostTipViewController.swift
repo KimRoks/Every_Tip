@@ -127,7 +127,7 @@ final class PostTipViewController: BaseViewController {
             frame: .zero,
             collectionViewLayout: layout
         )
- 
+        
         return collectionView
     }()
     
@@ -426,15 +426,20 @@ extension PostTipViewController: View {
             ) { index, imageData, cell in
                 
                 let image = UIImage(data: imageData.originalData)
-                cell.updatePhoto(image)
                 
-                if index == 0 {
-                    cell.setThumnail()
-                } else {
-                    cell.clearThumnail()
-                }
+                cell.bindRemoveButton()
+                cell.configure(
+                    with: image,
+                    index: index,
+                    isThumbnail: index == 0
+                )
+                cell.removeSignalSubject
+                    .subscribe(onNext: { [weak self] index in
+                        self?.reactor?.action.onNext(.deleteSelectedPhoto(index: index))
+                    })
+                    .disposed(by: cell.disposeBag)
             }.disposed(by: disposeBag)
-
+        
         reactor.pulse(\.$imageSignal)
             .filter { $0 == true }
             .subscribe(onNext: { [weak self] _ in
