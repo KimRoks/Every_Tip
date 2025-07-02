@@ -19,6 +19,9 @@ public protocol UserUseCase {
 
     func setMyCategories(categoryIds: [Int]) -> Completable
     func fetchMyCategories() -> Single<[Category]>
+    
+    func fetchMyFollowers() -> Single<[UserPreview]>
+    func fetchMyFollowing() -> Single<[UserPreview]>
 }
 
 final class DefaultUserUseCase: UserUseCase {
@@ -26,15 +29,18 @@ final class DefaultUserUseCase: UserUseCase {
     private let nickNameRepository: NickNameRepository
     private let categoryRepository: CategoryRepository
     private let profileRepository: ProfileRepository
+    private let userFollowRepository: UserFollowRepository
     
     init(
         profileRepository: ProfileRepository,
         nickNameRepository: NickNameRepository,
-        categoryRepository: CategoryRepository
+        categoryRepository: CategoryRepository,
+        userFollowRepository: UserFollowRepository
     ) {
         self.profileRepository = profileRepository
         self.nickNameRepository = nickNameRepository
         self.categoryRepository = categoryRepository
+        self.userFollowRepository = userFollowRepository
     }
     
     public func fetchRamdomNickName() -> Single<String> {
@@ -63,5 +69,13 @@ final class DefaultUserUseCase: UserUseCase {
     
     func fetchMyCategories() -> Single<[Category]> {
         categoryRepository.fetchMyCategories()
+    }
+    
+    func fetchMyFollowers() -> Single<[UserPreview]> {
+        userFollowRepository.fetchMyFollowers()
+    }
+    
+    func fetchMyFollowing() -> Single<[UserPreview]> {
+        userFollowRepository.fetchMyFollowing()
     }
 }

@@ -30,7 +30,8 @@ public struct DomainAssembly: Assembly {
             DefaultUserUseCase(
                 profileRepository: container.resolve(ProfileRepository.self)!,
                 nickNameRepository: container.resolve(NickNameRepository.self)!,
-                categoryRepository: container.resolve(CategoryRepository.self)!
+                categoryRepository: container.resolve(CategoryRepository.self)!,
+                userFollowRepository: container.resolve(UserFollowRepository.self)!
             )
         }
         
