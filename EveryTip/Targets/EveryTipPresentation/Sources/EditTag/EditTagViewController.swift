@@ -185,15 +185,25 @@ final class EditTagViewController: BaseViewController {
     
     @objc
     private func addTagButtonAction() {
-        guard let text = tagTextField.text else { return }
-        if text == "" {
-            self.showToast(message: "태그를 입력해주세요")
+        guard var text = tagTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !text.isEmpty
+        else {
+            showToast(message: "태그를 입력해주세요.")
             return
+        }
+        
+        if tags.count >= 20 {
+            showToast(message: "태그는 최대 20개까지 입력 가능해요.")
+            return
+        }
+        
+        
+        if !text.hasPrefix("#") {
+            text = "#" + text
         }
         
         tags.append(text)
         tagTextField.text = nil
-        
         tagsTableView.reloadData()
     }
     
@@ -216,22 +226,18 @@ final class EditTagViewController: BaseViewController {
 
 extension EditTagViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let currentText = textField.text ?? ""
-        
-        guard let stringRange = Range(range, in: currentText) else { return false }
-        var updatedText = currentText.replacingCharacters(in: stringRange, with: string)
-        
-        if !updatedText.hasPrefix("#") {
-            updatedText = "#" + updatedText
+        guard let currentText = textField.text,
+              let textRange = Range(range, in: currentText) else {
+            return false
         }
+        
+        let updatedText = currentText.replacingCharacters(in: textRange, with: string)
         
         if updatedText.count > 10 {
             return false
         }
         
-        textField.text = updatedText
-        
-        return false
+        return true
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

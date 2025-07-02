@@ -75,7 +75,7 @@ final class PostTipViewController: BaseViewController {
     private let categoryUnderLine: StraightLineView = StraightLineView(color: .et_brandColor4)
     
     private let hashtagView: DetailDisclosureView = {
-        return DetailDisclosureView(title: "#태그 입력(최대 00개)")
+        return DetailDisclosureView(title: "#태그 입력(최대 20개)")
     }()
     
     private let hashTagUnderLine: StraightLineView = StraightLineView(color: .et_brandColor4)
