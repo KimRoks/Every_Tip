@@ -35,7 +35,8 @@ final class DefaultUserContentsCoordinator: UserContentsCoordinator {
     }
         
     func start() {
-        guard let tipUseCase = Container.shared.resolve(TipUseCase.self) else {
+        guard let tipUseCase = Container.shared.resolve(TipUseCase.self),
+              let userUseCase = Container.shared.resolve(UserUseCase.self) else {
             fatalError("의존성 주입이 옳바르지 않습니다!")
         }
         
@@ -45,11 +46,13 @@ final class DefaultUserContentsCoordinator: UserContentsCoordinator {
             tipUseCase: tipUseCase
         )
         
-        // TODO: 각 탭에 맞는 뷰컨 주입
+        let followingReactor = UserFollowReactor(userUseCase: userUseCase, followType: .following)
+        let followerReactor = UserFollowReactor(userUseCase: userUseCase, followType: .followers)
+        
         let userContentsViewController: UserContentsViewController = UserContentsViewController(
             viewControllers: [
-                UIViewController(),
-                UIViewController(),
+                UserFollowViewController(reactor: followerReactor),
+                UserFollowViewController(reactor: followingReactor),
                 MyTipViewController(reactor: myTipReactor),
                 SavedTipViewController(reactor: savedTipReactor)
             ]
