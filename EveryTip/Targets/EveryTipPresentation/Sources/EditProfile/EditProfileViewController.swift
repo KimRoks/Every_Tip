@@ -129,7 +129,7 @@ extension EditProfileViewController: View {
             .disposed(by: disposeBag)
         
         profileImageButton.rx.tap
-            .map{ Reactor.Action.imageButtonTapped }
+            .map{ Reactor.Action.EditProfileImageTapped }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
     }
@@ -168,8 +168,8 @@ extension EditProfileViewController: View {
             .disposed(by: disposeBag)
         
         reactor.pulse(\.$toastMessage)
+            .compactMap{ $0 }
             .subscribe(onNext: { [weak self] message in
-                guard let message = message else { return }
                 print(message)
                 self?.showToast(message: message)
             })
