@@ -37,7 +37,7 @@ final class UserFollowReactor: Reactor {
     
     var initialState: State = State()
     private let userUseCase: UserUseCase
-    var followType: FollowType
+    let followType: FollowType
     
     init(
         userUseCase: UserUseCase,

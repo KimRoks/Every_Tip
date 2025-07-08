@@ -30,38 +30,62 @@ final class DefaultUserContentsCoordinator: UserContentsCoordinator {
         myID: Int,
         navigationController: UINavigationController) {
             self.myID = myID
-        self.navigationController = navigationController
-    }
-        
+            self.navigationController = navigationController
+        }
+    
     func start() {
         guard let tipUseCase = Container.shared.resolve(TipUseCase.self),
               let userUseCase = Container.shared.resolve(UserUseCase.self) else {
             fatalError("의존성 주입이 옳바르지 않습니다!")
         }
         
-        let followerReactor = UserFollowReactor(userUseCase: userUseCase, followType: .followers)
-        let followerCoordinator = DefaultUserFollowCoordinator(navigationController: navigationController)
-        
-        let followingReactor = UserFollowReactor(userUseCase: userUseCase, followType: .following)
-        let followingCoordinator = DefaultUserFollowCoordinator(navigationController: navigationController)
-        
-        let savedTipReactor = SavedTipReactor(tipUseCase: tipUseCase)
-        let myTipReactor = MyTipReactor(
-            myID: myID,
-            tipUseCase: tipUseCase
+        //follower
+        let followerReactor = UserFollowReactor(
+            userUseCase: userUseCase,
+            followType: .followers
+        )
+        let followerCoordinator = DefaultUserFollowCoordinator(
+            navigationController: navigationController
         )
         
+        //following
+        let followingReactor = UserFollowReactor(
+            userUseCase: userUseCase,
+            followType: .following
+        )
+        let followingCoordinator = DefaultUserFollowCoordinator(
+            navigationController: navigationController
+        )
+        
+        //myTip
+        let myTipReactor = UserTipReactor(
+            tipUseCase: tipUseCase,
+            listType: .myTips(userID: myID)
+        )
+        let myTipCoordinator = DefaultUserTipCoordinator(navigationController: navigationController)
+
+        //savedTip
+        let savedTipReactor = UserTipReactor(
+            tipUseCase: tipUseCase,
+            listType: .savedTips
+        )
+        let savedTipCoordinator = DefaultUserTipCoordinator(
+            navigationController: navigationController
+        )
+
         let userContentsViewController: UserContentsViewController = UserContentsViewController(
             viewControllers: [
                 followerCoordinator.start(reactor: followerReactor),
                 followingCoordinator.start(reactor: followingReactor),
-                MyTipViewController(reactor: myTipReactor),
-                SavedTipViewController(reactor: savedTipReactor)
+                myTipCoordinator.start(reactor: myTipReactor),
+                savedTipCoordinator.start(reactor: savedTipReactor)
             ]
         )
         userContentsViewController.coordinator = self
         self.append(child: followerCoordinator)
         self.append(child: followingCoordinator)
+        self.append(child: myTipCoordinator)
+        self.append(child: savedTipCoordinator)
         
         navigationController.pushViewController(
             userContentsViewController,

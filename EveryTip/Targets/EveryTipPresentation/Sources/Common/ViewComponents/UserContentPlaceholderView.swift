@@ -15,7 +15,7 @@ final class UserContentPlaceholderView: UIView {
     enum UserContentType {
         case follower
         case following
-        case writtenTip
+        case myTip
         case savedTip
         
         var message: String {
@@ -24,7 +24,7 @@ final class UserContentPlaceholderView: UIView {
                 return "구독자가 비어있어요. 팁을 작성해서 구독자를 늘려보세요!"
             case .following:
                 return "구독 중인 유저가 없어요. 마음에 드는 유저를 구독해보세요!"
-            case .writtenTip:
+            case .myTip:
                 return "작성한 팁이 없어요. 팁을 작성해보세요!"
             case .savedTip:
                 return "저장한 팁이 없어요. 마음에 드는 팁을 저장해보세요!"
