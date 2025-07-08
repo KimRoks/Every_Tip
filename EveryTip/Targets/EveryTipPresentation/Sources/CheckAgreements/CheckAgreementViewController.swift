@@ -7,9 +7,7 @@
 //
 
 import UIKit
-
 import SnapKit
-
 import ReactorKit
 
 final class CheckAgreementViewController: BottomSheetViewController, ToastDisplayable {
@@ -39,7 +37,6 @@ final class CheckAgreementViewController: BottomSheetViewController, ToastDispla
         label.numberOfLines = 2
         label.font = .et_pretendard(style: .bold, size: 20)
         label.textColor = .black
-        
         return label
     }()
     
@@ -48,14 +45,12 @@ final class CheckAgreementViewController: BottomSheetViewController, ToastDispla
         view.layer.borderWidth = 1.5
         view.layer.borderColor = UIColor.et_lineGray40.cgColor
         view.layer.cornerRadius = 10
-        
         return view
     }()
     
     private let agreeAllButton: UIButton = {
         var configuration = UIButton.Configuration.plain()
         configuration.image = .et_getImage(for: .checkMark_circle)
-        
         let attributedTitle = AttributedString(
             "전체 약관 동의",
             attributes: AttributeContainer([
@@ -65,128 +60,98 @@ final class CheckAgreementViewController: BottomSheetViewController, ToastDispla
         configuration.attributedTitle = attributedTitle
         configuration.imagePadding = 10
         configuration.baseForegroundColor = UIColor.black
-        
         let button = UIButton(type: .system)
         button.configuration = configuration
-        
-    
         return button
     }()
     
-    private let requiredTermsAgreementButton: UIButton = {
+    private let termsAgreementButton: UIButton = {
         var configuration = UIButton.Configuration.plain()
         configuration.image = .et_getImage(for: .checkMark_normal)
-        
         configuration.attributedTitle = AttributedString(
             "(필수) 이용 약관 동의",
             attributes: AttributeContainer([
-                .font: UIFont.et_pretendard(
-                    style: .regular,
-                    size: 14
-                )
+                .font: UIFont.et_pretendard(style: .regular, size: 14)
             ])
         )
         configuration.baseForegroundColor = UIColor.et_textColorBlack10
         configuration.imagePadding = 10
-        
         let button = UIButton(type: .system)
         button.configuration = configuration
-        
         return button
     }()
     
-    private let requiredMoreButton: UIButton = {
+    private let termsMoreButton: UIButton = {
         let attributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.et_pretendard(style: .regular, size: 14),
             .foregroundColor: UIColor.et_textColorBlack10,
             .underlineStyle: NSUnderlineStyle.single.rawValue,
             .underlineColor: UIColor.et_textColorBlack10
         ]
-        
         let attributedTitle = NSAttributedString(
             string: "자세히 보기",
             attributes: attributes
         )
-        
         let button = UIButton(type: .system)
         button.setAttributedTitle(attributedTitle, for: .normal)
-        
         return button
     }()
     
-    private let requiredStackView: UIStackView = {
+    private let termsStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .center
         stackView.distribution = .equalSpacing
-        
         return stackView
     }()
     
-    private let optionalStackView: UIStackView = {
+    private let privacyPolicyStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .center
         stackView.distribution = .equalSpacing
-        
         return stackView
     }()
     
-    private let optionalTermsAgreementButton: UIButton = {
+    private let privacyPolicyAgreementButton: UIButton = {
         var configuration = UIButton.Configuration.plain()
         configuration.image = .et_getImage(for: .checkMark_normal)
-        
         let attributedTitle = AttributedString(
-            "이용 약관 및 개인정보취급방침",
+            "(필수) 개인정보취급방침",
             attributes: AttributeContainer([
-                .font: UIFont.et_pretendard(
-                    style: .regular,
-                    size: 14
-                )
+                .font: UIFont.et_pretendard(style: .regular, size: 14)
             ])
         )
-        
         configuration.attributedTitle = attributedTitle
         configuration.imagePadding = 10
         configuration.baseForegroundColor = UIColor.et_textColorBlack10
-
         let button = UIButton(configuration: configuration)
-        
         return button
-        
     }()
     
-    private let optionalMoreButton: UIButton = {
+    private let privacyPolicyMoreButton: UIButton = {
         let attributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.et_pretendard(style: .regular, size: 14),
             .foregroundColor: UIColor.et_textColorBlack10,
             .underlineStyle: NSUnderlineStyle.single.rawValue,
             .underlineColor: UIColor.et_textColorBlack10
         ]
-        
         let attributedTitle = NSAttributedString(
             string: "자세히 보기",
             attributes: attributes
         )
-        
         let button = UIButton(type: .system)
         button.setAttributedTitle(attributedTitle, for: .normal)
-        
         return button
     }()
     
     private let confirmButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = .et_textColor5
-        
         button.layer.cornerRadius = 10
         button.setTitle("확인", for: .normal)
-        button.titleLabel?.font = UIFont.et_pretendard(
-            style: .bold,
-            size: 18
-        )
+        button.titleLabel?.font = UIFont.et_pretendard(style: .bold, size: 18)
         button.tintColor = .white
-        
         return button
     }()
     
@@ -204,27 +169,26 @@ final class CheckAgreementViewController: BottomSheetViewController, ToastDispla
         setupLayout()
         setupConstraints()
     }
-
     
     private func setupLayout() {
         contentView.addSubViews(
             titleLabel,
             containerView,
-            requiredStackView,
-            optionalStackView,
+            termsStackView,
+            privacyPolicyStackView,
             confirmButton
         )
         
         containerView.addSubview(agreeAllButton)
         
-        requiredStackView.addArrangedSubViews(
-            requiredTermsAgreementButton,
-            requiredMoreButton
+        termsStackView.addArrangedSubViews(
+            termsAgreementButton,
+            termsMoreButton
         )
         
-        optionalStackView.addArrangedSubViews(
-            optionalTermsAgreementButton,
-            optionalMoreButton
+        privacyPolicyStackView.addArrangedSubViews(
+            privacyPolicyAgreementButton,
+            privacyPolicyMoreButton
         )
     }
     
@@ -245,16 +209,16 @@ final class CheckAgreementViewController: BottomSheetViewController, ToastDispla
             $0.leading.equalTo(containerView.snp.leading).offset(20)
         }
         
-        requiredStackView.snp.makeConstraints {
+        termsStackView.snp.makeConstraints {
             $0.top.equalTo(containerView.snp.bottom).offset(20)
             $0.leading.trailing.equalTo(contentView).inset(40)
         }
-      
-        optionalStackView.snp.makeConstraints {
-            $0.top.equalTo(requiredStackView.snp.bottom).offset(5)
+        
+        privacyPolicyStackView.snp.makeConstraints {
+            $0.top.equalTo(termsStackView.snp.bottom).offset(5)
             $0.leading.trailing.equalTo(contentView).inset(40)
         }
-    
+        
         confirmButton.snp.makeConstraints {
             $0.height.equalTo(contentView.snp.height).multipliedBy(0.16)
             $0.leading.trailing.equalTo(contentView).inset(20)
@@ -275,50 +239,56 @@ extension CheckAgreementViewController: View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        requiredTermsAgreementButton.rx.tap
-            .map { Reactor.Action.requiredButtonTapped }
+        termsAgreementButton.rx.tap
+            .map { Reactor.Action.termsButtonTapped }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        optionalTermsAgreementButton.rx.tap
-            .map { Reactor.Action.optionalButtonTapped }
+        privacyPolicyAgreementButton.rx.tap
+            .map { Reactor.Action.privacyPolicyButtonTapped }
             .bind(to: reactor.action)
-             .disposed(by: disposeBag)
+            .disposed(by: disposeBag)
         
         confirmButton.rx.tap
-            .map { Reactor.Action.confirmButtonTapped}
+            .map { Reactor.Action.confirmButtonTapped }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        termsMoreButton.rx.tap
+            .map { Reactor.Action.detailButtonTapped }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        privacyPolicyMoreButton.rx.tap
+            .map { Reactor.Action.detailButtonTapped }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
     
     func bindOutput(reactor: CheckAgreementsReactor) {
-        reactor.state.map { $0.isRequiredChecked }
+        reactor.state.map { $0.isTermsChecked }
             .subscribe { [weak self] isChecked in
-                guard let button = self?.requiredTermsAgreementButton else { return }
-                // UIButton.Configuration은 값 타입이므로, 새로 복사해서 수정 후 재할당해야 함
+                guard let button = self?.termsAgreementButton else { return }
                 var config = button.configuration ?? UIButton.Configuration.plain()
                 config.image = isChecked ? self?.checkedMarkNormal : self?.checkMarkNormal
                 button.configuration = config
             }.disposed(by: disposeBag)
         
-        reactor.state.map { $0.isOptionalChecked }
+        reactor.state.map { $0.isPrivacyPolicyChecked }
             .subscribe { [weak self] isChecked in
-                guard let button = self?.optionalTermsAgreementButton else { return }
+                guard let button = self?.privacyPolicyAgreementButton else { return }
                 var config = button.configuration ?? UIButton.Configuration.plain()
                 config.image = isChecked ? self?.checkedMarkNormal : self?.checkMarkNormal
                 button.configuration = config
             }.disposed(by: disposeBag)
         
-        reactor.state.map { $0.isAllChecked  }
+        reactor.state.map { $0.isAllChecked }
             .subscribe(onNext: { [weak self] isChecked in
                 if isChecked {
                     self?.containerView.layer.borderColor = UIColor.et_brandColor2.cgColor
-                    
                     var config = self?.agreeAllButton.configuration ?? UIButton.Configuration.plain()
                     config.image = self?.checkedMarkCicle
                     self?.agreeAllButton.configuration = config
-                    
                 } else {
                     self?.containerView.layer.borderColor = UIColor.et_lineGray40.cgColor
                     var config = self?.agreeAllButton.configuration ?? UIButton.Configuration.plain()
@@ -348,8 +318,14 @@ extension CheckAgreementViewController: View {
         reactor.pulse(\.$navigationSignal)
             .filter { $0 == true }
             .subscribe(onNext: { [weak self] _ in
-                
                 self?.coordinator?.pushToSignupSuccessView()
+            })
+            .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$termsDetailSignal)
+            .filter { $0 == true }
+            .subscribe(onNext: { [weak self] _ in
+                self?.coordinator?.pushToAgreementView()
             })
             .disposed(by: disposeBag)
     }
