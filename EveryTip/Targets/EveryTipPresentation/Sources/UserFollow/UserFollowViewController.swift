@@ -11,10 +11,12 @@ import UIKit
 import SnapKit
 import ReactorKit
 import RxSwift
+import EveryTipDomain
 
 final class UserFollowViewController: BaseViewController {
     
     var disposeBag: DisposeBag = DisposeBag()
+    weak var coordinator: UserFollowCoordinator?
     
     private let userListTableView: UITableView = {
         let tableView = UITableView()
@@ -22,7 +24,15 @@ final class UserFollowViewController: BaseViewController {
         return tableView
     }()
     
+    private let placeholderView: UserContentPlaceholderView
+    
     init(reactor: UserFollowReactor) {
+        switch reactor.followType {
+        case .followers:
+            self.placeholderView = UserContentPlaceholderView(type: .follower)
+        case .following:
+            self.placeholderView = UserContentPlaceholderView(type: .following)
+        }
         super.init(nibName: nil, bundle: nil)
         self.reactor = reactor
     }
@@ -40,11 +50,17 @@ final class UserFollowViewController: BaseViewController {
     
     private func setupLayout() {
         view.addSubViews(
+            placeholderView,
             userListTableView
         )
     }
     
     private func setupConstraints() {
+        placeholderView.snp.makeConstraints {
+            $0.top.bottom.equalToSuperview()
+            $0.leading.trailing.equalTo(view).inset(20)
+        }
+        
         userListTableView.snp.makeConstraints {
             $0.top.bottom.equalToSuperview()
             $0.leading.trailing.equalTo(view).inset(20)
@@ -68,6 +84,11 @@ extension UserFollowViewController: View {
     func bindInput(reactor: UserFollowReactor) {
         rx.viewDidLoad
             .map { Reactor.Action.viewDidLoad }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        userListTableView.rx.modelSelected(UserPreview.self)
+            .map { Reactor.Action.itemSelected($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
     }
@@ -94,6 +115,28 @@ extension UserFollowViewController: View {
                     })
                     .disposed(by: cell.disposeBag)
             }
+            .disposed(by: disposeBag)
+        
+        
+        reactor.pulse(\.$pushSignal)
+            .compactMap { $0 }
+            .subscribe(onNext: { [weak self] user in
+                self?.coordinator?.pushToUserProfile(userID: user.id)
+            })
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { !$0.userList.isEmpty }
+            .distinctUntilChanged()
+            .observe(on: MainScheduler.instance)
+            .bind(to: placeholderView.rx.isHidden)
+            .disposed(by: disposeBag)
+
+        reactor.state
+            .map { $0.userList.isEmpty }
+            .distinctUntilChanged()
+            .observe(on: MainScheduler.instance)
+            .bind(to: userListTableView.rx.isHidden)
             .disposed(by: disposeBag)
     }
 }
