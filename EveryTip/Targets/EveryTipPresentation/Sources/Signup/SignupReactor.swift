@@ -135,6 +135,7 @@ final class SignUpReactor: Reactor {
     
     private func handleVerifyButton(email: String) -> Observable<Mutation> {
         guard let authUseCase = authUseCase else { return Observable.empty() }
+        
         guard email.checkRegex(type: .email) else {
             return Observable.just(
                 .updateTextField(
@@ -145,25 +146,34 @@ final class SignUpReactor: Reactor {
                 )
             )
         }
-        timerSubject.onNext(runTimer().share())
         
-        return authUseCase.requestEmailCode(email: email)
+        return authUseCase.checkEmailDuplication(for: email)
             .andThen(
-                Observable.concat([
-                    .just(.updateTextField(type: .verificationCode, text: nil, status: .normal)),
-                    .just(.updateVerifiedLabelVisibility(true)),
-                    .just(.updateCheckEmailButtonState(.afterSent)),
-                    .just(.setToast("인증 코드를 입력한 이메일로 전달드렸어요.")),
-                    timerStream
-                ])
+                Observable.deferred { [weak self] in
+                    guard let self = self else { return .empty() }
+                    
+                    self.timerSubject.onNext(self.runTimer().share())
+                    
+                    return authUseCase.requestEmailCode(email: email)
+                        .andThen(
+                            Observable.concat([
+                                .just(.updateTextField(type: .verificationCode, text: nil, status: .normal)),
+                                .just(.updateVerifiedLabelVisibility(true)),
+                                .just(.updateCheckEmailButtonState(.afterSent)),
+                                .just(.setToast("인증 코드를 입력한 이메일로 전달드렸어요.")),
+                                self.timerStream
+                            ])
+                        )
+                }
             )
-            .catch { _ in
-                Observable.just(
+            .catch { error in
+                // 중복 검사 또는 인증 요청 중 에러 발생 시
+                return Observable.just(
                     .updateTextField(
                         type: .email,
                         text: nil,
                         status: .error,
-                        errorMessage: "이메일을 다시 확인해주세요."
+                        errorMessage: "이미 가입된 이메일이에요."
                     )
                 )
             }
@@ -268,7 +278,6 @@ final class SignUpReactor: Reactor {
     
     
     private func handleSubmit() -> Observable<Mutation> {
-        // TODO: 이메일 및 비밀번호 데이터 저장 및 다음 화면 넘어가기
         submitButtonTapRelay.accept(())
         return .empty()
     }
