@@ -17,14 +17,17 @@ final class UserFollowReactor: Reactor {
     enum Action {
         case viewDidLoad
         case removeButtonTapped(userID: Int)
+        case itemSelected(UserPreview)
     }
     
     enum Mutation {
         case setUserList([UserPreview])
+        case setPushSignal(UserPreview)
     }
     
     struct State {
         var userList: [UserPreview] = []
+        @Pulse var pushSignal: UserPreview?
     }
     
     enum FollowType {
@@ -64,6 +67,8 @@ final class UserFollowReactor: Reactor {
                 .andThen(userUseCase.fetchMyFollowing())
                 .asObservable()
                 .map { Mutation.setUserList($0) }
+        case .itemSelected(let user):
+            return .just(.setPushSignal(user))
         }
     }
     
@@ -74,6 +79,8 @@ final class UserFollowReactor: Reactor {
         switch mutation {
         case .setUserList(let list):
             newState.userList = list
+        case .setPushSignal(let signal):
+            newState.pushSignal = signal
         }
         
         return newState

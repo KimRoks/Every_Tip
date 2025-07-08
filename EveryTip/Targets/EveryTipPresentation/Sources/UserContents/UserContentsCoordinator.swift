@@ -15,7 +15,6 @@ import Swinject
 import RxSwift
 
 protocol UserContentsCoordinator: AuthenticationCoordinator {
-    func pushToOnlyUserView()
 }
 
 final class DefaultUserContentsCoordinator: UserContentsCoordinator {
@@ -40,32 +39,34 @@ final class DefaultUserContentsCoordinator: UserContentsCoordinator {
             fatalError("의존성 주입이 옳바르지 않습니다!")
         }
         
+        let followerReactor = UserFollowReactor(userUseCase: userUseCase, followType: .followers)
+        let followerCoordinator = DefaultUserFollowCoordinator(navigationController: navigationController)
+        
+        let followingReactor = UserFollowReactor(userUseCase: userUseCase, followType: .following)
+        let followingCoordinator = DefaultUserFollowCoordinator(navigationController: navigationController)
+        
         let savedTipReactor = SavedTipReactor(tipUseCase: tipUseCase)
         let myTipReactor = MyTipReactor(
             myID: myID,
             tipUseCase: tipUseCase
         )
         
-        let followingReactor = UserFollowReactor(userUseCase: userUseCase, followType: .following)
-        let followerReactor = UserFollowReactor(userUseCase: userUseCase, followType: .followers)
-        
         let userContentsViewController: UserContentsViewController = UserContentsViewController(
             viewControllers: [
-                UserFollowViewController(reactor: followerReactor),
-                UserFollowViewController(reactor: followingReactor),
+                followerCoordinator.start(reactor: followerReactor),
+                followingCoordinator.start(reactor: followingReactor),
                 MyTipViewController(reactor: myTipReactor),
                 SavedTipViewController(reactor: savedTipReactor)
             ]
         )
         userContentsViewController.coordinator = self
+        self.append(child: followerCoordinator)
+        self.append(child: followingCoordinator)
+        
         navigationController.pushViewController(
             userContentsViewController,
             animated: true
         )
-    }
-    
-    func pushToOnlyUserView() {
-        print("온리유저뷰 이동시켜줘잉")
     }
     
     func didFinish() {
