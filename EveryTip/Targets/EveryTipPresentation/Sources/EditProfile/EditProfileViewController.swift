@@ -68,12 +68,6 @@ final class EditProfileViewController: BaseViewController {
         setupLayout()
         setupConstraints()
         setupTableView()
-        profileImageButton.addTarget(self, action: #selector(dd), for: .touchUpInside)
-    }
-    
-    @objc
-    func dd() {
-        print("eqwreewqr")
     }
     
     private func setupLayout() {
@@ -148,10 +142,10 @@ extension EditProfileViewController: View {
                 cellType: MyInfoTableViewCell.self)
             ) { row, item, cell in
                 switch item {
-                case .changeNickname:
+                case .changePassword:
                     cell.leftLabel.text = "비밀번호 변경"
                     cell.accessoryType = .disclosureIndicator
-                case .changePassword:
+                case .deleteAccount:
                     cell.leftLabel.text = "회원 탈퇴"
                     cell.leftLabel.textColor = .red
                 }

@@ -18,8 +18,8 @@ import RxSwift
 final class EditProfileReactor: Reactor {
     
     enum EditProfileItem {
-        case changeNickname
         case changePassword
+        case deleteAccount
     }
     
     enum Action {
@@ -36,8 +36,8 @@ final class EditProfileReactor: Reactor {
     struct State {
         var nickName: String?
         var options: [EditProfileItem] = [
-            .changeNickname,
-            .changePassword
+            .changePassword,
+            .deleteAccount
         ]
         
         @Pulse var changePasswordSignal: Bool = false
