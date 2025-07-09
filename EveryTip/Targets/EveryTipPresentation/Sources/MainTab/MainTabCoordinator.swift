@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol MainTabCoordinator: Coordinator {
+protocol MainTabCoordinator: AuthenticationCoordinator {
     func presentPostView()
 }
 
