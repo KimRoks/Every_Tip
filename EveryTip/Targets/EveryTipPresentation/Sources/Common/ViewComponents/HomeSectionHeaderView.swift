@@ -10,8 +10,16 @@ import UIKit
 
 import SnapKit
 
+import RxSwift
+import RxCocoa
+
 final class HomeSectionHeaderView: UITableViewHeaderFooterView, Reusable {
     
+    typealias SectionType = HomeTableViewSection.SectionType
+    
+    let readMoreTapped = PublishRelay<SectionType>()
+    var disposeBag = DisposeBag()
+
     private let headerTitle: UILabel = {
         let label = UILabel()
         label.font = UIFont.et_pretendard(style: .bold, size: 18)
@@ -56,6 +64,10 @@ final class HomeSectionHeaderView: UITableViewHeaderFooterView, Reusable {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        disposeBag = DisposeBag()
+    }
+    
     private func setupLayout() {
         contentView.addSubview(headerTitle)
         contentView.addSubview(readMoreButton)
@@ -71,6 +83,15 @@ final class HomeSectionHeaderView: UITableViewHeaderFooterView, Reusable {
             $0.centerY.equalTo(contentView)
             $0.trailing.equalTo(contentView).offset(-20)
         }
+    }
+    
+    func bind(with sectionType: HomeTableViewSection.SectionType) {
+        disposeBag = DisposeBag()
+
+        readMoreButton.rx.tap
+            .map { sectionType }
+            .bind(to: readMoreTapped)
+            .disposed(by: disposeBag)
     }
     
     func setTitleLabel(_ text: String) {

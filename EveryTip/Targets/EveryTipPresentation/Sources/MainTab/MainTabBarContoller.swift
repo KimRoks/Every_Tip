@@ -98,6 +98,8 @@ final class MainTabBarContoller: UITabBarController {
     
     @objc
     private func presentPostView() {
-        coordinator?.presentPostView()
+        coordinator?.checkLoginBeforeAction(onLoggedIn: {
+            self.coordinator?.presentPostView()
+        })
     }
 }

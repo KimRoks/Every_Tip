@@ -207,7 +207,7 @@ extension HomeViewController: View {
         
         self.rx.viewWillAppear
             .map { _ in
-                Reactor.Action.refesh
+                Reactor.Action.refresh
             }.bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -253,12 +253,31 @@ extension HomeViewController: View {
             }
             .disposed(by: disposeBag)
         
-        reactor.pulse(\.$seachSignal)
+        reactor.pulse(\.$searchSignal)
             .filter { $0 == true }
             .subscribe(onNext: { _ in
                 self.coordinator?.pushToSearchView()
             })
             .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$selectedSection)
+            .compactMap { $0 }
+            .withLatestFrom(reactor.state.map { $0.myCategories }) { (sectionType, categories) in
+                (sectionType, categories)
+            }
+            .withUnretained(self)
+            .subscribe(onNext: { [weak self] (vc, payload) in
+                let (sectionType, categories) = payload
+                switch sectionType {
+                case .popular:
+                    vc.coordinator?.pushToReadmoreView(sectionType: sectionType, categories: categories)
+                case .interestCategory:
+                    self?.coordinator?.checkLoginBeforeAction(onLoggedIn: {
+                        vc.coordinator?.pushToReadmoreView(sectionType: sectionType, categories: categories)
+                    })
+                }
+            })
+            .disposed(by: disposeBag)   
     }
 }
 
@@ -272,6 +291,13 @@ extension HomeViewController: UITableViewDelegate {
         
         let headerTitle = dataSource.sectionModels[section].sectionType.hederTitle
         headerView.setTitleLabel(headerTitle)
+        let sectionType = dataSource.sectionModels[section].sectionType
+        headerView.bind(with: sectionType)
+
+        headerView.readMoreTapped
+            .map { _ in HomeReactor.Action.headerSectionButtonTapped(sectionType: sectionType) }
+            .bind(to: reactor!.action)
+            .disposed(by: headerView.disposeBag)
         
         return headerView
     }

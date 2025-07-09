@@ -14,12 +14,14 @@ import RxSwift
 
 class HomeReactor: Reactor {
     typealias Category = EveryTipDomain.Category
+    typealias SectionType = HomeTableViewSection.SectionType
     
     enum Action {
         case viewDidLoad
         case itemSelected(Tip)
-        case refesh
+        case refresh
         case searchButtonTapped
+        case headerSectionButtonTapped(sectionType: SectionType)
     }
     
     enum Mutation {
@@ -29,6 +31,7 @@ class HomeReactor: Reactor {
         case setPushSignal(Bool)
         case setSearchSiganl(Bool)
         case setMyCategories([Category])
+        case setSelectedSection(SectionType)
     }
     
     struct State {
@@ -41,7 +44,8 @@ class HomeReactor: Reactor {
         
         @Pulse var pushSignal: Bool = false
         @Pulse var toastMessage: String?
-        @Pulse var seachSignal: Bool = false
+        @Pulse var searchSignal: Bool = false
+        @Pulse var selectedSection: SectionType?
     }
     
     let initialState: State
@@ -80,7 +84,7 @@ class HomeReactor: Reactor {
                 .just(.setPushSignal(true))
             )
             
-        case .refesh:
+        case .refresh:
             return tipUseCase.fetchTotalTips()
                 .asObservable()
                 .map { return Mutation.setTips($0) }
@@ -89,6 +93,8 @@ class HomeReactor: Reactor {
                 }
         case .searchButtonTapped:
             return .just(.setSearchSiganl(true))
+        case .headerSectionButtonTapped(let section):
+            return .just(.setSelectedSection(section))
         }
     }
     
@@ -111,7 +117,7 @@ class HomeReactor: Reactor {
         case .setPushSignal(let signal):
             newState.pushSignal = signal
         case .setSearchSiganl(let signal):
-            newState.seachSignal = signal
+            newState.searchSignal = signal
         case .setMyCategories(let categories):
             newState.myCategories = categories
             
@@ -119,6 +125,8 @@ class HomeReactor: Reactor {
             let categoryIDs = categories.map { $0.id }
             let filtered = newState.tips.filter { categoryIDs.contains($0.categoryId) }
             newState.categorizedTips = Array(filtered.prefix(3))
+        case .setSelectedSection(let section):
+            newState.selectedSection = section
         }
         
         return newState
