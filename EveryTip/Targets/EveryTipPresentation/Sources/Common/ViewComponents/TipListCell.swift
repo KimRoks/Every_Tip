@@ -164,6 +164,7 @@ final class TipListCell: UITableViewCell, Reusable {
     private func updateThumbnailImage(with urlString: String?) {
         guard let urlString = urlString,
               let url = URL(string: urlString) else {
+            thumbnailImageView.image = UIImage.et_getImage(for: .blankImage)
             return
         }
 
@@ -286,6 +287,8 @@ final class TipListCell: UITableViewCell, Reusable {
     // MARK: internal methods
     
     func configureTipListCell(with item: Tip) {
+        thumbnailImageView.image = UIImage.et_getImage(for: .blankImage)
+        
         let thumbnailURL = item.images.first(where: { $0.isThumbnail == 1 })?.url
         self.updateThumbnailImage(with: thumbnailURL)
         self.updateLikeImage(isLiked: item.isLiked)
