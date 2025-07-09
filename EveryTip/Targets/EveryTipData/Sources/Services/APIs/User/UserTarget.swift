@@ -17,6 +17,9 @@ enum UserTarget {
     
     case getMyCategories
     case postSetCategory(categoryIDs: [Int])
+    
+    case getMyFollowers
+    case getMyFollowing
 }
 
 extension UserTarget: TargetType {
@@ -35,6 +38,10 @@ extension UserTarget: TargetType {
         case .postSubscribe:
                 .post
         case .getMyCategories:
+                .get
+        case .getMyFollowers:
+                .get
+        case .getMyFollowing:
                 .get
         }
     }
@@ -55,6 +62,10 @@ extension UserTarget: TargetType {
             return "/user/\(userID)/subscription"
         case .getMyCategories:
             return "/user/main-category"
+        case .getMyFollowers:
+            return "/user/my-followers"
+        case .getMyFollowing:
+            return "/user/subscription"
         }
     }
     
@@ -74,6 +85,10 @@ extension UserTarget: TargetType {
             return nil
         case .getMyCategories:
             return nil
+        case .getMyFollowers:
+            return nil
+        case .getMyFollowing:
+            return nil
         }
     }
     
@@ -92,6 +107,10 @@ extension UserTarget: TargetType {
         case .postSubscribe:
             return nil
         case .getMyCategories:
+            return nil
+        case .getMyFollowers:
+            return nil
+        case .getMyFollowing:
             return nil
         }
     }

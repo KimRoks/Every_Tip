@@ -29,6 +29,7 @@ final class UserProfileReactor: Reactor {
         case setSortOption(SortOptions)
         case setSelectedTip(Tip)
         case setPushSignal(Bool)
+        case setToast(String)
     }
     
     struct State {
@@ -37,6 +38,7 @@ final class UserProfileReactor: Reactor {
         var sortOption: SortOptions = .latest
         var selectedTip: Tip?
         @Pulse var pushSignal: Bool = false
+        @Pulse var toastMessage: String?
     }
     
     var initialState: State = State()
@@ -75,8 +77,21 @@ final class UserProfileReactor: Reactor {
             )
             
         case .subScribeButtonTapped:
+                    
+            guard let isFollowing = currentState.userProfile?.isFollowing else {
+                return .just(.setToast("유저 정보를 얻어오는데에 실패했어요."))
+            }
+            
+            let toastMessage = isFollowing ? "구독이 해제되었어요." : "구독을 추가햇어요."
+            
             return userUseCase.toggleSubscription(to: userID)
-                .andThen(.empty())
+                .andThen(userUseCase.fetchUserProfile(for: userID).asObservable())
+                .flatMap { updatedProfile in
+                    return Observable.from([
+                        .setUserProfile(updatedProfile),
+                        .setToast(toastMessage)
+                    ])
+                }
             
         case .sortButtonTapped(let option):
             let sortedTips = currentState.tips.sorted(by: option.toTipOrder())
@@ -114,6 +129,8 @@ final class UserProfileReactor: Reactor {
             
         case .setPushSignal(let flag):
             newState.pushSignal = flag
+        case .setToast(let message):
+            newState.toastMessage = message
         }
         
         return newState

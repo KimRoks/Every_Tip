@@ -68,12 +68,6 @@ final class EditProfileViewController: BaseViewController {
         setupLayout()
         setupConstraints()
         setupTableView()
-        profileImageButton.addTarget(self, action: #selector(dd), for: .touchUpInside)
-    }
-    
-    @objc
-    func dd() {
-        print("eqwreewqr")
     }
     
     private func setupLayout() {
@@ -135,7 +129,7 @@ extension EditProfileViewController: View {
             .disposed(by: disposeBag)
         
         profileImageButton.rx.tap
-            .map{ Reactor.Action.imageButtonTapped }
+            .map{ Reactor.Action.EditProfileImageTapped }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
     }
@@ -148,10 +142,10 @@ extension EditProfileViewController: View {
                 cellType: MyInfoTableViewCell.self)
             ) { row, item, cell in
                 switch item {
-                case .changeNickname:
+                case .changePassword:
                     cell.leftLabel.text = "비밀번호 변경"
                     cell.accessoryType = .disclosureIndicator
-                case .changePassword:
+                case .deleteAccount:
                     cell.leftLabel.text = "회원 탈퇴"
                     cell.leftLabel.textColor = .red
                 }
@@ -174,8 +168,8 @@ extension EditProfileViewController: View {
             .disposed(by: disposeBag)
         
         reactor.pulse(\.$toastMessage)
+            .compactMap{ $0 }
             .subscribe(onNext: { [weak self] message in
-                guard let message = message else { return }
                 print(message)
                 self?.showToast(message: message)
             })

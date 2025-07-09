@@ -18,9 +18,10 @@ import Alamofire
 final class CheckAgreementsReactor: Reactor {
     enum Action {
         case agreeAllButtonTapped
-        case requiredButtonTapped
-        case optionalButtonTapped
+        case termsButtonTapped
+        case privacyPolicyButtonTapped
         case confirmButtonTapped
+        case detailButtonTapped
     }
 
     enum Mutation {
@@ -28,19 +29,21 @@ final class CheckAgreementsReactor: Reactor {
         case setOptionalCheck(Bool)
         case setToast(String)
         case setNavigationSignal(Bool)
+        case setTermsDetailSignal(Bool)
     }
 
     struct State {
         var isAllChecked: Bool {
-            isRequiredChecked && isOptionalChecked
+            isTermsChecked && isPrivacyPolicyChecked
         }
         var isConfirmable: Bool {
-            isRequiredChecked
+            isTermsChecked
         }
-        var isRequiredChecked: Bool = false
-        var isOptionalChecked: Bool = false
+        var isTermsChecked: Bool = false
+        var isPrivacyPolicyChecked: Bool = false
         @Pulse var toastMessage: String?
         @Pulse var navigationSignal: Bool = false
+        @Pulse var termsDetailSignal: Bool = false
     }
 
     var initialState = State()
@@ -62,19 +65,19 @@ final class CheckAgreementsReactor: Reactor {
         case .agreeAllButtonTapped:
             
             // 전체 동의: 현재 둘 다 true면 해제, 아니면 모두 체크
-            let allChecked = currentState.isRequiredChecked && currentState.isOptionalChecked
+            let allChecked = currentState.isTermsChecked && currentState.isPrivacyPolicyChecked
             let next = !allChecked
             return Observable.concat([
                 .just(.setRequiredCheck(next)),
                 .just(.setOptionalCheck(next))
             ])
 
-        case .requiredButtonTapped:
-            let nextRequired = !currentState.isRequiredChecked
+        case .termsButtonTapped:
+            let nextRequired = !currentState.isTermsChecked
             return Observable.just( .setRequiredCheck(nextRequired))
 
-        case .optionalButtonTapped:
-            let nextOptional = !currentState.isOptionalChecked
+        case .privacyPolicyButtonTapped:
+            let nextOptional = !currentState.isPrivacyPolicyChecked
             return Observable.just(.setOptionalCheck(nextOptional))
 
         case .confirmButtonTapped:
@@ -84,8 +87,8 @@ final class CheckAgreementsReactor: Reactor {
                 // TODO: 현재 api에서 정확한 값 측정을 진행하고 있지않음.관련 사항 업데이트 시 수정 필요
                 
                 let agreementsIDs: [Int] = [
-                    currentState.isRequiredChecked ? 3 : nil,
-                    currentState.isOptionalChecked ? 4 : nil
+                    currentState.isTermsChecked ? 3 : nil,
+                    currentState.isPrivacyPolicyChecked ? 4 : nil
                 ].compactMap { $0 }
                 
                 signupData.agreemetns = agreementsIDs
@@ -108,6 +111,8 @@ final class CheckAgreementsReactor: Reactor {
                     return .just(.setToast("일시적 네트워크 오류입니다. 잠시 후 다시 시도해주세요."))
                 }
             }
+        case .detailButtonTapped:
+            return .just(.setTermsDetailSignal(true))
         }
     }
 
@@ -115,13 +120,15 @@ final class CheckAgreementsReactor: Reactor {
         var newState = state
         switch mutation {
         case .setRequiredCheck(let flag):
-            newState.isRequiredChecked = flag
+            newState.isTermsChecked = flag
         case .setOptionalCheck(let flag):
-            newState.isOptionalChecked = flag
+            newState.isPrivacyPolicyChecked = flag
         case .setToast(let message):
             newState.toastMessage = message
         case .setNavigationSignal(let signal):
             newState.navigationSignal = signal
+        case .setTermsDetailSignal(let signal):
+            newState.termsDetailSignal = signal
         }
         return newState
     }

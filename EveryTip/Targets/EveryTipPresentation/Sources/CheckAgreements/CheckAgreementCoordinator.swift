@@ -14,6 +14,7 @@ import EveryTipDomain
 
 protocol CheckAgreementCoordinator: Coordinator {
     func pushToSignupSuccessView()
+    func pushToAgreementView()
 }
 
 final class DefaultCheckAgreementCoordinator: CheckAgreementCoordinator {
@@ -64,6 +65,15 @@ final class DefaultCheckAgreementCoordinator: CheckAgreementCoordinator {
             self.append(child: signupSuccessCoordinator)
             
             signupSuccessCoordinator.start()
+        }
+    }
+    
+    func pushToAgreementView() {
+        navigationController.dismiss(animated: true) { [ weak self] in
+            guard let self = self else { return }
+            let agreementCoordinator = DefaultAgreementCoordinator(navigationController: navigationController)
+            self.append(child: agreementCoordinator)
+            agreementCoordinator.start()
         }
     }
 }

@@ -66,7 +66,8 @@ struct DefaultAccountRepository: AccountRepository, SessionInjectable{
                         guard let isChecked = result.toDomain() else {
                             return completable(.error(NetworkError.emptyResponseData))
                         }
-                        if isChecked {
+                        
+                        if !isChecked {
                             return completable(.completed)
                         } else {
                             return completable(.error(NetworkError.invalidEmail))

@@ -18,13 +18,13 @@ import RxSwift
 final class EditProfileReactor: Reactor {
     
     enum EditProfileItem {
-        case changeNickname
         case changePassword
+        case deleteAccount
     }
     
     enum Action {
         case itemSelected(Int)
-        case imageButtonTapped
+        case EditProfileImageTapped
     }
     
     enum Mutation {
@@ -36,8 +36,8 @@ final class EditProfileReactor: Reactor {
     struct State {
         var nickName: String?
         var options: [EditProfileItem] = [
-            .changeNickname,
-            .changePassword
+            .changePassword,
+            .deleteAccount
         ]
         
         @Pulse var changePasswordSignal: Bool = false
@@ -70,10 +70,8 @@ final class EditProfileReactor: Reactor {
             default:
                 return .empty()
             }
-        case .imageButtonTapped:
-            return .just(.setToast(
-                "프로필 사진 변경은 추후 업데이트 예정이에요!")
-            )
+        case .EditProfileImageTapped:
+            return .just(.setToast("프로필 사진 변경은 추후 업데이트 예정이에요!"))
         }
     }
     
@@ -87,6 +85,6 @@ final class EditProfileReactor: Reactor {
         case .setToast(let message):
             newState.toastMessage = message
         }
-        return state
+        return newState
     }
 }

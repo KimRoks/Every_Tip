@@ -30,7 +30,7 @@ final class DefaultAgreementCoordinator: AgreementCoordinator {
             fatalError("의존성 주입이 올바르지않습니다!")
         }
         
-        let agreementViewController = AgreementViewController(useCase: useCase)
+        let agreementViewController = AgreementViewController()
         agreementViewController.coordinator = self
         navigationController.pushViewController(agreementViewController, animated: true)
     }
