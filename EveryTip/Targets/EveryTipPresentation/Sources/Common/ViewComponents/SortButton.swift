@@ -8,6 +8,8 @@
 
 import UIKit
 
+import EveryTipDomain
+
 enum SortOptions {
     case latest
     case views
@@ -47,5 +49,15 @@ final class SortButton: UIButton {
         )
 
         self.setAttributedTitle(attributedString, for: .normal)
+    }
+}
+
+extension SortOptions {
+    func toTipOrder() -> TipOrder {
+        switch self {
+        case .latest: return .latest
+        case .views: return .views
+        case .likes: return .likes
+        }
     }
 }
