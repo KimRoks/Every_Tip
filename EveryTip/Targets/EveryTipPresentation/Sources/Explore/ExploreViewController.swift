@@ -83,6 +83,13 @@ final class ExploreViewController: BaseViewController, View {
         return tableView
     }()
     
+    private let placeholderView: UserContentPlaceholderView = {
+        let view = UserContentPlaceholderView(type: .emptyTip)
+        view.isHidden = true
+        
+        return view
+    }()
+    
     init(reactor: ExploreReactor) {
         super.init(nibName: nil, bundle: nil)
         self.reactor = reactor
@@ -108,7 +115,8 @@ final class ExploreViewController: BaseViewController, View {
             exploreTitleLabel,
             storyCollectionView,
             sortButton,
-            tipListTableView
+            tipListTableView,
+            placeholderView
         )
     }
     
@@ -136,6 +144,12 @@ final class ExploreViewController: BaseViewController, View {
         }
         
         tipListTableView.snp.makeConstraints {
+            $0.top.equalTo(sortButton.snp.bottom)
+            $0.leading.trailing.equalTo(roundedBackgroundView)
+            $0.bottom.equalTo(roundedBackgroundView)
+        }
+        
+        placeholderView.snp.makeConstraints {
             $0.top.equalTo(sortButton.snp.bottom)
             $0.leading.trailing.equalTo(roundedBackgroundView)
             $0.bottom.equalTo(roundedBackgroundView)
@@ -177,7 +191,7 @@ final class ExploreViewController: BaseViewController, View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        storyCollectionView.rx.modelSelected(DummyStory.self)
+        storyCollectionView.rx.modelSelected(Story.self)
             .map{ story in Reactor.Action.storyCellTapped(selectedStory: story) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -204,16 +218,22 @@ final class ExploreViewController: BaseViewController, View {
                 cellIdentifier: StoryCollectionViewCell.reuseIdentifier,
                 cellType: StoryCollectionViewCell.self)
             ) { index, data, cell in
+                
                 if data.type == .everyTip {
-                    cell.userNameLabel.text = "전체팁"
-                    cell.profileImageView.image = UIImage.et_getImage(for: .everyTipLogo_story)
-                        .withAlignmentRectInsets(UIEdgeInsets(top: -14.4, left: -14.4, bottom: -14.4, right: -14.4))
+                    cell.configureEveryTipCell(
+                        userName: "전체팁",
+                        image: UIImage.et_getImage(for: .everyTipLogo_story)
+                    )
+                    
                 } else {
-                    cell.userNameLabel.text = data.userData?.userName
-                    cell.profileImageView.image = data.userData?.userProfileImage
+                    cell.configureUserTipCell(
+                        userName: data.user?.nickName,
+                        imageURL: data.user?.profileImageURL
+                    )
                 }
                 
-                let isSelected = data.userData?.userID == reactor.currentState.selectedStory.userData?.userID
+                let isSelected = data.user?.id == reactor.currentState.selectedStory.user?.id
+                
                 cell.setSelected(isSelected)
             }
             .disposed(by: disposeBag)
@@ -224,7 +244,7 @@ final class ExploreViewController: BaseViewController, View {
                 if selectedStory.type == .everyTip {
                     self.exploreTitleLabel.text = "전체 팁 목록 👀"
                 } else {
-                    self.exploreTitleLabel.text = "\(selectedStory.userData?.userName ?? "unknown")님 팁 목록 👀"
+                    self.exploreTitleLabel.text = "\(selectedStory.user?.nickName ?? "unknown")님 팁 목록 👀"
                 }
             }
             .disposed(by: disposeBag)
@@ -236,6 +256,12 @@ final class ExploreViewController: BaseViewController, View {
             ) { row, tip, cell in
                 cell.configureTipListCell(with: tip)
             }
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { !$0.visibleTips.isEmpty }
+            .distinctUntilChanged()
+            .bind(to: placeholderView.rx.isHidden)
             .disposed(by: disposeBag)
         
         reactor.pulse(\.$pushSignal)
