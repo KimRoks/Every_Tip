@@ -712,20 +712,20 @@ extension TipDetailViewController: View {
                 }
                 
                 for i in 0..<images.count {
-                    let button = UIButton()
-                    button.snp.makeConstraints {
+                    let imageView = UIImageView()
+                    imageView.snp.makeConstraints {
                         $0.width.height.equalTo(70)
                     }
-                    button.layer.cornerRadius = 10
-                    button.contentMode = .scaleAspectFill
-                    button.clipsToBounds = true
+                    imageView.layer.cornerRadius = 10
+                    imageView.contentMode = .scaleAspectFill
+                    imageView.clipsToBounds = true
                     
-                    button.kf.setBackgroundImage(
+                    imageView.kf.setImage(
                         with: URL(string: images[i].url),
-                        for: .normal,
-                        placeholder: .et_getImage(for: .blankImage)
+                        placeholder: UIImage.et_getImage(for: .blankImage)
                     )
-                    self?.tipImagesStackView.addArrangedSubview(button)
+                    
+                    self?.tipImagesStackView.addArrangedSubview(imageView)
                 }
             })
             .disposed(by: disposeBag)
