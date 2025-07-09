@@ -18,7 +18,7 @@ class HomeReactor: Reactor {
     enum Action {
         case viewDidLoad
         case itemSelected(Tip)
-        case refesh
+        case refresh
         case searchButtonTapped
     }
     
@@ -41,7 +41,7 @@ class HomeReactor: Reactor {
         
         @Pulse var pushSignal: Bool = false
         @Pulse var toastMessage: String?
-        @Pulse var seachSignal: Bool = false
+        @Pulse var searchSignal: Bool = false
     }
     
     let initialState: State
@@ -80,7 +80,7 @@ class HomeReactor: Reactor {
                 .just(.setPushSignal(true))
             )
             
-        case .refesh:
+        case .refresh:
             return tipUseCase.fetchTotalTips()
                 .asObservable()
                 .map { return Mutation.setTips($0) }
@@ -111,7 +111,7 @@ class HomeReactor: Reactor {
         case .setPushSignal(let signal):
             newState.pushSignal = signal
         case .setSearchSiganl(let signal):
-            newState.seachSignal = signal
+            newState.searchSignal = signal
         case .setMyCategories(let categories):
             newState.myCategories = categories
             

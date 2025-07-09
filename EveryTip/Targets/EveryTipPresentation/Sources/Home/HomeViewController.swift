@@ -207,7 +207,7 @@ extension HomeViewController: View {
         
         self.rx.viewWillAppear
             .map { _ in
-                Reactor.Action.refesh
+                Reactor.Action.refresh
             }.bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -253,7 +253,7 @@ extension HomeViewController: View {
             }
             .disposed(by: disposeBag)
         
-        reactor.pulse(\.$seachSignal)
+        reactor.pulse(\.$searchSignal)
             .filter { $0 == true }
             .subscribe(onNext: { _ in
                 self.coordinator?.pushToSearchView()
