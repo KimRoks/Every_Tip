@@ -142,10 +142,13 @@ final class TipDetailViewController: BaseViewController {
         return collectionView
     }()
     
-    private let socialView: UIView = {
-        let view = UIView()
+    private let socialView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 27
+        stackView.distribution = .fillEqually
         
-        return view
+        return stackView
     }()
     
     private let likeButton: UIButton = {
@@ -157,24 +160,26 @@ final class TipDetailViewController: BaseViewController {
         return button
     }()
     
-    private let shareButton: UIButton = {
-        var configuration = UIButton.Configuration.plain()
-        configuration.image = .et_getImage(for: .share)
-        configuration.imagePadding = 6
-        
-        let attributedTitle = AttributedString(
-            "공유하기",
-            attributes: AttributeContainer([
-                .font: UIFont.et_pretendard(style: .medium, size: 14)
-            ])
-        )
-        configuration.attributedTitle = attributedTitle
-        
-        let button = UIButton(configuration: configuration)
-        button.tintColor = .et_textColorBlack50
-        
-        return button
-    }()
+    
+    // TODO: 공유하기 기능 보류
+//    private let shareButton: UIButton = {
+//        var configuration = UIButton.Configuration.plain()
+//        configuration.image = .et_getImage(for: .share)
+//        configuration.imagePadding = 6
+//        
+//        let attributedTitle = AttributedString(
+//            "공유하기",
+//            attributes: AttributeContainer([
+//                .font: UIFont.et_pretendard(style: .medium, size: 14)
+//            ])
+//        )
+//        configuration.attributedTitle = attributedTitle
+//        
+//        let button = UIButton(configuration: configuration)
+//        button.tintColor = .et_textColorBlack50
+//        
+//        return button
+//    }()
     
     private let saveButton: UIButton = {
         var configuration = UIButton.Configuration.plain()
@@ -215,13 +220,6 @@ final class TipDetailViewController: BaseViewController {
         return label
     }()
     
-    private let commentSortButton: SortButton = {
-        let button = SortButton(type: .system)
-        button.configureButtonStyle(with: .latest)
-        
-        return button
-    }()
-    
     private let commentTableView: UITableView = {
         let tableView = UITableView()
         
@@ -237,7 +235,7 @@ final class TipDetailViewController: BaseViewController {
         return view
     }()
     
-    private let commnetPlaceholderLable: UILabel = {
+    private let commentPlaceholderLable: UILabel = {
         let label = UILabel()
         label.text = "유용한 답변으로 팁 좋아요를 받아보세요 :)"
         label.font = .et_pretendard(style: .bold, size: 14)
@@ -349,7 +347,7 @@ final class TipDetailViewController: BaseViewController {
             commentTableView
         )
         
-        commentInputTextView.addSubViews(commnetPlaceholderLable)
+        commentInputTextView.addSubViews(commentPlaceholderLable)
         
         commentInputBackgroundView.addSubViews(
             commentInputTextView,
@@ -373,15 +371,13 @@ final class TipDetailViewController: BaseViewController {
             socialView
         )
         
-        socialView.addSubViews(
+        socialView.addArrangedSubViews(
             likeButton,
-            shareButton,
             saveButton
         )
         
         commentInfoView.addSubViews(
-            commentCountLabel,
-            commentSortButton
+            commentCountLabel
         )
     }
     
@@ -480,26 +476,11 @@ final class TipDetailViewController: BaseViewController {
         
         socialView.snp.makeConstraints {
             $0.top.equalTo(tagsCollectionView.snp.bottom).offset(20)
-            $0.leading.trailing.equalTo(tipView).inset(48)
+            $0.centerX.equalToSuperview()
             $0.bottom.equalTo(tipView.snp.bottom).offset(-20)
             $0.height.equalTo(25)
         }
-        
-        likeButton.snp.makeConstraints {
-            $0.centerY.equalTo(socialView)
-            $0.trailing.equalTo(shareButton.snp.leading).offset(-27)
-        }
-        
-        shareButton.snp.makeConstraints {
-            $0.centerY.equalTo(socialView)
-            $0.centerX.equalTo(socialView)
-        }
-        
-        saveButton.snp.makeConstraints {
-            $0.centerY.equalTo(socialView)
-            $0.leading.equalTo(shareButton.snp.trailing).offset(29)
-        }
-        
+
         bottomSeparator.snp.makeConstraints {
             $0.top.equalTo(tipView.snp.bottom)
             $0.leading.trailing.equalTo(contentView)
@@ -517,11 +498,6 @@ final class TipDetailViewController: BaseViewController {
             $0.centerY.equalTo(commentInfoView.snp.centerY)
         }
         
-        commentSortButton.snp.makeConstraints {
-            $0.trailing.equalTo(commentInfoView.snp.trailing).offset(-20)
-            $0.centerY.equalTo(commentInfoView.snp.centerY)
-        }
-        
         commentTableView.snp.makeConstraints {
             $0.top.equalTo(commentInfoView.snp.bottom)
             $0.leading.trailing.equalTo(contentView)
@@ -535,7 +511,7 @@ final class TipDetailViewController: BaseViewController {
             $0.height.greaterThanOrEqualTo(50)
         }
         
-        commnetPlaceholderLable.snp.makeConstraints {
+        commentPlaceholderLable.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.leading.equalToSuperview().offset(5)
         }
@@ -855,7 +831,7 @@ extension TipDetailViewController: View {
             .filter { $0 }
             .bind { [weak self] _ in
                 self?.commentInputTextView.text = nil
-                self?.commnetPlaceholderLable.isHidden = false
+                self?.commentPlaceholderLable.isHidden = false
             }
             .disposed(by: disposeBag)
         
@@ -873,7 +849,7 @@ extension TipDetailViewController: View {
 
 extension TipDetailViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
-        commnetPlaceholderLable.isHidden = !textView.text.isEmpty
+        commentPlaceholderLable.isHidden = !textView.text.isEmpty
         
         let maxHeight: CGFloat = 100
         let size = textView.sizeThatFits(
