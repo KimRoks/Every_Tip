@@ -12,10 +12,11 @@ import EveryTipDesignSystem
 
 import SnapKit
 import ReactorKit
+import Kingfisher
 
 final class StoryCollectionViewCell: UICollectionViewCell, Reusable {
     
-    let profileImageView: UIImageView = {
+    private let profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.backgroundColor = UIColor(hex: "#EEEEEE")
         imageView.layer.cornerRadius = 30
@@ -25,7 +26,7 @@ final class StoryCollectionViewCell: UICollectionViewCell, Reusable {
     
     // TODO: 알파 값 추후 세밀하게 설정
     
-    let selectedOverlayView: UIView = {
+    private let selectedOverlayView: UIView = {
         let view = UIView()
         view.layer.borderWidth = 2
         view.layer.borderColor = UIColor.et_brandColor2.cgColor
@@ -37,7 +38,7 @@ final class StoryCollectionViewCell: UICollectionViewCell, Reusable {
         return view
     }()
     
-    let userNameLabel: UILabel = {
+    private let userNameLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.et_pretendard(
             style: .bold,
@@ -56,6 +57,10 @@ final class StoryCollectionViewCell: UICollectionViewCell, Reusable {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        profileImageView.clipsToBounds = false
     }
     
     private func setuplayout() {
@@ -89,5 +94,24 @@ final class StoryCollectionViewCell: UICollectionViewCell, Reusable {
     
     func setSelected(_ isSelected: Bool)  {
         selectedOverlayView.isHidden = !isSelected
+    }
+    
+    func configureEveryTipCell(userName: String, image: UIImage) {
+        userNameLabel.text = userName
+        profileImageView.image = image
+            .withAlignmentRectInsets(UIEdgeInsets(top: -14.4, left: -14.4, bottom: -14.4, right: -14.4))
+    }
+    
+    func configureUserTipCell(userName: String?, imageURL: String?) {
+        userNameLabel.text = userName ?? "unknown"
+
+        profileImageView.clipsToBounds = true
+        profileImageView.contentMode = .scaleAspectFill
+        let url = URL(string: imageURL ?? "")
+
+        profileImageView.kf.setImage(
+            with: url,
+            placeholder: UIImage.et_getImage(for: .blankImage)
+        )
     }
 }
