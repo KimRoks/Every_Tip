@@ -17,6 +17,7 @@ final class UserContentPlaceholderView: UIView {
         case following
         case myTip
         case savedTip
+        case emptyTip
         
         var message: String {
             switch self {
@@ -28,6 +29,8 @@ final class UserContentPlaceholderView: UIView {
                 return "작성한 팁이 없어요. 팁을 작성해보세요!"
             case .savedTip:
                 return "저장한 팁이 없어요. 마음에 드는 팁을 저장해보세요!"
+            case .emptyTip:
+                return "아직 작성된 팁이 없어요 다른 팁도 구경해볼까요?"
             }
         }
     }
