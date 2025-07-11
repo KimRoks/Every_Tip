@@ -25,8 +25,8 @@ final class CheckAgreementsReactor: Reactor {
     }
 
     enum Mutation {
-        case setRequiredCheck(Bool)
-        case setOptionalCheck(Bool)
+        case setTermCheck(Bool)
+        case setPrivacyPolicyCheck(Bool)
         case setToast(String)
         case setNavigationSignal(Bool)
         case setTermsDetailSignal(Bool)
@@ -37,7 +37,7 @@ final class CheckAgreementsReactor: Reactor {
             isTermsChecked && isPrivacyPolicyChecked
         }
         var isConfirmable: Bool {
-            isTermsChecked
+            isTermsChecked && isPrivacyPolicyChecked
         }
         var isTermsChecked: Bool = false
         var isPrivacyPolicyChecked: Bool = false
@@ -68,17 +68,17 @@ final class CheckAgreementsReactor: Reactor {
             let allChecked = currentState.isTermsChecked && currentState.isPrivacyPolicyChecked
             let next = !allChecked
             return Observable.concat([
-                .just(.setRequiredCheck(next)),
-                .just(.setOptionalCheck(next))
+                .just(.setTermCheck(next)),
+                .just(.setPrivacyPolicyCheck(next))
             ])
 
         case .termsButtonTapped:
             let nextRequired = !currentState.isTermsChecked
-            return Observable.just( .setRequiredCheck(nextRequired))
+            return Observable.just( .setTermCheck(nextRequired))
 
         case .privacyPolicyButtonTapped:
             let nextOptional = !currentState.isPrivacyPolicyChecked
-            return Observable.just(.setOptionalCheck(nextOptional))
+            return Observable.just(.setPrivacyPolicyCheck(nextOptional))
 
         case .confirmButtonTapped:
             if !currentState.isConfirmable {
@@ -119,9 +119,9 @@ final class CheckAgreementsReactor: Reactor {
     func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
         switch mutation {
-        case .setRequiredCheck(let flag):
+        case .setTermCheck(let flag):
             newState.isTermsChecked = flag
-        case .setOptionalCheck(let flag):
+        case .setPrivacyPolicyCheck(let flag):
             newState.isPrivacyPolicyChecked = flag
         case .setToast(let message):
             newState.toastMessage = message
