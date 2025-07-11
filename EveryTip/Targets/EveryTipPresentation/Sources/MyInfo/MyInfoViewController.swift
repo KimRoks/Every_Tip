@@ -304,12 +304,12 @@ extension MyInfoViewController: View {
     
     private func bindInputs(to reactor: MyInfoReactor) {
         rx.viewDidLoad
-            .map { Reactor.Action.viewDidLoad }
+            .map { Reactor.Action.refresh }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         rx.viewWillAppear
-            .map { Reactor.Action.viewWillAppear }
+            .map { Reactor.Action.refresh }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         

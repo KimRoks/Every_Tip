@@ -20,8 +20,7 @@ class MyInfoReactor: Reactor {
     
     enum Action {
         // TODO: 프로필 편집, 각 아이템 터치 처리
-        case viewDidLoad
-        case viewWillAppear
+        case refresh
         
         case agreementCellTapped
         case logoutCellTapped
@@ -88,18 +87,7 @@ class MyInfoReactor: Reactor {
     
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case .viewDidLoad:
-            return userUseCase.fetchMyProfile()
-                .asObservable()
-                .map(Mutation.setMyProfileData)
-                .catch { [weak self] _ in
-                    guard let self = self else {
-                        return .just(.setToast("잠시 후 다시 시도해주세요"))
-                    }
-                    return .just(.setMyProfileData(self.guestProfile))
-                }
-            
-        case .viewWillAppear:
+        case .refresh:
             return userUseCase.fetchMyProfile()
                 .asObservable()
                 .map(Mutation.setMyProfileData)
