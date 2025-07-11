@@ -9,12 +9,16 @@
 import Foundation
 
 import EveryTipDomain
+import EveryTipCore
 
 import Alamofire
 import RxSwift
 
 struct DefaultAccountRepository: AccountRepository, SessionInjectable{
+    
     let session: Session?
+    private let interceptor = TokenInterceptor()
+    private let tokenMaanage = TokenKeyChainManager.shared
     
     init(session: Session? = .default) {
         self.session = session
@@ -105,6 +109,33 @@ struct DefaultAccountRepository: AccountRepository, SessionInjectable{
                     }
                 }
             return Disposables.create { task?.cancel() }
+        }
+    }
+    
+    func deleteAccount() -> RxSwift.Completable {
+        guard let request = try? AuthTarget.deleteAccount.asURLRequest() else {
+            return Completable.error(NetworkError.invalidURLError)
+        }
+        
+        return Completable.create { completable in
+            let task = session?.request(request, interceptor: interceptor)
+                .validate(statusCode: 200..<300)
+                .response { response in
+                    switch response.result {
+                    case .success(_):
+                        tokenMaanage.deleteToken(type: .access)
+                        tokenMaanage.deleteToken(type: .refresh)
+                    
+                        return completable(.completed)
+                    case .failure(let error):
+                        print(error)
+                        return completable(.error(error))
+                    }
+                }
+            
+            return Disposables.create {
+                task?.cancel()
+            }
         }
     }
 }
