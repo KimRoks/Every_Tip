@@ -68,21 +68,26 @@ final class ExploreReactor: Reactor {
             )
 
         case .refresh:
-            let followers = userUseCase.fetchMyFollowers().asObservable()
-            let tips = tipUseCase.fetchTotalTips().asObservable()
-            
-            return Observable.zip(followers, tips)
-                .flatMap { followers, tips -> Observable<Mutation> in
-                    let stories: [Story] = [Story(type: .everyTip, user: nil)] +
-                    followers.map { Story(type: .user, user: $0) }
-                    
-                    return Observable.concat([
-                        .just(.setStory(stories)),
-                        .just(.setAllTips(tips)),
-                        .just(.setVisibleTips(tips)),
-                        .just(.setSelectedStory(stories[0]))
-                    ])
-                }
+            let followersObservable = userUseCase.fetchMyFollowers()
+                    .asObservable()
+                    .catchAndReturn([])
+                    .map { followers -> Mutation in
+                        let stories: [Story] = [Story(type: .everyTip, user: nil)] + followers.map { Story(type: .user, user: $0) }
+                        return .setStory(stories)
+                    }
+
+                let tipsObservable = tipUseCase.fetchTotalTips()
+                    .asObservable()
+                    .catchAndReturn([])
+                    .flatMap { tips -> Observable<Mutation> in
+                        return Observable.concat([
+                            .just(.setAllTips(tips)),
+                            .just(.setVisibleTips(tips)),
+                            .just(.setSelectedStory(Story(type: .everyTip, user: nil)))
+                        ])
+                    }
+
+                return Observable.merge(followersObservable, tipsObservable)
 
         case .storyCellTapped(let story):
             let userID = story.user?.id ?? 0
