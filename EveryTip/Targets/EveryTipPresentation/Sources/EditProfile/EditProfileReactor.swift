@@ -25,12 +25,14 @@ final class EditProfileReactor: Reactor {
     enum Action {
         case itemSelected(Int)
         case EditProfileImageTapped
+        case deleteAccount
     }
     
     enum Mutation {
         case setChangePasswordSignal(Bool)
         case setDeleteAccountSignal(Bool)
         case setToast(String)
+        case setDismissSignal(Bool)
     }
     
     struct State {
@@ -43,6 +45,7 @@ final class EditProfileReactor: Reactor {
         @Pulse var changePasswordSignal: Bool = false
         @Pulse var deleteAccountSignal: Bool = false
         @Pulse var toastMessage: String?
+        @Pulse var dismissSignal: Bool = false
     }
     
     private let authUseCase: AuthUseCase
@@ -72,6 +75,15 @@ final class EditProfileReactor: Reactor {
             }
         case .EditProfileImageTapped:
             return .just(.setToast("프로필 사진 변경은 추후 업데이트 예정이에요!"))
+            
+        case .deleteAccount:
+            return authUseCase.deleteAccount()
+                .andThen(
+                    Observable.concat([
+                        .just(.setDismissSignal(true)),
+                        .just(.setToast("계정이 삭제되었어요."))
+                    ])
+                )
         }
     }
     
@@ -84,6 +96,8 @@ final class EditProfileReactor: Reactor {
             newState.deleteAccountSignal = signal
         case .setToast(let message):
             newState.toastMessage = message
+        case .setDismissSignal(let signal):
+            newState.dismissSignal = signal
         }
         return newState
     }

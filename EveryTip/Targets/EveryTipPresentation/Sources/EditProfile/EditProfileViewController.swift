@@ -113,6 +113,25 @@ final class EditProfileViewController: BaseViewController {
         )
         optionTableView.isScrollEnabled = false
     }
+    
+    private func showDeleteAccountAlert(reactor: EditProfileReactor) {
+        let alert = UIAlertController(
+            title: "회원 탈퇴",
+            message: "정말로 에브리 팁을 탈퇴하시겠어요?",
+            preferredStyle: .alert
+        )
+        
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+        
+        let confirmAction = UIAlertAction(title: "탈퇴", style: .destructive) { _ in
+            reactor.action.onNext(.deleteAccount)
+        }
+        
+        alert.addAction(cancelAction)
+        alert.addAction(confirmAction)
+        
+        self.present(alert, animated: true)
+    }
 }
 
 extension EditProfileViewController: View {
@@ -162,8 +181,7 @@ extension EditProfileViewController: View {
         reactor.pulse(\.$deleteAccountSignal)
             .filter { $0 == true }
             .bind { [weak self] _ in
-                //회원탈퇴 alert
-                print("회원탈퇴")
+                self?.showDeleteAccountAlert(reactor: reactor)
             }
             .disposed(by: disposeBag)
         
@@ -178,6 +196,13 @@ extension EditProfileViewController: View {
         reactor.state
             .map { $0.nickName }
             .bind(to: nickNameLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$dismissSignal)
+            .filter { $0 }
+            .subscribe(onNext: { [weak self] _ in
+                self?.coordinator?.dismissView()
+            })
             .disposed(by: disposeBag)
     }
 }
