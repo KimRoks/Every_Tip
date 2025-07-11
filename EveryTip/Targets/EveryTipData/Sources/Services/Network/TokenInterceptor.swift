@@ -12,9 +12,13 @@ import EveryTipDomain
 import EveryTipCore
 
 import Alamofire
+import RxSwift
 
-final class TokenInterceptor: RequestInterceptor {
-        
+
+final class TokenInterceptor: RequestInterceptor, SessionInjectable {
+    let session: Alamofire.Session? = .default
+    var disposeBag = DisposeBag()
+    
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, any Error>) -> Void) {
         var request = urlRequest
         if let accessToken = TokenKeyChainManager.shared.getToken(type: .access) {
@@ -34,21 +38,49 @@ final class TokenInterceptor: RequestInterceptor {
         }
         //401에러가 발생한 경우 리트라이 진행
         
-        //TODO: API부재로 의사 코드 작성, 추후 수정 필요
-        // let code = renewAccessToken(_ aceessToken: "").statusCode
+        guard let currentRefreshToken = TokenKeyChainManager.shared.getToken(type: .refresh) else {
+            return
+        }
         
-        let code = 201
-        
-        if code == 200 {
-            //새로 받은 accessToken이 저장되었다.
-            completion(.retryWithDelay(1))
-        } else {
-            //리프레쉬 토큰마저 만료되었다는 서버의 응답을 받았다
-            let tokenManager = TokenKeyChainManager.shared
-            tokenManager.deleteToken(type: .access)
-            tokenManager.deleteToken(type: .refresh)
-            
-            completion(.doNotRetryWithError(error))
+        renewToken(with: currentRefreshToken)
+            .subscribe(onCompleted: {
+                completion(.retryWithDelay(1))
+            }, onError: { error in
+                TokenKeyChainManager.shared.deleteToken(type: .access)
+                TokenKeyChainManager.shared.deleteToken(type: .refresh)
+                completion(.doNotRetryWithError(error))
+            })
+            .disposed(by: disposeBag)
+    }
+
+    private func renewToken(with currentRefreshToken: String) -> Completable {
+        guard let request = try? AuthTarget.postRenewRefreshToken(currentToken: currentRefreshToken)
+            .asURLRequest() else {
+            return .error(NetworkError.invalidURLError)
+        }
+
+        return Completable.create { completable in
+            let task = self.session?.request(request)
+                .validate(statusCode: 200..<300)
+                .responseDecodable(of: RenewTokenDTO.self) { response in
+                    switch response.result {
+                    case .success(let dto):
+                        let newAccessToken = dto.data.accessToken
+                        let newRefreshToken = dto.data.refreshToken
+                        
+                        TokenKeyChainManager.shared.storeToken(newAccessToken, type: .access)
+                        TokenKeyChainManager.shared.storeToken(newRefreshToken, type: .refresh)
+                        
+                        completable(.completed)
+                        
+                    case .failure(let error):
+                        completable(.error(error))
+                    }
+                }
+
+            return Disposables.create {
+                task?.cancel()
+            }
         }
     }
 }

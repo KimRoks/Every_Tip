@@ -23,6 +23,8 @@ enum AuthTarget {
     )
     case getCheckEmailDuplication(email: String)
     case patchUpdatePassword(email: String, password: String)
+    
+    case postRenewRefreshToken(currentToken: String)
 }
 
 extension AuthTarget: TargetType {
@@ -42,6 +44,8 @@ extension AuthTarget: TargetType {
                 .get
         case .patchUpdatePassword:
                 .patch
+        case .postRenewRefreshToken:
+                .post
         }
     }
     
@@ -61,6 +65,8 @@ extension AuthTarget: TargetType {
             return "/auth/email-check"
         case .patchUpdatePassword:
             return "/auth/password"
+        case .postRenewRefreshToken:
+            return "/auth/sign-in/refresh-tokens"
         }
     }
     
@@ -90,6 +96,8 @@ extension AuthTarget: TargetType {
             return ["email": email]
         case .patchUpdatePassword(email: let email, password: let password):
             return ["email": email, "password": password]
+        case .postRenewRefreshToken(currentToken: let currentToken):
+            return ["refresh_token" : currentToken]
         }
     }
     
@@ -109,6 +117,8 @@ extension AuthTarget: TargetType {
             return ["Content-Type": "application/json"]
         case .patchUpdatePassword:
             return ["Content-Type": "application/json"]
+        case .postRenewRefreshToken:
+            return nil
         }
     }
 }
