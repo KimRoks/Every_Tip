@@ -20,4 +20,5 @@ public protocol AccountRepository {
         nickName: String
     ) -> Single<Account>
     func checkEmailDuplication(email: String) -> Completable
+    func deleteAccount() -> Completable
 }
