@@ -14,6 +14,7 @@ import Swinject
 
 protocol TipDetailCoordinator: AuthenticationCoordinator {
     func pushToUserProrfileView(userID: Int)
+    func presentDetailPhoto(with imageUrls: [String], startIndex: Int)
 }
 
 final class DefaultTipDetailCoordinator: TipDetailCoordinator {
@@ -58,6 +59,14 @@ final class DefaultTipDetailCoordinator: TipDetailCoordinator {
         self.append(child: userProfileCoordinator)
         userProfileCoordinator.parentCoordinator = self
         userProfileCoordinator.start()
+    }
+
+    func presentDetailPhoto(with imageUrls: [String], startIndex: Int) {
+        let photoDetailCoordinator = DefaultPhotoDetailCoordinator(navigationController: navigationController)
+        self.append(child: photoDetailCoordinator)
+        
+        photoDetailCoordinator.start(imageURLs: imageUrls, startIndex: startIndex
+        )
     }
     
     func didFinish() {

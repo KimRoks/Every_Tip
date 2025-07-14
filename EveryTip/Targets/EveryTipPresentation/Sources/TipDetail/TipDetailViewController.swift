@@ -120,13 +120,23 @@ final class TipDetailViewController: BaseViewController {
         return label
     }()
     
-    private let tipImagesStackView: UIStackView = {
-        let stack = UIStackView()
-        stack.distribution = .equalSpacing
-        stack.spacing = 10
+    private let tipImageCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumLineSpacing = 10
+        layout.itemSize = CGSize(width: 70, height: 70)
         
-        return stack
+        let collectionView = UICollectionView(
+            frame: .zero,
+            collectionViewLayout: layout
+        )
+        collectionView.backgroundColor = .clear
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.isScrollEnabled = true
+        
+        return collectionView
     }()
+    
     
     private let tagsCollectionView: UICollectionView = {
         let tagStyleLayout = TagStyleFlowLayout()
@@ -159,27 +169,6 @@ final class TipDetailViewController: BaseViewController {
         
         return button
     }()
-    
-    
-    // TODO: 공유하기 기능 보류
-//    private let shareButton: UIButton = {
-//        var configuration = UIButton.Configuration.plain()
-//        configuration.image = .et_getImage(for: .share)
-//        configuration.imagePadding = 6
-//        
-//        let attributedTitle = AttributedString(
-//            "공유하기",
-//            attributes: AttributeContainer([
-//                .font: UIFont.et_pretendard(style: .medium, size: 14)
-//            ])
-//        )
-//        configuration.attributedTitle = attributedTitle
-//        
-//        let button = UIButton(configuration: configuration)
-//        button.tintColor = .et_textColorBlack50
-//        
-//        return button
-//    }()
     
     private let saveButton: UIButton = {
         var configuration = UIButton.Configuration.plain()
@@ -279,6 +268,7 @@ final class TipDetailViewController: BaseViewController {
         setupConstraints()
         setupTagCollectionView()
         setupCommentTableView()
+        setupImageCollectionView()
         commentInputTextView.delegate = self
         navigationItem.rightBarButtonItem = rightButtonItem
         setupGesture()
@@ -308,7 +298,20 @@ final class TipDetailViewController: BaseViewController {
             $0.height.equalTo(height)
         }
         
+        let imageCount = reactor?.currentState.tip?.images.count ?? 0
+        
+        tipImageCollectionView.snp.updateConstraints {
+            $0.height.equalTo(imageCount == 0 ? 0 : 70)
+        }
+        
         updateTableViewHeight()
+    }
+    
+    private func setupImageCollectionView() {
+        tipImageCollectionView.register(
+            TipPhotoCollectionViewCell.self,
+            forCellWithReuseIdentifier: TipPhotoCollectionViewCell.reuseIdentifier
+        )
     }
     
     private func setupTagCollectionView() {
@@ -366,7 +369,7 @@ final class TipDetailViewController: BaseViewController {
         tipView.addSubViews(
             titleLabel,
             mainTexLabel,
-            tipImagesStackView,
+            tipImageCollectionView,
             tagsCollectionView,
             socialView
         )
@@ -459,15 +462,15 @@ final class TipDetailViewController: BaseViewController {
             $0.leading.trailing.equalTo(tipView).inset(20)
         }
         
-        tipImagesStackView.snp.makeConstraints {
-            $0.height.equalTo(70)
+        tipImageCollectionView.snp.makeConstraints {
             $0.top.equalTo(mainTexLabel.snp.bottom).offset(40)
             $0.leading.equalTo(tipView.snp.leading).offset(20)
-            $0.trailing.lessThanOrEqualTo(tipView.snp.trailing).offset(-20)
+            $0.trailing.equalToSuperview().offset(-20)
+            $0.height.equalTo(70)
         }
         
         tagsCollectionView.snp.makeConstraints {
-            $0.top.equalTo(tipImagesStackView.snp.bottom).offset(20)
+            $0.top.equalTo(tipImageCollectionView.snp.bottom).offset(20)
             $0.leading.trailing.equalTo(tipView).inset(20)
             $0.bottom.equalTo(socialView.snp.top)
                 .offset(-20)
@@ -480,7 +483,7 @@ final class TipDetailViewController: BaseViewController {
             $0.bottom.equalTo(tipView.snp.bottom).offset(-20)
             $0.height.equalTo(25)
         }
-
+        
         bottomSeparator.snp.makeConstraints {
             $0.top.equalTo(tipView.snp.bottom)
             $0.leading.trailing.equalTo(contentView)
@@ -662,9 +665,14 @@ extension TipDetailViewController: View {
                 }
             }
             .disposed(by: disposeBag)
-
+        
         writerTapGesture.rx.event
             .map { _ in Reactor.Action.userProfileTapped }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        tipImageCollectionView.rx.itemSelected
+            .map { Reactor.Action.imageSelected($0.item) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
     }
@@ -679,7 +687,7 @@ extension TipDetailViewController: View {
                         placeholder: UIImage.et_getImage(for: .blankImage)
                     )
                 }
-            
+                
                 if tip.isMine {
                     self?.ellipsisButton.isHidden = false
                 }
@@ -687,7 +695,7 @@ extension TipDetailViewController: View {
                 let saveImage: UIImage = tip.isSaved
                 ? .et_getImage(for: .bookmark_fill)
                 : .et_getImage(for: .bookmark)
-                            
+                
                 self?.saveButton.configuration?.image = saveImage
                 
                 self?.writerNameLabel.text = tip.writer.name
@@ -701,32 +709,6 @@ extension TipDetailViewController: View {
                     for: likeCount,
                     isLiked: tip.isLiked
                 )
-                
-                // TODO: 이미지 업로드 api 적용 후 수정 및 사진 확대 가능하도록 개선
-                let images = tip.images
-                
-                if images.count == 0 {
-                    self?.tipImagesStackView.snp.updateConstraints {
-                        $0.height.equalTo(0)
-                    }
-                }
-                
-                for i in 0..<images.count {
-                    let imageView = UIImageView()
-                    imageView.snp.makeConstraints {
-                        $0.width.height.equalTo(70)
-                    }
-                    imageView.layer.cornerRadius = 10
-                    imageView.contentMode = .scaleAspectFill
-                    imageView.clipsToBounds = true
-                    
-                    imageView.kf.setImage(
-                        with: URL(string: images[i].url),
-                        placeholder: UIImage.et_getImage(for: .blankImage)
-                    )
-                    
-                    self?.tipImagesStackView.addArrangedSubview(imageView)
-                }
             })
             .disposed(by: disposeBag)
         
@@ -764,7 +746,9 @@ extension TipDetailViewController: View {
                     .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
                     .bind { [weak self] in
                         self?.coordinator?.checkLoginBeforeAction {
-                            self?.reactor?.action.onNext(.commentLikeButtonTapped(commentID: data.id))
+                            self?.reactor?.action.onNext(
+                                .commentLikeButtonTapped(commentID: data.id)
+                            )
                         }
                     }
                     .disposed(by: cell.disposeBag)
@@ -843,6 +827,30 @@ extension TipDetailViewController: View {
                 }
                 self?.coordinator?.pushToUserProrfileView(userID: userID)
             })
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .compactMap { $0.tip?.images }
+            .observe(on: MainScheduler.instance)
+            .bind(to: tipImageCollectionView.rx.items(
+                cellIdentifier: TipPhotoCollectionViewCell.reuseIdentifier,
+                cellType: TipPhotoCollectionViewCell.self)
+            ) { _, item, cell in
+                cell.configureCell(with: item.url)
+            }
+            .disposed(by: disposeBag)
+        
+        
+        reactor.pulse(\.$selectedImageIndex)
+            .compactMap { $0 }
+            .bind { [weak self] selectedIndex in
+                guard let self,
+                      let images = self.reactor?.currentState.tip?.images else { return }
+                
+                let urls = images.map(\.url)
+                
+                coordinator?.presentDetailPhoto(with: urls, startIndex: selectedIndex)
+            }
             .disposed(by: disposeBag)
     }
 }

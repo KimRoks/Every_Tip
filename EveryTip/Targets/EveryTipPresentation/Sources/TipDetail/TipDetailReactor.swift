@@ -23,6 +23,7 @@ final class TipDetailReactor: Reactor {
         case commentLikeButtonTapped(commentID: Int)
         case tipSaveButtonTapped
         case userProfileTapped
+        case imageSelected(Int)
     }
     
     enum Mutation {
@@ -33,6 +34,7 @@ final class TipDetailReactor: Reactor {
         case setPopSignal(Bool)
         case setCommentSignal(Bool)
         case setUserTappedSignal(Bool)
+        case setSelectedImageIndex(Int)
     }
     
     struct State {
@@ -43,6 +45,7 @@ final class TipDetailReactor: Reactor {
         @Pulse var toastMessage: String?
         @Pulse var popSignal: Bool = false
         @Pulse var userTappedSignal: Bool = false
+        @Pulse var selectedImageIndex: Int?
     }
     
     var initialState: State = State()
@@ -171,6 +174,8 @@ final class TipDetailReactor: Reactor {
                 }
         case .userProfileTapped:
             return .just(.setUserTappedSignal(true))
+        case .imageSelected(let index):
+            return .just(.setSelectedImageIndex(index))
         }
     }
     
@@ -191,6 +196,8 @@ final class TipDetailReactor: Reactor {
             newState.commentSubmittedSignal = signal
         case .setUserTappedSignal(let signal):
             newState.userTappedSignal = signal
+        case .setSelectedImageIndex(let index):
+            newState.selectedImageIndex = index
         }
         
         return newState
