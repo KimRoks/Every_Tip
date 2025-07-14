@@ -10,7 +10,7 @@ import UIKit
 
 class BaseViewController: UIViewController, ToastDisplayable {
     /// 스와이프로 뒤로가기 활성화 여부
-    var isInteractivePopGestureEnabled = false
+    var isInteractivePopGestureEnabled = true
     
     // MARK: - Life Cycles
     
@@ -30,7 +30,7 @@ class BaseViewController: UIViewController, ToastDisplayable {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+
     }
     
     // MARK: - Methods
