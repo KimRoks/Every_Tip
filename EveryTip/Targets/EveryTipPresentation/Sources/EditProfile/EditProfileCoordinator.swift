@@ -14,9 +14,11 @@ import Swinject
 
 protocol EditProfileCoordinator: AuthenticationCoordinator {
     func dismissView()
+    func pushToEditPassword()
 }
 
 final class DefaultEditProfileCoordinator: EditProfileCoordinator {
+   
    
     var parentCoordinator: (any Coordinator)?
     
@@ -47,6 +49,13 @@ final class DefaultEditProfileCoordinator: EditProfileCoordinator {
     func dismissView() {
         navigationController.popViewController(animated: true)
         didFinish()
+    }
+    
+    func pushToEditPassword() {
+        let editPasswordCoordinator = DefaultEditPasswordCoordinator(navigationController: navigationController)
+        self.append(child: editPasswordCoordinator)
+        
+        editPasswordCoordinator.start()
     }
     
     func didFinish() {
