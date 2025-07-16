@@ -29,10 +29,15 @@ final class DefaultSearchCoordinator: SearchCoordinator {
     }
     
     func start() {
-        guard let tipUseCase = Container.shared.resolve(TipUseCase.self) else {
+        guard let tipUseCase = Container.shared.resolve(TipUseCase.self),
+              let searchHistoryUseCase = Container.shared.resolve(SearchHistoryUseCase.self)
+        else {
             fatalError("의존성 주입이 옳바르지 않습니다")
         }
-        let searchReactor = SearchReactor(tipUseCase: tipUseCase)
+        let searchReactor = SearchReactor(
+            tipUseCase: tipUseCase,
+            searchHistoryUseCase: searchHistoryUseCase
+        )
         let searchView = SearchViewController(reactor: searchReactor)
         searchView.coordinator = self
         navigationController.pushViewController(searchView, animated: true)
