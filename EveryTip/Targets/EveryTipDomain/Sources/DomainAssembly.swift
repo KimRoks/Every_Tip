@@ -42,5 +42,9 @@ public struct DomainAssembly: Assembly {
         container.register(CommentUseCase.self) { _ in
             DefaultCommentUseCase(commentRepository: container.resolve(CommentRepository.self)!)
         }
+        
+        container.register(SearchHistoryUseCase.self) { _ in
+            DefaultSearchHistoryUseCase(searchHistoryRepository: container.resolve(SearchHistoryRepository.self)!)
+        }
     }
 }

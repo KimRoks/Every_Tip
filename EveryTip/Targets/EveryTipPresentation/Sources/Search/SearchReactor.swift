@@ -23,6 +23,7 @@ final class SearchReactor: Reactor {
         
         case tipSelected(IndexPath)
         case sortButtonTapped(SortOptions)
+        case removeAllButtonTapped
     }
     
     enum Mutation {
@@ -54,11 +55,15 @@ final class SearchReactor: Reactor {
     
     var initialState = State()
     
+    private let searchHistoryUseCase: SearchHistoryUseCase
     private let tipUseCase: TipUseCase
-    private let keywordStorage = SearchKeywordStorage()
     
-    init(tipUseCase: TipUseCase) {
+    init(
+        tipUseCase: TipUseCase,
+        searchHistoryUseCase: SearchHistoryUseCase
+    ) {
         self.tipUseCase = tipUseCase
+        self.searchHistoryUseCase = searchHistoryUseCase
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
@@ -71,14 +76,14 @@ final class SearchReactor: Reactor {
                 return .just(.setToast("검색어를 입력해주세요"))
             }
             
-            keywordStorage.add(currentState.keyword)
+            searchHistoryUseCase.addKeyword(currentState.keyword)
             
             return tipUseCase.searchTip(with: currentState.keyword)
                 .asObservable()
                 .flatMap { tips in
                     return Observable.from([
                         .setTips(tips),
-                        .setRecentKeywords(self.keywordStorage.keywords),
+                        .setRecentKeywords(self.searchHistoryUseCase.fetchKeywords()),
                         .setIsSearched(true)
                     ])
                 }
@@ -87,11 +92,11 @@ final class SearchReactor: Reactor {
                 }
             
         case .loadRecentKeywords:
-            return .just(.setRecentKeywords(keywordStorage.keywords))
+            return .just(.setRecentKeywords(searchHistoryUseCase.fetchKeywords()))
             
         case .removeRecentKeyword(let keyword):
-            keywordStorage.remove(keyword)
-            return .just(.setRecentKeywords(keywordStorage.keywords))
+            searchHistoryUseCase.removeKeyword(keyword)
+            return .just(.setRecentKeywords(searchHistoryUseCase.fetchKeywords()))
             
         case .tipSelected(let indexPath):
             guard indexPath.row < currentState.tips.count else { return .empty() }
@@ -108,6 +113,10 @@ final class SearchReactor: Reactor {
                 .just(.setTips(sortedTips)),
                 .just(.setSortButton(option))
             )
+        case .removeAllButtonTapped:
+            searchHistoryUseCase.clearKeywords()
+            let updated = searchHistoryUseCase.fetchKeywords()
+            return .just(.setRecentKeywords(updated))
         }
     }
     

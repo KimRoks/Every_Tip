@@ -1,5 +1,5 @@
 //
-//  RecentKeywordCell.swift
+//  SearchHistoryCell.swift
 //  EveryTipPresentation
 //
 //  Created by 김경록 on 6/25/25.
@@ -10,7 +10,7 @@ import UIKit
 
 import RxSwift
 
-final class RecentKeywordCell: UITableViewCell, Reusable {
+final class SearchHistoryCell: UITableViewCell, Reusable {
     
     let removeButtonTapped = PublishSubject<Void>()
     var disposeBag = DisposeBag()
@@ -65,6 +65,7 @@ final class RecentKeywordCell: UITableViewCell, Reusable {
             $0.leading.equalTo(contentView.snp.leading)
             $0.height.width.equalTo(16)
             $0.centerY.equalToSuperview()
+            $0.top.bottom.equalToSuperview().inset(10)
         }
         
         keywordLabel.snp.makeConstraints {
