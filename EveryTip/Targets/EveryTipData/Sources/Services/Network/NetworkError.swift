@@ -20,6 +20,7 @@ enum NetworkError: LocalizedError {
     case baseURLError
     case invalidEmail
     case emptyResponseData
+    case wrongPassword
     
     var errorDescription: String? {
         switch self {
@@ -45,6 +46,8 @@ enum NetworkError: LocalizedError {
             return "사용 불가능한 이메일입니다."
         case .emptyResponseData:
             return "데이터가 없습니다"
+        case .wrongPassword:
+            return "비밀번호가 옳바르지 않습니다."
         }
     }
 }

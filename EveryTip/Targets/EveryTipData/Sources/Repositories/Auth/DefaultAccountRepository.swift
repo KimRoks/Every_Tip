@@ -125,7 +125,7 @@ struct DefaultAccountRepository: AccountRepository, SessionInjectable{
                     case .success(_):
                         tokenMaanage.deleteToken(type: .access)
                         tokenMaanage.deleteToken(type: .refresh)
-                    
+                        
                         return completable(.completed)
                     case .failure(let error):
                         print(error)
@@ -133,6 +133,66 @@ struct DefaultAccountRepository: AccountRepository, SessionInjectable{
                     }
                 }
             
+            return Disposables.create {
+                task?.cancel()
+            }
+        }
+    }
+    
+    func checkPassword(with currentPassword: String) -> Completable {
+        guard let request = try? AuthTarget.getCheckPassword(currentPassword: currentPassword)
+            .asURLRequest()
+        else {
+            return Completable.error(NetworkError.invalidURLError)
+        }
+        
+        return Completable.create { completable in
+            let task = session?.request(request, interceptor: interceptor)
+                .validate(statusCode: 200..<300)
+                .responseDecodable(of: CheckPasswordDTO.self) { response in
+                    switch response.result {
+                    case .success(let response):
+                        let result = response.data.check
+                        
+                        if result {
+                            return completable(.completed)
+                        } else {
+                            return completable(.error(NetworkError.wrongPassword))
+                        }
+                        
+                    case .failure(let error):
+                        return completable(.error(error))
+                    }
+                }
+            return Disposables.create {
+                task?.cancel()
+            }
+        }
+    }
+    
+    func changePassword(to newPassword: String) -> Completable {
+        guard let request = try? AuthTarget.patchChangePassword(
+            newPassword: newPassword
+        ).asURLRequest()
+        else {
+            return Completable.error(NetworkError.invalidURLError)
+        }
+        
+        return Completable.create { completable in
+            let task = session?.request(request, interceptor: interceptor)
+                .validate(statusCode: 200..<300)
+                .responseDecodable(of: BaseResponseDTO.self) { response in
+                    switch response.result {
+                    case .success(let response):
+                        if response.code == "SUCCESS" {
+                            return completable(.completed)
+                        } else {
+                            return completable(.error(NetworkError.emptyResponseData))
+                        }
+                    case .failure(let error):
+                        return completable(.error(error))
+                    }
+                }
             return Disposables.create {
                 task?.cancel()
             }

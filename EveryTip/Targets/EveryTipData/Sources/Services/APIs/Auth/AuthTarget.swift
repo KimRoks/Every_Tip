@@ -25,6 +25,11 @@ enum AuthTarget {
     case patchUpdatePassword(email: String, password: String)
     case postRenewRefreshToken(currentToken: String)
     case deleteAccount
+    
+    // TODO: Get + body 테스트 필요
+    
+    case getCheckPassword(currentPassword: String)
+    case patchChangePassword(newPassword: String)
 }
 
 extension AuthTarget: TargetType {
@@ -48,6 +53,10 @@ extension AuthTarget: TargetType {
                 .post
         case .deleteAccount:
                 .delete
+        case .getCheckPassword:
+                .get
+        case .patchChangePassword:
+                .patch
         }
     }
     
@@ -71,6 +80,10 @@ extension AuthTarget: TargetType {
             return "/auth/sign-in/refresh-tokens"
         case .deleteAccount:
             return "/user"
+        case .getCheckPassword:
+            return "/auth/password-check"
+        case .patchChangePassword:
+            return "/auth/password"
         }
     }
     
@@ -104,6 +117,12 @@ extension AuthTarget: TargetType {
             return ["refresh_token" : currentToken]
         case .deleteAccount:
             return nil
+        case .getCheckPassword(currentPassword: let currentPassword):
+            return ["password" : currentPassword]
+        case .patchChangePassword(newPassword: let newPassword):
+            return [
+                "password": newPassword
+            ]
         }
     }
     
@@ -126,6 +145,10 @@ extension AuthTarget: TargetType {
         case .postRenewRefreshToken:
             return nil
         case .deleteAccount:
+            return nil
+        case .getCheckPassword:
+            return nil
+        case .patchChangePassword:
             return nil
         }
     }
