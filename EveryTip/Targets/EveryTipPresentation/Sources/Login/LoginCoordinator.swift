@@ -15,6 +15,7 @@ protocol LoginCoordinator: Coordinator {
     func startAndReturnViewController() -> UIViewController
     func pushToSignupView()
     func popToRootView()
+    func pushToForgotPasswordView()
 }
 
 final class DefaultLoginCoordinator: LoginCoordinator {
@@ -68,5 +69,15 @@ final class DefaultLoginCoordinator: LoginCoordinator {
     func popToRootView() {
         didFinish()
         navigationController.popToRootViewController(animated: true)
+    }
+    
+    
+    func pushToForgotPasswordView() {
+        let forgotPasswordCoordinator = DefaultForgotPasswordCoordinator(navigationController: navigationController)
+        forgotPasswordCoordinator.parentCoordinator = self
+        
+        self.append(child: forgotPasswordCoordinator)
+        
+        forgotPasswordCoordinator.start()
     }
 }

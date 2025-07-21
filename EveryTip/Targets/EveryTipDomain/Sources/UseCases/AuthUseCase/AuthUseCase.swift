@@ -23,6 +23,7 @@ public protocol AuthUseCase {
     ) -> Single<Account>
     func checkEmailDuplication(for email: String) -> Completable
     func deleteAccount() -> Completable
+    func requestTemporaryPassword(for email: String) -> Completable
 }
 
 public final class DefaultAuthUseCase: AuthUseCase {
@@ -76,5 +77,9 @@ public final class DefaultAuthUseCase: AuthUseCase {
     
     public func deleteAccount() -> Completable {
         accountRepository.deleteAccount()
+    }
+    
+    public func requestTemporaryPassword(for email: String) -> Completable {
+        accountRepository.requestTemporaryPassword(for: email)
     }
 }

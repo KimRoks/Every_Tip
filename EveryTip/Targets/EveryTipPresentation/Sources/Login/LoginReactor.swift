@@ -19,6 +19,7 @@ final class LoginReactor: Reactor {
         case emailTextChanged(String)
         case passwordTextChanged(String)
         case loginButtonTapped
+        case searchPasswordButtonTapped
     }
     
     enum Mutation {
@@ -26,6 +27,7 @@ final class LoginReactor: Reactor {
         case setPassword(String)
         case setToast(String)
         case setNavigationSignal(Bool)
+        case setForgotPasswordSignal(Bool)
     }
     
     struct State {
@@ -34,6 +36,7 @@ final class LoginReactor: Reactor {
         var guideMessgage: String = ""
         @Pulse var toastMessage: String?
         @Pulse var navigationSignal: Bool = false
+        @Pulse var forgotPasswordSignal: Bool = false
     }
     
     let initialState: State
@@ -97,6 +100,8 @@ final class LoginReactor: Reactor {
             return .just(.setEmail(email))
         case .passwordTextChanged(let password):
             return .just(.setPassword(password))
+        case .searchPasswordButtonTapped:
+            return .just(.setForgotPasswordSignal(true))
         }
     }
     
@@ -111,6 +116,8 @@ final class LoginReactor: Reactor {
             newState.email = email
         case .setPassword(let password):
             newState.password = password
+        case .setForgotPasswordSignal(let signal):
+            newState.forgotPasswordSignal = signal
         }
         
         return newState

@@ -125,10 +125,38 @@ struct DefaultAccountRepository: AccountRepository, SessionInjectable{
                     case .success(_):
                         tokenMaanage.deleteToken(type: .access)
                         tokenMaanage.deleteToken(type: .refresh)
-                    
+                        
                         return completable(.completed)
                     case .failure(let error):
                         print(error)
+                        return completable(.error(error))
+                    }
+                }
+            
+            return Disposables.create {
+                task?.cancel()
+            }
+        }
+    }
+    
+    func requestTemporaryPassword(for email: String) -> Completable {
+        guard let request = try? AuthTarget.postTemporaryPassword(email: email).asURLRequest() else { return Completable.error(NetworkError.invalidURLError)}
+        
+        return Completable.create { completable in
+            let task = session?.request(request)
+                .validate(statusCode: 200..<300)
+                .responseDecodable(of: BaseResponseDTO.self) { response in
+                    switch response.result {
+                    case .success(let response):
+                        let code = response.code
+                        
+                        if code == "SUCCESS" {
+                            return completable(.completed)
+                        } else {
+                            return completable(.error(NetworkError.invalidEmail))
+                        }
+                        
+                    case .failure(let error):
                         return completable(.error(error))
                     }
                 }

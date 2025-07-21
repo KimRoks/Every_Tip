@@ -283,6 +283,11 @@ extension LoginViewController: View {
             .map { Reactor.Action.loginButtonTapped }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+        
+        searchPasswordButton.rx.tap
+            .map { Reactor.Action.searchPasswordButtonTapped }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
     
     func bindOutput(to reactor: LoginReactor) {
@@ -297,6 +302,13 @@ extension LoginViewController: View {
             .filter { $0 == true }
             .subscribe(onNext: { [weak self] _ in
                 self?.coordinator?.popToRootView()
+            })
+            .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$forgotPasswordSignal)
+            .filter { $0 == true }
+            .subscribe(onNext: { [weak self] _ in
+                self?.coordinator?.pushToForgotPasswordView()
             })
             .disposed(by: disposeBag)
     }

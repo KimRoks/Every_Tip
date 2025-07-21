@@ -21,4 +21,5 @@ public protocol AccountRepository {
     ) -> Single<Account>
     func checkEmailDuplication(email: String) -> Completable
     func deleteAccount() -> Completable
+    func requestTemporaryPassword(for email: String) -> Completable
 }
