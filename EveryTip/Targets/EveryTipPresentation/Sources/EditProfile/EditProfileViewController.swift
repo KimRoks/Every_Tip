@@ -201,7 +201,8 @@ extension EditProfileViewController: View {
         reactor.pulse(\.$dismissSignal)
             .filter { $0 }
             .subscribe(onNext: { [weak self] _ in
-                self?.coordinator?.dismissView()
+                NotificationCenter.default.post(name: .userDidLogout, object: nil)
+                self?.coordinator?.popToRootView()
             })
             .disposed(by: disposeBag)
     }
