@@ -26,7 +26,6 @@ enum AuthTarget {
     case postRenewRefreshToken(currentToken: String)
     case deleteAccount
     
-    // TODO: Get + body 테스트 필요
     
     case getCheckPassword(currentPassword: String)
     case patchChangePassword(newPassword: String)
