@@ -152,9 +152,9 @@ struct DefaultAccountRepository: AccountRepository, SessionInjectable{
                 .responseDecodable(of: CheckPasswordDTO.self) { response in
                     switch response.result {
                     case .success(let response):
-                        let result = response.data.check
+                        let isChecked = response.data
                         
-                        if result {
+                        if isChecked {
                             return completable(.completed)
                         } else {
                             return completable(.error(NetworkError.wrongPassword))

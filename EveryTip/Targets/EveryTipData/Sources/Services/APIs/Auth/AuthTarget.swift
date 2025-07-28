@@ -80,8 +80,8 @@ extension AuthTarget: TargetType {
             return "/auth/sign-in/refresh-tokens"
         case .deleteAccount:
             return "/user"
-        case .getCheckPassword:
-            return "/auth/password-check"
+        case .getCheckPassword(let password):
+            return "/auth/password-check?password=\(password)"
         case .patchChangePassword:
             return "/auth/password"
         }
@@ -117,11 +117,11 @@ extension AuthTarget: TargetType {
             return ["refresh_token" : currentToken]
         case .deleteAccount:
             return nil
-        case .getCheckPassword(currentPassword: let currentPassword):
-            return ["password" : currentPassword]
+        case .getCheckPassword:
+            return nil
         case .patchChangePassword(newPassword: let newPassword):
             return [
-                "password": newPassword
+                "new_password": newPassword
             ]
         }
     }

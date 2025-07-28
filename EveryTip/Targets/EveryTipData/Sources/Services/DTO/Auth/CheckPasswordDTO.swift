@@ -11,9 +11,5 @@ import Foundation
 public struct CheckPasswordDTO: Codable {
     public let code: String
     public let message: String
-    public let data: DataClass
-
-    public struct DataClass: Codable {
-        public let check: Bool
-    }
+    public let data: Bool
 }
