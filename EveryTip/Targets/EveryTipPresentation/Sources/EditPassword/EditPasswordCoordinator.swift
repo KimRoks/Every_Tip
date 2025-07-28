@@ -8,11 +8,16 @@
 
 import UIKit
 
-protocol EditPasswordCoordinator: Coordinator {
+import EveryTipDomain
 
+import Swinject
+
+protocol EditPasswordCoordinator: Coordinator {
+    func popToRootView()
 }
 
 final class DefaultEditPasswordCoordinator: EditPasswordCoordinator {
+  
     var parentCoordinator: (any Coordinator)?
     
     var childCoordinators: [any Coordinator] = []
@@ -24,12 +29,21 @@ final class DefaultEditPasswordCoordinator: EditPasswordCoordinator {
     }
     
     func start() {
-        let editPasswordVC = EditPasswordViewController()
+        guard let authUseCase = Container.shared.resolve(AuthUseCase.self) else {
+            fatalError("의존성 주입이 옳바르지 않습니다")
+        }
+        let reactor = EditPasswordReactor(authUseCase: authUseCase)
+        let editPasswordVC = EditPasswordViewController(reactor: reactor)
         editPasswordVC.coordinator = self
         navigationController.pushViewController(editPasswordVC, animated: true)
     }
     
     func didFinish() {
         parentCoordinator?.remove(child: self)
+    }
+    
+    func popToRootView() {
+        didFinish()
+        navigationController.popToRootViewController(animated: true)
     }
 }
