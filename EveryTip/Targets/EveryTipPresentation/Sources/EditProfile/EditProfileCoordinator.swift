@@ -13,10 +13,12 @@ import EveryTipDomain
 import Swinject
 
 protocol EditProfileCoordinator: AuthenticationCoordinator {
-    func dismissView()
+    func popToRootView()
+    func pushToEditPassword()
 }
 
 final class DefaultEditProfileCoordinator: EditProfileCoordinator {
+   
    
     var parentCoordinator: (any Coordinator)?
     
@@ -44,9 +46,16 @@ final class DefaultEditProfileCoordinator: EditProfileCoordinator {
         navigationController.pushViewController(vc, animated: true)
     }
     
-    func dismissView() {
+    func popToRootView() {
         navigationController.popViewController(animated: true)
         didFinish()
+    }
+    
+    func pushToEditPassword() {
+        let editPasswordCoordinator = DefaultEditPasswordCoordinator(navigationController: navigationController)
+        self.append(child: editPasswordCoordinator)
+        
+        editPasswordCoordinator.start()
     }
     
     func didFinish() {

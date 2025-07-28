@@ -10,7 +10,6 @@ import Foundation
 
 import RxSwift
 
-// TODO: 비밀번호 변경 api확정시 추가 예정
 public protocol AccountRepository {
     func login(with email: String, password: String) -> Single<Account>
     func signUp(
@@ -21,5 +20,7 @@ public protocol AccountRepository {
     ) -> Single<Account>
     func checkEmailDuplication(email: String) -> Completable
     func deleteAccount() -> Completable
+    func checkPassword(with currentPassword: String) -> Completable
+    func changePassword(to newPassword: String) -> Completable
     func requestTemporaryPassword(for email: String) -> Completable
 }

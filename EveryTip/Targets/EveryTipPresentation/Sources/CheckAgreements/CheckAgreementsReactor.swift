@@ -84,8 +84,6 @@ final class CheckAgreementsReactor: Reactor {
             if !currentState.isConfirmable {
                 return .just(.setToast("필수 약관에 동의해주세요."))
             } else {
-                // TODO: 현재 api에서 정확한 값 측정을 진행하고 있지않음.관련 사항 업데이트 시 수정 필요
-                
                 let agreementsIDs: [Int] = [
                     currentState.isTermsChecked ? 3 : nil,
                     currentState.isPrivacyPolicyChecked ? 4 : nil
@@ -101,9 +99,6 @@ final class CheckAgreementsReactor: Reactor {
                 )
                 .asObservable()
                 .map { accountData in
-                    let tokenManager = TokenKeyChainManager.shared
-                    tokenManager.storeToken(accountData.accessToken, type: .access)
-                    tokenManager.storeToken(accountData.refreshToken, type: .refresh)
                     
                     return Mutation.setNavigationSignal(true)
                 }

@@ -14,7 +14,7 @@ import EveryTipCore
 import Alamofire
 import RxSwift
 
-struct DefaultAccountRepository: AccountRepository, SessionInjectable{
+struct DefaultAccountRepository: AccountRepository, SessionInjectable {
     
     let session: Session?
     private let interceptor = TokenInterceptor()
@@ -43,7 +43,8 @@ struct DefaultAccountRepository: AccountRepository, SessionInjectable{
                 .responseDecodable(of: AccountDTO.self) { response in
                     switch response.result {
                     case .success(let accountDTO):
-                        guard let account = accountDTO.toDomain() else { return single(.failure(NetworkError.emptyResponseData))
+                        guard let account = accountDTO.toDomain() else {
+                            return single(.failure(NetworkError.emptyResponseData))
                         }
                         return single(.success(account))
                         
@@ -140,7 +141,9 @@ struct DefaultAccountRepository: AccountRepository, SessionInjectable{
     }
     
     func requestTemporaryPassword(for email: String) -> Completable {
-        guard let request = try? AuthTarget.postTemporaryPassword(email: email).asURLRequest() else { return Completable.error(NetworkError.invalidURLError)}
+        guard let request = try? AuthTarget.postTemporaryPassword(email: email).asURLRequest() else { 
+            return Completable.error(NetworkError.invalidURLError)
+        }
         
         return Completable.create { completable in
             let task = session?.request(request)
@@ -160,7 +163,63 @@ struct DefaultAccountRepository: AccountRepository, SessionInjectable{
                         return completable(.error(error))
                     }
                 }
-            
+            return Disposables.create {
+                task?.cancel()
+            }
+        }
+    }
+    
+    func checkPassword(with currentPassword: String) -> Completable {
+        guard let request = try? AuthTarget.getCheckPassword(currentPassword: currentPassword).asURLRequest()
+        else {
+            return Completable.error(NetworkError.invalidURLError)
+        }
+        
+        return Completable.create { completable in
+            let task = session?.request(request, interceptor: interceptor)
+                .validate(statusCode: 200..<300)
+                .responseDecodable(of: CheckPasswordDTO.self) { response in
+                    switch response.result {
+                    case .success(let response):
+                        let isChecked = response.data
+                        
+                        if isChecked {
+                            return completable(.completed)
+                        } else {
+                            return completable(.error(NetworkError.wrongPassword))
+                        }
+                        
+                    case .failure(let error):
+                        return completable(.error(error))
+                    }
+                }
+            return Disposables.create {
+                task?.cancel()
+            }
+        }
+    }
+    
+    func changePassword(to newPassword: String) -> Completable {
+        guard let request = try? AuthTarget.patchChangePassword(newPassword: newPassword).asURLRequest()
+        else {
+            return Completable.error(NetworkError.invalidURLError)
+        }
+        
+        return Completable.create { completable in
+            let task = session?.request(request, interceptor: interceptor)
+                .validate(statusCode: 200..<300)
+                .responseDecodable(of: BaseResponseDTO.self) { response in
+                    switch response.result {
+                    case .success(let response):
+                        if response.code == "SUCCESS" {
+                            return completable(.completed)
+                        } else {
+                            return completable(.error(NetworkError.emptyResponseData))
+                        }
+                    case .failure(let error):
+                        return completable(.error(error))
+                    }
+                }
             return Disposables.create {
                 task?.cancel()
             }

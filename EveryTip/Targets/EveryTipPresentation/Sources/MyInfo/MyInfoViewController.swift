@@ -313,6 +313,11 @@ extension MyInfoViewController: View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        NotificationCenter.default.rx.notification(.userDidLogout)
+            .map { _ in Reactor.Action.applyGuestProfile }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
         tapGesture.rx.event
             .bind { [weak self] _ in
                 self?.coordinator?.checkLoginBeforeAction(onLoggedIn: { [weak self] in

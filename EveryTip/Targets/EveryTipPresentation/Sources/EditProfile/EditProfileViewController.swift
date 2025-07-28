@@ -174,7 +174,7 @@ extension EditProfileViewController: View {
         reactor.pulse(\.$changePasswordSignal)
             .filter { $0 == true }
             .bind { [weak self] _ in
-                print("비밀번호 변경으로 이동")
+                self?.coordinator?.pushToEditPassword()
             }
             .disposed(by: disposeBag)
         
@@ -201,7 +201,8 @@ extension EditProfileViewController: View {
         reactor.pulse(\.$dismissSignal)
             .filter { $0 }
             .subscribe(onNext: { [weak self] _ in
-                self?.coordinator?.dismissView()
+                NotificationCenter.default.post(name: .userDidLogout, object: nil)
+                self?.coordinator?.popToRootView()
             })
             .disposed(by: disposeBag)
     }

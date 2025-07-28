@@ -19,9 +19,8 @@ class MyInfoReactor: Reactor {
     private let tokenManager = TokenKeyChainManager.shared
     
     enum Action {
-        // TODO: 프로필 편집, 각 아이템 터치 처리
         case refresh
-        
+        case applyGuestProfile
         case agreementCellTapped
         case logoutCellTapped
         case logoutConfirmTapped
@@ -62,7 +61,7 @@ class MyInfoReactor: Reactor {
     }
     
     let initialState: State
-
+    
     // API가 토큰 없을시 에러만 뱉기떄문에 더미데이터로 대체
     private let guestProfile = MyProfile(
         id: 0,
@@ -123,6 +122,8 @@ class MyInfoReactor: Reactor {
             return .just(.setCategorySignal)
         case .setSubscribeButtonTapped:
             return .just(.setSubscribeSignal)
+        case .applyGuestProfile:
+            return .just(.setMyProfileData(self.guestProfile))
         }
     }
     
