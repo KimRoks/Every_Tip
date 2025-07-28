@@ -20,7 +20,7 @@ public protocol AccountRepository {
     ) -> Single<Account>
     func checkEmailDuplication(email: String) -> Completable
     func deleteAccount() -> Completable
-    
     func checkPassword(with currentPassword: String) -> Completable
     func changePassword(to newPassword: String) -> Completable
+    func requestTemporaryPassword(for email: String) -> Completable
 }

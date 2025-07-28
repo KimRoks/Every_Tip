@@ -25,10 +25,9 @@ enum AuthTarget {
     case patchUpdatePassword(email: String, password: String)
     case postRenewRefreshToken(currentToken: String)
     case deleteAccount
-    
-    
     case getCheckPassword(currentPassword: String)
     case patchChangePassword(newPassword: String)
+    case postTemporaryPassword(email: String)
 }
 
 extension AuthTarget: TargetType {
@@ -56,6 +55,8 @@ extension AuthTarget: TargetType {
                 .get
         case .patchChangePassword:
                 .patch
+        case .postTemporaryPassword:
+                .post
         }
     }
     
@@ -83,6 +84,8 @@ extension AuthTarget: TargetType {
             return "/auth/password-check?password=\(password)"
         case .patchChangePassword:
             return "/auth/password"
+        case .postTemporaryPassword:
+            return "/auth/temp-password"
         }
     }
     
@@ -122,6 +125,8 @@ extension AuthTarget: TargetType {
             return [
                 "new_password": newPassword
             ]
+        case .postTemporaryPassword(email: let email):
+            return ["email": email]
         }
     }
     
@@ -148,6 +153,7 @@ extension AuthTarget: TargetType {
         case .getCheckPassword:
             return nil
         case .patchChangePassword:
+        case .postTemporaryPassword:
             return nil
         }
     }

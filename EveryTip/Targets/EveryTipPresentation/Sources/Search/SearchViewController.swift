@@ -84,7 +84,7 @@ final class SearchViewController: BaseViewController {
         return button
     }()
     
-    private let recentSearchTableView: UITableView = {
+    private let searchHistoryTableView: UITableView = {
         let tableView = UITableView()
         
         return tableView
@@ -101,6 +101,13 @@ final class SearchViewController: BaseViewController {
         let tableView = UITableView()
         
         return tableView
+    }()
+    
+    private let placeholderView: UserContentPlaceholderView = {
+        let view = UserContentPlaceholderView(type: .emptySearchResult)
+        view.isHidden = true
+        
+        return view
     }()
     
     init(reactor: SearchReactor) {
@@ -132,8 +139,9 @@ final class SearchViewController: BaseViewController {
         view.addSubViews(
             naviBarView,
             middleView,
-            recentSearchTableView,
-            tipsTableView
+            searchHistoryTableView,
+            tipsTableView,
+            placeholderView
         )
         searchBarTextFieldView.addSubview(
             searchBarTextField
@@ -205,7 +213,7 @@ final class SearchViewController: BaseViewController {
             $0.trailing.equalTo(middleView.snp.trailing).offset(-20)
         }
         
-        recentSearchTableView.snp.makeConstraints {
+        searchHistoryTableView.snp.makeConstraints {
             $0.top.equalTo(middleView.snp.bottom).offset(20)
             $0.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
@@ -214,14 +222,19 @@ final class SearchViewController: BaseViewController {
             $0.top.equalTo(middleView.snp.bottom)
             $0.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
         }
+        
+        placeholderView.snp.makeConstraints {
+            $0.top.equalTo(middleView.snp.bottom)
+            $0.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
+        }
     }
     
     private func setupTableView() {
-        recentSearchTableView.register(
-            RecentKeywordCell.self,
-            forCellReuseIdentifier: RecentKeywordCell.reuseIdentifier
+        searchHistoryTableView.register(
+            SearchHistoryCell.self,
+            forCellReuseIdentifier: SearchHistoryCell.reuseIdentifier
         )
-        recentSearchTableView.separatorStyle = .none
+        searchHistoryTableView.separatorStyle = .none
         
         tipsTableView.register(
             TipListCell.self,
@@ -253,10 +266,7 @@ extension SearchViewController: View {
             .disposed(by: disposeBag)
         
         removeAllButton.rx.tap
-            .do(onNext: {
-                SearchKeywordStorage().clear()
-            })
-            .map { Reactor.Action.loadRecentKeywords }
+            .map { Reactor.Action.removeAllButtonTapped }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -283,9 +293,9 @@ extension SearchViewController: View {
         reactor.state
             .map(\.recentKeywords)
             .distinctUntilChanged()
-            .bind(to: recentSearchTableView.rx.items(
-                cellIdentifier: RecentKeywordCell.reuseIdentifier,
-                cellType: RecentKeywordCell.self
+            .bind(to: searchHistoryTableView.rx.items(
+                cellIdentifier: SearchHistoryCell.reuseIdentifier,
+                cellType: SearchHistoryCell.self
             )) { index, keyword, cell in
                 cell.configureCell(with: keyword)
                 cell.removeButtonTapped
@@ -296,7 +306,7 @@ extension SearchViewController: View {
             }
             .disposed(by: disposeBag)
         
-        recentSearchTableView.rx.modelSelected(String.self)
+        searchHistoryTableView.rx.modelSelected(String.self)
             .subscribe(onNext: { [weak self] keyword in
                 self?.searchBarTextField.text = keyword
                 reactor.action.onNext(.keywordInputChanged(keyword))
@@ -317,7 +327,7 @@ extension SearchViewController: View {
                 
                 self?.recentSearchLable.isHidden = isSearched
                 self?.removeAllButton.isHidden = isSearched
-                self?.recentSearchTableView.isHidden = isSearched
+                self?.searchHistoryTableView.isHidden = isSearched
                 
                 self?.sortButton.isHidden = !isSearched
                 self?.tipsTableView.isHidden = !isSearched
@@ -333,6 +343,21 @@ extension SearchViewController: View {
                 cell.configureTipListCell(with: tip)
             }
             .disposed(by: disposeBag)
+        
+        Observable
+            .combineLatest(
+                reactor.state.map(\.isSearched).distinctUntilChanged(),
+                reactor.state.map(\.tips)
+            )
+            .map { isSearched, tips in
+                return isSearched && tips.isEmpty
+            }
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] shouldShowPlaceholder in
+                self?.placeholderView.isHidden = !shouldShowPlaceholder
+            })
+            .disposed(by: disposeBag)
+        
         
         reactor.pulse(\.$dismissSignal)
             .filter { $0 == true }

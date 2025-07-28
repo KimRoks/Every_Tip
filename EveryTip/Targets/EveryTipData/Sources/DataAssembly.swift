@@ -55,5 +55,9 @@ public struct DataAssembly: Assembly {
         container.register(UserFollowRepository.self) { _ in
             return DefaultUserFollowRepository()
         }
+        
+        container.register(SearchHistoryRepository.self) { _ in
+            return DefaultSearchHistoryRepository()
+        }
     }
 }
