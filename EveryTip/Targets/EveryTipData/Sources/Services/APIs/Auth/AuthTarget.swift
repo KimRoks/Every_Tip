@@ -153,6 +153,7 @@ extension AuthTarget: TargetType {
         case .getCheckPassword:
             return nil
         case .patchChangePassword:
+            return nil
         case .postTemporaryPassword:
             return nil
         }

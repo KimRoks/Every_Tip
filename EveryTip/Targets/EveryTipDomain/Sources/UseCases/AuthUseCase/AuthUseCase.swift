@@ -22,7 +22,7 @@ public protocol AuthUseCase {
         nickName: String
     ) -> Single<Account>
     func checkEmailDuplication(for email: String) -> Completable
-    func deleteAccount() -> Completable    
+    func deleteAccount() -> Completable
     func checkPassword(with currentPassword: String) -> Completable
     func changePassword(to newPassword: String) -> Completable
     func requestTemporaryPassword(for email: String) -> Completable
@@ -81,12 +81,14 @@ public final class DefaultAuthUseCase: AuthUseCase {
         accountRepository.deleteAccount()
     }
     
-    public func checkPassword(with currentPassword: String) -> RxSwift.Completable {
+    public func checkPassword(with currentPassword: String) -> Completable {
         accountRepository.checkPassword(with: currentPassword)
     }
-    public func changePassword(to newPassword: String) -> RxSwift.Completable {
+    public func changePassword(to newPassword: String) -> Completable {
         accountRepository.changePassword(to: newPassword)
+    }
     public func requestTemporaryPassword(for email: String) -> Completable {
         accountRepository.requestTemporaryPassword(for: email)
     }
 }
+
