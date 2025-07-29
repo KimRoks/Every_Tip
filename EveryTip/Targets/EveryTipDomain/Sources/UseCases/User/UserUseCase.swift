@@ -59,7 +59,7 @@ final class DefaultUserUseCase: UserUseCase {
         profileRepository.fetchUserProfile(userID: userID)
     }
     
-    func isNicknameDuplicated(_ nickname: String) -> RxSwift.Single<Bool> {
+    func isNicknameDuplicated(_ nickname: String) -> Single<Bool> {
         nickNameRepository.isNicknameDuplicated(nickname)
     }
     

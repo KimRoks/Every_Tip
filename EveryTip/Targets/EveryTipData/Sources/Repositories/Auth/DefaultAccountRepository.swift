@@ -113,7 +113,7 @@ struct DefaultAccountRepository: AccountRepository, SessionInjectable {
         }
     }
     
-    func deleteAccount() -> RxSwift.Completable {
+    func deleteAccount() -> Completable {
         guard let request = try? AuthTarget.deleteAccount.asURLRequest() else {
             return Completable.error(NetworkError.invalidURLError)
         }

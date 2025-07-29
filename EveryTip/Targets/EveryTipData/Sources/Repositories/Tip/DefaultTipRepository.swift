@@ -67,7 +67,7 @@ struct DefaultTipRepository: TipRepository, SessionInjectable {
         }
     }
     
-    func fetchTips(forUserID userID: Int) -> RxSwift.Single<[EveryTipDomain.Tip]> {
+    func fetchTips(forUserID userID: Int) -> Single<[EveryTipDomain.Tip]> {
         guard let request = try? TipTarget.fetchTipByUserID(userID).asURLRequest() else {
             return Single.error(NetworkError.invalidURLError)
         }
@@ -208,7 +208,7 @@ struct DefaultTipRepository: TipRepository, SessionInjectable {
         }
     }
     
-    func getPresignedURL(categoryID: Int, mimeType: String) -> RxSwift.Single<String> {
+    func getPresignedURL(categoryID: Int, mimeType: String) -> Single<String> {
         guard let request = try? TipTarget.postPresignedURL(
             categoryID: categoryID,
             fileType: mimeType
@@ -260,7 +260,7 @@ struct DefaultTipRepository: TipRepository, SessionInjectable {
         }
     }
     
-    func postTip(categoryID: Int, tags: [String], title: String, content: String, images: [Tip.Image]) -> RxSwift.Completable {
+    func postTip(categoryID: Int, tags: [String], title: String, content: String, images: [Tip.Image]) -> Completable {
         guard let request = try? TipTarget.postTip(categoryID: categoryID, tags: tags, title: title, content: content, images: images).asURLRequest() else {
             return Completable.error(NetworkError.invalidURLError)
         }
