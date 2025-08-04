@@ -11,4 +11,5 @@ import Foundation
 public extension Notification.Name {
     static let refreshTokenExpired = Notification.Name("RefreshTokenDidExpired")
     static let userDidLogout = Notification.Name("userDidLogout")
+    static let didUpdateUserCategories = Notification.Name("didUpdateUserCategories")
 }

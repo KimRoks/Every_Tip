@@ -182,6 +182,7 @@ extension SetCategoryViewController: View {
         reactor.pulse(\.$completedSignal)
             .filter { $0 == true }
             .subscribe(onNext: { [weak self] _ in
+                NotificationCenter.default.post(name: .didUpdateUserCategories, object: nil)
                 self?.coordinator?.popToRootView()
             })
             .disposed(by: disposeBag)

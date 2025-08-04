@@ -223,6 +223,11 @@ extension HomeViewController: View {
             .map { Reactor.Action.searchButtonTapped}
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+        
+        NotificationCenter.default.rx.notification(.didUpdateUserCategories)
+            .map { _ in HomeReactor.Action.viewDidLoad }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
     
     private func bindOutputs(to reactor: HomeReactor) {
