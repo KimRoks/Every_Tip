@@ -277,7 +277,7 @@ extension HomeViewController: View {
                     })
                 }
             })
-            .disposed(by: disposeBag)   
+            .disposed(by: disposeBag)
     }
 }
 
@@ -293,12 +293,32 @@ extension HomeViewController: UITableViewDelegate {
         headerView.setTitleLabel(headerTitle)
         let sectionType = dataSource.sectionModels[section].sectionType
         headerView.bind(with: sectionType)
-
-        headerView.readMoreTapped
-            .map { _ in HomeReactor.Action.headerSectionButtonTapped(sectionType: sectionType) }
-            .bind(to: reactor!.action)
-            .disposed(by: headerView.disposeBag)
         
+        switch sectionType {
+        case .popular:
+            headerView.readMoreTapped
+                .map { _ in HomeReactor.Action.headerSectionButtonTapped(sectionType: .popular) }
+                .bind(to: reactor!.action)
+                .disposed(by: headerView.disposeBag)
+            
+        case .interestCategory:
+            headerView.readMoreTapped
+                .withUnretained(self)
+                .subscribe(onNext: { (owner, _) in
+                    owner.coordinator?.checkLoginBeforeAction {
+                        guard owner.reactor?.currentState.myCategories.isEmpty == false else {
+                            owner.coordinator?.pushToSetCategoryView()
+                            return
+                        }
+                        owner.reactor?.action.onNext(
+                            .headerSectionButtonTapped(
+                                sectionType: .interestCategory
+                            )
+                        )
+                    }
+                })
+                .disposed(by: headerView.disposeBag)
+        }
         return headerView
     }
     
