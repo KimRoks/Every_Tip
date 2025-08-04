@@ -132,7 +132,8 @@ func makeEveryTipAppTarget(
         "NSAppTransportSecurity": [
             "NSAllowsArbitraryLoads": true
         ],
-        "NSPhotoLibraryUsageDescription": "앱에서 사진을 선택하기 위해 접근합니다."
+        "NSPhotoLibraryUsageDescription": "앱에서 사진을 선택하기 위해 접근합니다.",
+        "LSApplicationCategoryType": "public.app-category.social-networking"
     ]
     return Target.target(
         name: appName,
