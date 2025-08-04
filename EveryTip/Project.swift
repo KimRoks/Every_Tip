@@ -35,7 +35,7 @@ func makeEveryTipFrameworkTargets(
     
     let sourceTarget = Target.target(
         name: name,
-        destinations: .iOS,
+        destinations: [.iPhone],
         product: .framework,
         bundleId: "com.sonmoham.\(name)",
         
@@ -50,7 +50,7 @@ func makeEveryTipFrameworkTargets(
     )
     let testTarget = Target.target(
         name: "\(name)Tests",
-        destinations: .iOS  ,
+        destinations: [.iPhone],
         product: .unitTests,
         bundleId: "com.sonmoham.\(name)Tests",
         deploymentTargets: deploymentTarget,
@@ -85,8 +85,7 @@ func makeEveryTipDesignSystemTarget(
     
     let sourceTarget = Target.target(
         name: name,
-        destinations: .iOS,
-        
+        destinations: [.iPhone],
         product: .framework,
         bundleId: "com.sonmoham.\(name)",
         deploymentTargets: deploymentTarget,
@@ -101,7 +100,7 @@ func makeEveryTipDesignSystemTarget(
     
     let testTarget = Target.target(
         name: "\(name)Tests",
-        destinations: .iOS,
+        destinations: [.iPhone],
         product: .unitTests,
         bundleId: "com.sonmoham.\(name)Tests",
         deploymentTargets: deploymentTarget,
@@ -137,7 +136,7 @@ func makeEveryTipAppTarget(
     ]
     return Target.target(
         name: appName,
-        destinations: .iOS,
+        destinations: [.iPhone],
         product: .app,
         bundleId: "com.sonmoham.\(appName)",
         deploymentTargets: deploymentTarget,
