@@ -50,6 +50,6 @@ final class TagCollectionViewCell: UICollectionViewCell, Reusable {
     }
     
     func updateTag(_ text: String) {
-        tagLabel.text = "#\(text)"
+        tagLabel.text = "\(text)"
     }
 }

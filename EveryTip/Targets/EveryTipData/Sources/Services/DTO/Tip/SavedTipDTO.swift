@@ -38,7 +38,7 @@ public struct SavedTipDTO: Codable {
 
         public struct Image: Codable {
             public let url: String
-            public let isThumbnail: Bool
+            public let isThumbnail: Int
 
             enum CodingKeys: String, CodingKey {
                 case url
@@ -84,7 +84,7 @@ public extension SavedTipDTO.Tip.Image {
     func toDomain() -> Tip.Image {
         return Tip.Image(
             url: url,
-            isThumbnail: isThumbnail ? 1 : 0
+            isThumbnail: isThumbnail
         )
     }
 }
