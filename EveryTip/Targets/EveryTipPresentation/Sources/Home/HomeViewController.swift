@@ -42,9 +42,12 @@ final class HomeViewController: BaseViewController {
         return view
     }()
     
+    
+    // TODO: 위클리팁 방식 개선 고민 필요
+    
     private let weeklyTipLabel: UILabel = {
         let label = UILabel()
-        label.text = "코끼리는 유일하게 OO를\n하지 못하는 포유류입니다 "
+        label.text = "사람은 자는 동안\n수분을 OO만큼 잃어버려요"
         label.textColor = .white
         label.font = UIFont.et_pretendard(
             style: .extraBold,
@@ -57,9 +60,34 @@ final class HomeViewController: BaseViewController {
     }()
     
     private let weeklyTipLearnMoreButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("자세히 보기 >", for: .normal)
-        button.tintColor = .white
+        var config = UIButton.Configuration.plain()
+        
+        let image = UIImage.et_getImage(for: .nextButton_darkGray)
+            .withRenderingMode(.alwaysTemplate)
+        
+        config.image = image
+        
+        config.imagePlacement = .trailing
+        config.imagePadding = 5
+        config.baseForegroundColor = .white
+        
+        config.contentInsets = NSDirectionalEdgeInsets(
+            top: 0,
+            leading: 0,
+            bottom: 0,
+            trailing: 0
+        )
+        
+        let attrString = AttributedString(
+            "자세히 보기", attributes: AttributeContainer([
+                .font: UIFont.et_pretendard(
+                    style: .bold,
+                    size: 14
+                )
+            ])
+        )
+        config.attributedTitle = attrString
+        let button = UIButton(configuration: config)
         
         return button
     }()
@@ -228,6 +256,11 @@ extension HomeViewController: View {
             .map { _ in HomeReactor.Action.viewDidLoad }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+        
+        weeklyTipLearnMoreButton.rx.tap
+            .map { Reactor.Action.weeklyTipButtonTapped }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
     
     private func bindOutputs(to reactor: HomeReactor) {
@@ -283,6 +316,13 @@ extension HomeViewController: View {
                 }
             })
             .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$weeklyTipTappedSignal)
+            .filter { $0 == true }
+            .subscribe(onNext: { _ in
+                self.coordinator?.pushToWeeklyTipView(with: 15)
+            }
+            ).disposed(by: disposeBag)
     }
 }
 

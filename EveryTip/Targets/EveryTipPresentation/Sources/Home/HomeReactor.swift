@@ -22,6 +22,7 @@ class HomeReactor: Reactor {
         case refresh
         case searchButtonTapped
         case headerSectionButtonTapped(sectionType: SectionType)
+        case weeklyTipButtonTapped
     }
     
     enum Mutation {
@@ -32,6 +33,7 @@ class HomeReactor: Reactor {
         case setSearchSiganl(Bool)
         case setMyCategories([Category])
         case setSelectedSection(SectionType)
+        case setWeeklyTipTappedSignal(Bool)
     }
     
     struct State {
@@ -46,6 +48,7 @@ class HomeReactor: Reactor {
         @Pulse var toastMessage: String?
         @Pulse var searchSignal: Bool = false
         @Pulse var selectedSection: SectionType?
+        @Pulse var weeklyTipTappedSignal: Bool = false
     }
     
     let initialState: State
@@ -95,6 +98,8 @@ class HomeReactor: Reactor {
             return .just(.setSearchSiganl(true))
         case .headerSectionButtonTapped(let section):
             return .just(.setSelectedSection(section))
+        case .weeklyTipButtonTapped:
+            return .just(.setWeeklyTipTappedSignal(true))
         }
     }
     
@@ -127,6 +132,8 @@ class HomeReactor: Reactor {
             newState.categorizedTips = Array(filtered.prefix(3))
         case .setSelectedSection(let section):
             newState.selectedSection = section
+        case .setWeeklyTipTappedSignal(let signal):
+            newState.weeklyTipTappedSignal = signal
         }
         
         return newState

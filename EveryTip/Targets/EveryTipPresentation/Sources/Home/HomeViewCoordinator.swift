@@ -18,6 +18,7 @@ protocol HomeViewCoordinator: AuthenticationCoordinator {
     func pushToSetCategoryView()
     func pushToSearchView()
     func pushToReadmoreView(sectionType: HomeSectionHeaderView.SectionType, categories: [EveryTipDomain.Category])
+    func pushToWeeklyTipView(with tipID: Int)
 }
 
 final class DefaultHomeViewCoordinator: HomeViewCoordinator {
@@ -92,5 +93,16 @@ final class DefaultHomeViewCoordinator: HomeViewCoordinator {
         self.append(child: setionedCoordinator)
         
         setionedCoordinator.start()
+    }
+    
+    func pushToWeeklyTipView(with tipID: Int) {
+        let coordinator = DefaultTipDetailCoordinator(
+            tipId: tipID,
+            navigationController: navigationController
+        )
+        coordinator.parentCoordinator = self
+        append(child: coordinator)
+        
+        coordinator.start()
     }
 }
