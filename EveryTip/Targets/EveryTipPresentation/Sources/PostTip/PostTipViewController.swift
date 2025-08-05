@@ -93,7 +93,7 @@ final class PostTipViewController: BaseViewController {
     
     private let bodyTextView: UITextView = {
         let textView = UITextView()
-        textView.text = "내용 입력"
+        textView.text = "내용 입력(최대 250자)"
         textView.textColor = UIColor.placeholderText
         textView.font = UIFont.et_pretendard(
             style: .medium,
@@ -331,7 +331,7 @@ final class PostTipViewController: BaseViewController {
 
 extension PostTipViewController: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.text == "내용 입력" {
+        if textView.text == "내용 입력(최대 250자)" {
             textView.text = ""
             textView.textColor = UIColor.et_textColorBlack70
         }
@@ -339,9 +339,23 @@ extension PostTipViewController: UITextViewDelegate {
     
     func textViewDidEndEditing(_ textView: UITextView) {
         if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            textView.text = "내용 입력"
+            textView.text = "내용 입력(최대 250자)"
             textView.textColor = .placeholderText
         }
+    }
+    
+    func textView(
+        _ textView: UITextView,
+        shouldChangeTextIn range: NSRange,
+        replacementText text: String) -> Bool
+    {
+        let currentText = textView.text ?? ""
+        guard let stringRange = Range(range, in: currentText) else {
+            return false
+        }
+        let updatedText = currentText.replacingCharacters(in: stringRange, with: text)
+        
+        return updatedText.count <= 250
     }
 }
 
