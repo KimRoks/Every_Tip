@@ -15,7 +15,7 @@ import RxSwift
 final class UserFollowReactor: Reactor {
     
     enum Action {
-        case viewDidLoad
+        case refresh
         case removeButtonTapped(userID: Int)
         case itemSelected(UserPreview)
     }
@@ -49,7 +49,7 @@ final class UserFollowReactor: Reactor {
     
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case .viewDidLoad:
+        case .refresh:
             let fetch: Single<[UserPreview]> = {
                 switch followType {
                 case .following:

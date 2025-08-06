@@ -87,7 +87,12 @@ extension UserTipViewCotroller: View {
     
     private func bindInput(reactor: UserTipReactor) {
         rx.viewDidLoad
-            .map { .refresh }
+            .map { Reactor.Action.refresh }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        rx.viewWillAppear
+            .map { Reactor.Action.refresh }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         

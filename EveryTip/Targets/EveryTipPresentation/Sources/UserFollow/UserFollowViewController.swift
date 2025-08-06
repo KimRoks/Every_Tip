@@ -83,7 +83,12 @@ extension UserFollowViewController: View {
     
     func bindInput(reactor: UserFollowReactor) {
         rx.viewDidLoad
-            .map { Reactor.Action.viewDidLoad }
+            .map { Reactor.Action.refresh }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        rx.viewWillAppear
+            .map { Reactor.Action.refresh }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
