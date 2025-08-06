@@ -68,7 +68,7 @@ final class ExploreReactor: Reactor {
             )
 
         case .refresh:
-            let followersObservable = userUseCase.fetchMyFollowers()
+            let followersObservable = userUseCase.fetchMyFollowing()
                     .asObservable()
                     .catchAndReturn([])
                     .map { followers -> Mutation in
