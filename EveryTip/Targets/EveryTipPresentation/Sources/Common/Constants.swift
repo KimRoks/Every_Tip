@@ -26,8 +26,8 @@ public struct Constants {
         case finance
         case entertainment
         case sports
-        case games
         case social
+        case games
         
         var image: UIImage? {
             switch self {
@@ -43,10 +43,10 @@ public struct Constants {
                 return UIImage.et_getImage(for: .categoryIcon_entertainment)
             case .sports:
                 return UIImage.et_getImage(for: .categoryIcon_sports)
-            case .games:
-                return UIImage.et_getImage(for: .categoryIcon_games)
             case .social:
                 return UIImage.et_getImage(for: .categoryIcon_social)
+            case .games:
+                return UIImage.et_getImage(for: .categoryIcon_games)
             }
         }
         
@@ -64,10 +64,10 @@ public struct Constants {
                 return "연예/방송"
             case .sports:
                 return "스포츠"
-            case .games:
-                return "게임"
             case .social:
                 return "사회"
+            case .games:
+                return "게임"
             }
         }
         
@@ -85,9 +85,9 @@ public struct Constants {
                 return 5
             case .sports:
                 return 6
-            case .games:
-                return 7
             case .social:
+                return 7
+            case .games:
                 return 8
             }
         }
