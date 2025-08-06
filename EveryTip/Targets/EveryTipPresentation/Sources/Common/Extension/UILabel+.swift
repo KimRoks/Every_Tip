@@ -16,10 +16,9 @@ enum categories: Int {
     case health
     case financial
     case entertainments
-    case broadcast
     case sports
-    case games
     case social
+    case games
 }
 
 extension UILabel {
@@ -53,22 +52,18 @@ extension UILabel {
             text = "연예\u{2003}"
             backgroundColor = UIColor(hex: "#FFF2F7")
             textColor = UIColor(hex: "#E2407B")
-        case .broadcast:
-            text = "방송\u{2003}"
-            backgroundColor = UIColor(hex: "#FCF0F9")
-            textColor = UIColor(hex: "#CD4285")
         case .sports:
             text = "스포츠\u{2003}"
             backgroundColor = UIColor(hex: "#F1F4FF")
             textColor = UIColor(hex: "#3E5075")
-        case .games:
-            text = "게임\u{2003}"
-            backgroundColor = UIColor(hex: "#F4F4F4")
-            textColor = UIColor(hex: "#787878")
         case .social:
             text = "사회\u{2003}"
             backgroundColor = UIColor(hex: "#F9F3FF")
             textColor = UIColor(hex: "#74629C")
+        case .games:
+            text = "게임\u{2003}"
+            backgroundColor = UIColor(hex: "#F4F4F4")
+            textColor = UIColor(hex: "#787878")
         }
     }
     
