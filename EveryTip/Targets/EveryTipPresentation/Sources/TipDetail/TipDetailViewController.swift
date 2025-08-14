@@ -752,10 +752,10 @@ extension TipDetailViewController: View {
                         }
                     }
                     .disposed(by: cell.disposeBag)
-                
+                                
                 if let reactor = self.reactor {
                     cell.profileImageTapped
-                        .map { Reactor.Action.userProfileTapped }
+                        .map { Reactor.Action.commentProfileTapped(userID: data.writer.id) }
                         .bind(to: reactor.action)
                         .disposed(by: cell.disposeBag)
                 }
@@ -850,6 +850,13 @@ extension TipDetailViewController: View {
                 let urls = images.map(\.url)
                 
                 coordinator?.presentDetailPhoto(with: urls, startIndex: selectedIndex)
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$commentProfileTappedSignal)
+            .compactMap { $0 }
+            .bind { [weak self] in
+                self?.coordinator?.pushToUserProrfileView(userID: $0)
             }
             .disposed(by: disposeBag)
     }

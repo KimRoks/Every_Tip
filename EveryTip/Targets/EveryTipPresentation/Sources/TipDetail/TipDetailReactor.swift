@@ -23,6 +23,7 @@ final class TipDetailReactor: Reactor {
         case commentLikeButtonTapped(commentID: Int)
         case tipSaveButtonTapped
         case userProfileTapped
+        case commentProfileTapped(userID: Int)
         case imageSelected(Int)
     }
     
@@ -35,6 +36,7 @@ final class TipDetailReactor: Reactor {
         case setCommentSignal(Bool)
         case setUserTappedSignal(Bool)
         case setSelectedImageIndex(Int)
+        case setCommentProfileTappedSignal(Int)
     }
     
     struct State {
@@ -46,6 +48,7 @@ final class TipDetailReactor: Reactor {
         @Pulse var popSignal: Bool = false
         @Pulse var userTappedSignal: Bool = false
         @Pulse var selectedImageIndex: Int?
+        @Pulse var commentProfileTappedSignal: Int?
     }
     
     var initialState: State = State()
@@ -176,6 +179,8 @@ final class TipDetailReactor: Reactor {
             return .just(.setUserTappedSignal(true))
         case .imageSelected(let index):
             return .just(.setSelectedImageIndex(index))
+        case .commentProfileTapped(userID: let userID):
+            return .just(.setCommentProfileTappedSignal(userID))
         }
     }
     
@@ -198,6 +203,8 @@ final class TipDetailReactor: Reactor {
             newState.userTappedSignal = signal
         case .setSelectedImageIndex(let index):
             newState.selectedImageIndex = index
+        case .setCommentProfileTappedSignal(let signal):
+            newState.commentProfileTappedSignal = signal
         }
         
         return newState
