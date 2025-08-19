@@ -793,21 +793,19 @@ extension TipDetailViewController: View {
                 cell.ellipsisTapped
                     .subscribe(onNext: { [weak self] in
                         guard let self = self else { return }
-                        self.coordinator?.checkLoginBeforeAction {
-                            if data.isMine {
-                                self.showDeleteAlert(
-                                    contentType: .comment,
-                                    actionType: .delete
-                                ) {
-                                    reactor.action.onNext(.commnetEllipsisTapped(commentID: data.id))
-                                }
-                            } else {
-                                self.showDeleteAlert(
-                                    contentType: .comment,
-                                    actionType: .report
-                                ) {
-                                    reactor.action.onNext(.commnetEllipsisTapped(commentID: data.id))
-                                }
+                        if data.isMine {
+                            self.showDeleteAlert(
+                                contentType: .comment,
+                                actionType: .delete
+                            ) {
+                                reactor.action.onNext(.commnetEllipsisTapped(commentID: data.id))
+                            }
+                        } else {
+                            self.showDeleteAlert(
+                                contentType: .comment,
+                                actionType: .report
+                            ) {
+                                reactor.action.onNext(.commnetEllipsisTapped(commentID: data.id))
                             }
                         }
                     })
