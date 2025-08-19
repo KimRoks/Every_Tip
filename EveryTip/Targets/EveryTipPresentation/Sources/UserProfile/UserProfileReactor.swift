@@ -20,6 +20,7 @@ final class UserProfileReactor: Reactor {
         case subScribeButtonTapped
         case sortButtonTapped(SortOptions)
         case itemSelected(Tip)
+        case profileEllipsisButtonTapped
     }
     
     enum Mutation {
@@ -30,6 +31,7 @@ final class UserProfileReactor: Reactor {
         case setSelectedTip(Tip)
         case setPushSignal(Bool)
         case setToast(String)
+        case setEllipsisSignal(Bool)
     }
     
     struct State {
@@ -39,6 +41,7 @@ final class UserProfileReactor: Reactor {
         var selectedTip: Tip?
         @Pulse var pushSignal: Bool = false
         @Pulse var toastMessage: String?
+        @Pulse var ellipsisSignal: Bool = false
     }
     
     var initialState: State = State()
@@ -105,6 +108,8 @@ final class UserProfileReactor: Reactor {
                 .just(.setSelectedTip(tip)),
                 .just(.setPushSignal(true))
             ])
+        case .profileEllipsisButtonTapped:
+            return .just(.setEllipsisSignal(true))
         }
     }
     
@@ -131,6 +136,8 @@ final class UserProfileReactor: Reactor {
             newState.pushSignal = flag
         case .setToast(let message):
             newState.toastMessage = message
+        case .setEllipsisSignal(let signal):
+            newState.ellipsisSignal = signal
         }
         
         return newState

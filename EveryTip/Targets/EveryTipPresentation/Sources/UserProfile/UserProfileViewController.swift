@@ -18,6 +18,13 @@ final class UserProfileViewController: BaseViewController {
     
     var disposeBag = DisposeBag()
     
+    private let ellipsisButton: UIButton = {
+        let button = UIButton()
+        button.setImage(.et_getImage(for: .ellipsis_black), for: .normal)
+        
+        return button
+    }()
+    
     private let userProfileView: UIView = {
         let view = UIView()
         
@@ -107,8 +114,14 @@ final class UserProfileViewController: BaseViewController {
         setupLayout()
         setupConstraints()
         setupTablewView()
+        setupNavigationRightBarButtonItem()
+        
     }
-
+    
+    private func setupNavigationRightBarButtonItem() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: ellipsisButton)
+    }
+    
     private func setupLayout() {
         view.addSubViews(
             userProfileView,
@@ -229,6 +242,11 @@ extension UserProfileViewController: View {
                 }
             })
             .disposed(by: disposeBag)
+        
+        ellipsisButton.rx.tap
+            .map { Reactor.Action.profileEllipsisButtonTapped }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
     
     func bindOutput(reactor: UserProfileReactor) {
@@ -319,6 +337,15 @@ extension UserProfileViewController: View {
             .compactMap { $0 }
             .subscribe(onNext: { [weak self] message in
                 self?.showToast(message: message)
+            })
+            .disposed(by: disposeBag)
+        
+        
+        // TODO: 차단 API 연결
+        reactor.pulse(\.$ellipsisSignal)
+            .filter { $0 == true }
+            .subscribe(onNext: { [weak self] _ in
+                print("dd")
             })
             .disposed(by: disposeBag)
     }
