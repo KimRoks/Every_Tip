@@ -73,7 +73,6 @@ final class CommentTableViewCell: UITableViewCell, Reusable {
             .et_getImage(for: .ellipsis)
             , for: .normal)
         button.tintColor = .et_textColorBlack30
-        button.isHidden = true
         
         return button
     }()
@@ -253,11 +252,6 @@ final class CommentTableViewCell: UITableViewCell, Reusable {
                 [.font: UIFont.et_pretendard(style: .bold, size: 10)]
             )
         )
-        
-        if data.isMine == true {
-            writerBadgeLabel.isHidden = false
-            ellipsisButton.isHidden = false
-        }
         
         let likeImage: UIImage = data.isLiked ?
             .et_getImage(for: .likeImage_fill) :
