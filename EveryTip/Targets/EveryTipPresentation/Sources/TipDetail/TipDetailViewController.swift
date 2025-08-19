@@ -24,6 +24,11 @@ final class TipDetailViewController: BaseViewController {
         case comment
     }
     
+    enum EllipsisButtonActionType {
+        case report
+        case delete
+    }
+    
     private let backgroundScrollView: UIScrollView = {
         let scrollView = UIScrollView()
         
@@ -279,7 +284,6 @@ final class TipDetailViewController: BaseViewController {
         button.setImage(.et_getImage(for: .ellipsis_black), for: .normal)
         
         button.tintColor = .et_textColorBlack90
-        button.isHidden = true
         
         return button
     }()
@@ -570,43 +574,57 @@ final class TipDetailViewController: BaseViewController {
     
     private func showDeleteAlert(
         contentType: EllipsisButtonType,
+        actionType: EllipsisButtonActionType,
         confirmHandler: @escaping () -> Void
     ) {
-        switch contentType {
-        case .tip:
-            let alertController = UIAlertController(
-                title: "작성하신 팁을 삭제할까요?",
-                message: nil,
-                preferredStyle: .alert
-            )
-            
-            let confirmAction = UIAlertAction(title: "예", style: .destructive) { _ in
-                confirmHandler()
+        let (title, message, style): (String, String?, UIAlertAction.Style) = {
+            switch actionType {
+            case .delete:
+                if contentType == .tip {
+                    return (
+                        "작성하신 팁을 삭제할까요?",
+                        "삭제하면 다시 복구할 수 없습니다.",
+                        .destructive
+                    )
+                } else {
+                    return (
+                        "댓글을 삭제할까요?",
+                        "삭제된 댓글은 다시 복구할 수 없습니다.",
+                        .destructive
+                    )
+                }
+            case .report:
+                if contentType == .tip {
+                    return (
+                        "이 팁을 신고할까요?",
+                        "커뮤니티 가이드에 따라 신고 사유에 해당하는지 검토 후 처리됩니다.",
+                        .default
+                    )
+                } else {
+                    return (
+                        "이 댓글을 신고할까요?",
+                        "커뮤니티 가이드에 따라 신고 사유에 해당하는지 검토 후 처리됩니다.",
+                        .default
+                    )
+                }
             }
-            let cancleAction = UIAlertAction(title: "아니오", style: .cancel)
-            
-            alertController.addAction(confirmAction)
-            alertController.addAction(cancleAction)
-            
-            self.present(alertController, animated: true)
-            
-        case .comment:
-            let alertController = UIAlertController(
-                title: "댓글을 삭제할까요?",
-                message: nil,
-                preferredStyle: .alert
-            )
-            
-            let confirmAction = UIAlertAction(title: "예", style: .destructive) { _ in
-                confirmHandler()
-            }
-            let cancleAction = UIAlertAction(title: "아니오", style: .cancel)
-            
-            alertController.addAction(confirmAction)
-            alertController.addAction(cancleAction)
-            
-            self.present(alertController, animated: true)
+        }()
+        
+        let alertController = UIAlertController(
+            title: title,
+            message: message,
+            preferredStyle: .alert
+        )
+        
+        let confirmAction = UIAlertAction(title: "예", style: style) { _ in
+            confirmHandler()
         }
+        let cancelAction = UIAlertAction(title: "아니오", style: .cancel)
+        
+        alertController.addAction(confirmAction)
+        alertController.addAction(cancelAction)
+        
+        present(alertController, animated: true)
     }
 }
 
@@ -642,12 +660,25 @@ extension TipDetailViewController: View {
         
         ellipsisButton.rx.tap
             .bind { [weak self] in
-                self?.showDeleteAlert(contentType: .tip) {
-                    self?.reactor?.action.onNext(.tipEllipsisTapped)
+                guard let isMine = self?.reactor?.currentState.tip?.isMine else { return }
+                if isMine {
+                    self?.showDeleteAlert(
+                        contentType: .tip,
+                        actionType: .delete
+                    ) {
+                        self?.reactor?.action.onNext(.tipEllipsisTapped)
+                    }
+                } else {
+                    self?.showDeleteAlert(
+                        contentType: .tip,
+                        actionType: .report
+                    ) {
+                        self?.reactor?.action.onNext(.tipEllipsisTapped)
+                    }
                 }
             }
             .disposed(by: disposeBag)
-        
+            
         likeButton.rx.tap
             .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
             .bind { [weak self] in
@@ -686,10 +717,6 @@ extension TipDetailViewController: View {
                         with: URL(string: writerImageUrlString),
                         placeholder: UIImage.et_getImage(for: .blankImage)
                     )
-                }
-                
-                if tip.isMine {
-                    self?.ellipsisButton.isHidden = false
                 }
                 
                 let saveImage: UIImage = tip.isSaved
@@ -760,11 +787,27 @@ extension TipDetailViewController: View {
                         .disposed(by: cell.disposeBag)
                 }
                 
+                
+                // TODO: 신고 API 연결
+                
                 cell.ellipsisTapped
                     .subscribe(onNext: { [weak self] in
-                        self?.coordinator?.checkLoginBeforeAction {
-                            self?.showDeleteAlert(contentType: .comment) {
-                                reactor.action.onNext(.commnetEllipsisTapped(commentID: data.id))
+                        guard let self = self else { return }
+                        self.coordinator?.checkLoginBeforeAction {
+                            if data.isMine {
+                                self.showDeleteAlert(
+                                    contentType: .comment,
+                                    actionType: .delete
+                                ) {
+                                    reactor.action.onNext(.commnetEllipsisTapped(commentID: data.id))
+                                }
+                            } else {
+                                self.showDeleteAlert(
+                                    contentType: .comment,
+                                    actionType: .report
+                                ) {
+                                    reactor.action.onNext(.commnetEllipsisTapped(commentID: data.id))
+                                }
                             }
                         }
                     })
