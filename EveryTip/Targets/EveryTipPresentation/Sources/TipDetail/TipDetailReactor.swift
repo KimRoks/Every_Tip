@@ -25,6 +25,7 @@ final class TipDetailReactor: Reactor {
         case userProfileTapped
         case commentProfileTapped(userID: Int)
         case imageSelected(Int)
+        case reportTip
     }
     
     enum Mutation {
@@ -181,6 +182,14 @@ final class TipDetailReactor: Reactor {
             return .just(.setSelectedImageIndex(index))
         case .commentProfileTapped(userID: let userID):
             return .just(.setCommentProfileTappedSignal(userID))
+        case .reportTip:
+            return tipUseCase.reportTip(with: tipID)
+                .andThen(
+                    .just(.setToast("팁 신고가 접수되었습니다"))
+                )
+                .catch { _ in
+                        .just(.setToast("일시적인 오류로 신고에 실패했어요"))
+                }
         }
     }
     

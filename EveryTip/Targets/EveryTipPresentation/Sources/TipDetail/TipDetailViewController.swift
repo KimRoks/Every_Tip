@@ -673,7 +673,9 @@ extension TipDetailViewController: View {
                         contentType: .tip,
                         actionType: .report
                     ) {
-                        self?.reactor?.action.onNext(.tipEllipsisTapped)
+                        self?.coordinator?.checkLoginBeforeAction {
+                            self?.reactor?.action.onNext(.reportTip)
+                        }
                     }
                 }
             }

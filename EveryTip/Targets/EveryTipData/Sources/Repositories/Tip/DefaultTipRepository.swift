@@ -14,7 +14,7 @@ import Alamofire
 import RxSwift
 
 struct DefaultTipRepository: TipRepository, SessionInjectable {
-    
+  
     var session: Session?
     private let interceptor = TokenInterceptor()
     
@@ -276,6 +276,40 @@ struct DefaultTipRepository: TipRepository, SessionInjectable {
                         return completable(.error(error))
                     }
                 }
+            return Disposables.create {
+                task?.cancel()
+            }
+        }
+    }
+    
+    func reportTip(with tipID: Int) -> Completable {
+        guard let request = try? TipTarget.postReportTip(tipID: tipID).asURLRequest() else {
+            return Completable.error(NetworkError.invalidURLError)
+        }
+      
+        
+        return Completable.create { completable in
+            let task = session?.request(request, interceptor: interceptor)
+                .validate(statusCode: 200..<500)
+                .responseDecodable(of: BaseResponseDTO.self) { response in
+                    switch response.result {
+                    case .success(let response):
+                        if response.code == "SUCCESS" {
+                            
+                            return completable(.completed)
+                        } else if response.message == "이미 신고된 게시글입니다." {
+                            return completable(.completed)
+                        }
+                    
+                    case .failure(let error):
+                        if error.responseCode == 500 {
+                            return completable(.completed)
+                        }
+                        
+                        return completable(.error(error))
+                    }
+                }
+
             return Disposables.create {
                 task?.cancel()
             }
