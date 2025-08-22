@@ -807,7 +807,9 @@ extension TipDetailViewController: View {
                                 contentType: .comment,
                                 actionType: .report
                             ) {
-                                reactor.action.onNext(.commnetEllipsisTapped(commentID: data.id))
+                                self.coordinator?.checkLoginBeforeAction {
+                                    reactor.action.onNext(.reportComment)
+                                } 
                             }
                         }
                     })
