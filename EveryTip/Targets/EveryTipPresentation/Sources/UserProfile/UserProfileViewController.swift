@@ -206,6 +206,27 @@ final class UserProfileViewController: BaseViewController {
             forCellReuseIdentifier: TipListCell.reuseIdentifier
         )
     }
+    
+    private func showReportAlert(
+        confirmHandler: @escaping () -> Void
+    ) {
+        let alert = UIAlertController(
+            title: "이 사용자를 신고할까요?",
+            message: "커뮤니티 가이드에 따라 신고 사유에 해당하는지 검토 후 처리됩니다.",
+            preferredStyle: .alert
+        )
+        
+        let okAction = UIAlertAction(title: "확인", style: .default) { _ in
+            confirmHandler()
+        }
+        
+        alert.addAction(okAction)
+        
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        alert.addAction(cancelAction)
+        
+        self.present(alert, animated: true, completion: nil)
+    }
 }
 
 extension UserProfileViewController: View {
@@ -340,12 +361,14 @@ extension UserProfileViewController: View {
             })
             .disposed(by: disposeBag)
         
-        
-        // TODO: 차단 API 연결
         reactor.pulse(\.$ellipsisSignal)
             .filter { $0 == true }
             .subscribe(onNext: { [weak self] _ in
-                print("dd")
+                self?.showReportAlert() {
+                    self?.coordinator?.checkLoginBeforeAction {
+                        self?.reactor?.action.onNext(.reportUser)
+                    }
+                }
             })
             .disposed(by: disposeBag)
     }

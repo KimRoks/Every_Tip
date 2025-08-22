@@ -20,6 +20,8 @@ enum UserTarget {
     
     case getMyFollowers
     case getMyFollowing
+    
+    case postReportUser
 }
 
 extension UserTarget: TargetType {
@@ -43,6 +45,8 @@ extension UserTarget: TargetType {
                 .get
         case .getMyFollowing:
                 .get
+        case .postReportUser:
+                .post
         }
     }
     
@@ -66,6 +70,8 @@ extension UserTarget: TargetType {
             return "/user/my-followers"
         case .getMyFollowing:
             return "/user/subscription"
+        case .postReportUser:
+            return "/user/report"
         }
     }
     
@@ -89,6 +95,8 @@ extension UserTarget: TargetType {
             return nil
         case .getMyFollowing:
             return nil
+        case .postReportUser:
+            return nil
         }
     }
     
@@ -111,6 +119,8 @@ extension UserTarget: TargetType {
         case .getMyFollowers:
             return nil
         case .getMyFollowing:
+            return nil
+        case .postReportUser:
             return nil
         }
     }

@@ -21,6 +21,7 @@ final class UserProfileReactor: Reactor {
         case sortButtonTapped(SortOptions)
         case itemSelected(Tip)
         case profileEllipsisButtonTapped
+        case reportUser
     }
     
     enum Mutation {
@@ -110,6 +111,10 @@ final class UserProfileReactor: Reactor {
             ])
         case .profileEllipsisButtonTapped:
             return .just(.setEllipsisSignal(true))
+        case .reportUser:
+            return userUseCase.reportUser().andThen(
+                .just(.setToast("유저 신고가 접수되었습니다."))
+            )
         }
     }
     
