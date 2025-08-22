@@ -22,10 +22,11 @@ public protocol UserUseCase {
     
     func fetchMyFollowers() -> Single<[UserPreview]>
     func fetchMyFollowing() -> Single<[UserPreview]>
+    func reportUser() -> Completable
 }
 
 final class DefaultUserUseCase: UserUseCase {
-    
+   
     private let nickNameRepository: NickNameRepository
     private let categoryRepository: CategoryRepository
     private let profileRepository: ProfileRepository
@@ -77,5 +78,9 @@ final class DefaultUserUseCase: UserUseCase {
     
     func fetchMyFollowing() -> Single<[UserPreview]> {
         userFollowRepository.fetchMyFollowing()
+    }
+    
+    func reportUser() -> Completable {
+        profileRepository.reportUser()
     }
 }

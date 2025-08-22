@@ -18,6 +18,13 @@ final class UserProfileViewController: BaseViewController {
     
     var disposeBag = DisposeBag()
     
+    private let ellipsisButton: UIButton = {
+        let button = UIButton()
+        button.setImage(.et_getImage(for: .ellipsis_black), for: .normal)
+        
+        return button
+    }()
+    
     private let userProfileView: UIView = {
         let view = UIView()
         
@@ -107,8 +114,14 @@ final class UserProfileViewController: BaseViewController {
         setupLayout()
         setupConstraints()
         setupTablewView()
+        setupNavigationRightBarButtonItem()
+        
     }
-
+    
+    private func setupNavigationRightBarButtonItem() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: ellipsisButton)
+    }
+    
     private func setupLayout() {
         view.addSubViews(
             userProfileView,
@@ -193,6 +206,27 @@ final class UserProfileViewController: BaseViewController {
             forCellReuseIdentifier: TipListCell.reuseIdentifier
         )
     }
+    
+    private func showReportAlert(
+        confirmHandler: @escaping () -> Void
+    ) {
+        let alert = UIAlertController(
+            title: "이 사용자를 신고할까요?",
+            message: "커뮤니티 가이드에 따라 신고 사유에 해당하는지 검토 후 처리됩니다.",
+            preferredStyle: .alert
+        )
+        
+        let okAction = UIAlertAction(title: "확인", style: .default) { _ in
+            confirmHandler()
+        }
+        
+        alert.addAction(okAction)
+        
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        alert.addAction(cancelAction)
+        
+        self.present(alert, animated: true, completion: nil)
+    }
 }
 
 extension UserProfileViewController: View {
@@ -228,6 +262,11 @@ extension UserProfileViewController: View {
                     self?.reactor?.action.onNext(.subScribeButtonTapped)
                 }
             })
+            .disposed(by: disposeBag)
+        
+        ellipsisButton.rx.tap
+            .map { Reactor.Action.profileEllipsisButtonTapped }
+            .bind(to: reactor.action)
             .disposed(by: disposeBag)
     }
     
@@ -319,6 +358,17 @@ extension UserProfileViewController: View {
             .compactMap { $0 }
             .subscribe(onNext: { [weak self] message in
                 self?.showToast(message: message)
+            })
+            .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$ellipsisSignal)
+            .filter { $0 == true }
+            .subscribe(onNext: { [weak self] _ in
+                self?.showReportAlert() {
+                    self?.coordinator?.checkLoginBeforeAction {
+                        self?.reactor?.action.onNext(.reportUser)
+                    }
+                }
             })
             .disposed(by: disposeBag)
     }

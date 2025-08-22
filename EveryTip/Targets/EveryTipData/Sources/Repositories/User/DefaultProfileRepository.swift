@@ -90,4 +90,8 @@ struct DefaultProfileRepository: ProfileRepository, SessionInjectable {
             }
         }
     }
+    
+    func reportUser() -> Completable {
+        Completable.empty()
+    }
 }

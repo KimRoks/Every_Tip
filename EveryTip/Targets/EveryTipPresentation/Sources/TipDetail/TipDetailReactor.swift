@@ -23,7 +23,10 @@ final class TipDetailReactor: Reactor {
         case commentLikeButtonTapped(commentID: Int)
         case tipSaveButtonTapped
         case userProfileTapped
+        case commentProfileTapped(userID: Int)
         case imageSelected(Int)
+        case reportTip
+        case reportComment
     }
     
     enum Mutation {
@@ -35,6 +38,7 @@ final class TipDetailReactor: Reactor {
         case setCommentSignal(Bool)
         case setUserTappedSignal(Bool)
         case setSelectedImageIndex(Int)
+        case setCommentProfileTappedSignal(Int)
     }
     
     struct State {
@@ -46,6 +50,7 @@ final class TipDetailReactor: Reactor {
         @Pulse var popSignal: Bool = false
         @Pulse var userTappedSignal: Bool = false
         @Pulse var selectedImageIndex: Int?
+        @Pulse var commentProfileTappedSignal: Int?
     }
     
     var initialState: State = State()
@@ -176,6 +181,18 @@ final class TipDetailReactor: Reactor {
             return .just(.setUserTappedSignal(true))
         case .imageSelected(let index):
             return .just(.setSelectedImageIndex(index))
+        case .commentProfileTapped(userID: let userID):
+            return .just(.setCommentProfileTappedSignal(userID))
+        case .reportTip:
+            return tipUseCase.reportTip(with: tipID)
+                .andThen(
+                    .just(.setToast("팁 신고가 접수되었습니다"))
+                )
+                .catch { _ in
+                        .just(.setToast("일시적인 오류로 신고에 실패했어요"))
+                }
+        case .reportComment:
+            return .just(.setToast("댓글 신고가 접수되었습니다."))
         }
     }
     
@@ -198,6 +215,8 @@ final class TipDetailReactor: Reactor {
             newState.userTappedSignal = signal
         case .setSelectedImageIndex(let index):
             newState.selectedImageIndex = index
+        case .setCommentProfileTappedSignal(let signal):
+            newState.commentProfileTappedSignal = signal
         }
         
         return newState

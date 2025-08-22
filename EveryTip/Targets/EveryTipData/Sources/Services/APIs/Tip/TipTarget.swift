@@ -29,6 +29,7 @@ enum TipTarget {
         content: String,
         images: [Tip.Image]
     )
+    case postReportTip(tipID: Int)
 }
 
 extension TipTarget: TargetType {
@@ -46,7 +47,8 @@ extension TipTarget: TargetType {
         case .postLikeTip,
              .postSaveTip,
              .postTip,
-             .postPresignedURL:
+             .postPresignedURL,
+             .postReportTip:
             return .post
         }
     }
@@ -73,6 +75,8 @@ extension TipTarget: TargetType {
             return "/tips/image/url"
         case .postTip:
             return "/tips"
+        case .postReportTip:
+            return "/tips/report"
         }
     }
     
@@ -111,6 +115,10 @@ extension TipTarget: TargetType {
             return [
                 "category_id": categoryID,
                 "file_type": fileType
+            ]
+        case .postReportTip(tipID: let tipID):
+            return [
+                "tip_id": tipID
             ]
         }
     }
