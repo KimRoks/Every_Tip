@@ -4,8 +4,28 @@
 
 <br>
 
-<!-- 스크린샷: 앱 메인 화면 캡처 (홈, 탐색, 프로필 탭) -->
-<!-- ![Main Screenshots](screenshots/main_screens.png) -->
+<!-- 스크린샷: 앱 메인 화면 캡처 (홈,/ 탐색, 프로필 탭) -->
+<table width="100%">
+  <tr>
+    <td align="center" width="25%">
+      <img src="https://github.com/user-attachments/assets/d1eb57b1-d5d6-43b4-9f64-a25c4ecaa9fb" width="100%" alt="확정시안2"/>
+    </td>
+    <td align="center" width="25%">
+      <img src="https://github.com/user-attachments/assets/9cc17ba6-e45f-4728-a7af-0d81e31c35d4" width="100%" alt="확정시안3"/>
+    </td>
+    <td align="center" width="25%">
+      <img src="https://github.com/user-attachments/assets/d1686e7a-51c7-49c3-b30f-f062aff4e8ff" width="100%" alt="확정시안4"/>
+    </td>
+    <td align="center" width="25%">
+      <img src="https://github.com/user-attachments/assets/0780bbef-9e3f-4a6e-833f-098071c0b168" width="100%" alt="확정시안5"/>
+    </td>
+  </tr>
+</table>
+
+### 🔗 Link
+[![App Store](https://img.shields.io/badge/App_Store-Released-blue?style=flat-square&logo=apple)](https://apps.apple.com/kr/app/%EC%97%90%EB%B8%8C%EB%A6%AC-%ED%8C%81-%EC%84%B8%EC%83%81%EC%9D%98-%EB%AA%A8%EB%93%A0-%ED%8C%81%EC%9D%84-%ED%95%9C-%EA%B3%B3%EC%97%90/id6749445749) 
+> ⚠️ 현재는 서비스가 종료되었습니다.
+
 
 <br>
 
@@ -27,8 +47,12 @@
 **EveryTip**은 사용자들이 카테고리별 꿀팁을 작성, 공유, 저장할 수 있는 iOS 소셜 플랫폼입니다.
 
 - **플랫폼:** iOS 15.0+
-- **개발 인원:** 개인 프로젝트
 - **빌드 도구:** Tuist 4.30.0
+- **협업 및 품질 관리:** 
+   - Cross-functional Product Team: **iOS(1)**, BE(1), FE(1), Designer(2)가 기획 초기 단계부터 긴밀히 협업하여 유저 시나리오 설계 및 서비스 상세 스펙 확정
+   - High-Quality Code Standards: 1인 개발 환경임에도 현직 시니어 iOS 엔지니어와 전수 코드 리뷰(Pull Request) 프로세스를 운영하여 실무 수준의 코드 퀄리티 및 아키텍처 검증 완료
+
+
 
 클린 아키텍처와 반응형 프로그래밍 패턴을 중심으로, 실무 수준의 모듈화 구조와 유지보수성 높은 코드베이스 구성을 목표로 개발했습니다.
 
@@ -38,38 +62,26 @@
 
 ### 인증
 
-<!-- 스크린샷: 로그인, 회원가입 화면 -->
-<!-- ![Auth Screens](screenshots/auth.png) -->
-
 - 이메일 기반 회원가입 / 로그인
 - 이메일 인증 코드 발송 및 검증
 - 비밀번호 찾기 / 재설정
-- JWT 기반 자동 토큰 갱신 (Refresh Token)
+- JWT 기반 자동 토큰 갱신 (keyChain 기반)
 
 ### 홈 / 탐색
 
-<!-- 스크린샷: 홈 화면, 탐색 화면 -->
-<!-- ![Home & Explore](screenshots/home_explore.png) -->
-
-- 주간 인기 팁 하이라이트
+- 사용자 상태 기반의 동적 온보딩 시스템 구축 (로그인 여부 및 관심 카테고리 설정 여부)
 - 카테고리별 팁 피드
 - 인기순 정렬: `(좋아요 × 10 + 조회수)` 가중 점수 기반 알고리즘
-- 키워드 검색 및 검색 기록 관리
+- 키워드 검색 및 검색 기록 관리 (UserDefaults 기반)
 
 ### 팁 관리
-
-<!-- 스크린샷: 팁 상세, 팁 작성 화면 -->
-<!-- ![Tip Detail & Post](screenshots/tip_detail_post.png) -->
-
+          
 - 팁 작성 / 수정 / 삭제 (이미지 포함)
 - 좋아요 / 저장 / 공유
 - 댓글 작성 및 조회
 - Presigned URL을 통한 이미지 업로드 (S3 호환)
 
 ### 소셜 기능
-
-<!-- 스크린샷: 유저 프로필, 팔로우 화면 -->
-<!-- ![User Profile & Follow](screenshots/user_profile.png) -->
 
 - 유저 팔로우 / 언팔로우
 - 팔로워 / 팔로잉 목록
@@ -91,7 +103,7 @@
 | 이미지 | Kingfisher 8 |
 | 의존성 주입 | Swinject 2 |
 | 빌드 / 모듈화 | Tuist 4.30.0 |
-| 보안 | Keychain (JWT 토큰 저장) |
+| 보안 | keychain (JWT 토큰 저장) |
 
 <br>
 
@@ -101,26 +113,28 @@
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                  Presentation Layer                     │
+│                   Presentation Layer                    │
 │                                                         │
-│   ViewController ──bind──▶ Reactor                      │
-│        │                   │                            │
-│        │             Action│Mutation│State              │
-│        │                   │                            │
-│   Coordinator ──────── UseCase (Protocol)               │
+│   ViewController ───bind──▶  Reactor  ───▶ UseCase(P)   │
+│         ▲                      │           (Domain)     │
+│         │                Action│State                   │
+│         │                      ▼                        │
+│    Coordinator  ◀──────  (Navigation Signal)            │
+│   (Screen Flow)                                         │
 └────────────────────────────┬────────────────────────────┘
                              │
 ┌────────────────────────────▼────────────────────────────┐
-│                    Domain Layer                         │
+│                      Domain Layer                       │
 │                                                         │
-│   UseCase ──────────────── Repository (Protocol)        │
-│   Entity (Domain Model)                                 │
+│   UseCase(P) ◀────── UseCase ──────▶ Repository(P)      │
+│   (Business Logic)                 (Data Interface)     │
 └────────────────────────────┬────────────────────────────┘
                              │
 ┌────────────────────────────▼────────────────────────────┐
-│                     Data Layer                          │
+│                       Data Layer                        │
 │                                                         │
-│   RepositoryImpl ── APIService ── DTO ── TokenInterceptor│
+│   RepositoryImpl ──▶ APIService ──▶ DTO/Mappers         │
+│   (Implementation)   (Network)                          │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -150,7 +164,8 @@ ReactorKit의 단방향 데이터 흐름(Unidirectional Data Flow)으로 Present
   UI 업데이트       RxCocoa Driver / Signal 기반
 ```
 
-**`Pulse` 데코레이터**를 활용해 토스트 알림, 화면 전환 신호 등 일회성 이벤트를 State 내에서 안전하게 처리했습니다. 동일한 값이 연속으로 emit되어도 중복 처리 없이 정확히 한 번만 반응합니다.
+**`Pulse` 오퍼레이터**
+- ReactorKit의 `State`가 가진 중복 방지 특성을 보완하기 위해 `Pulse` 프로퍼티 래퍼를 도입했습니다. 이를 통해 동일한 메시지의 토스트 출력이나 중복 내비게이션 요청 등, 상태 값의 변화와 관계없이 **할당(Assign) 시점에 즉각 반응해야 하는 Side Effect**를 누락 없이 처리했습니다.
 
 ### Coordinator 패턴
 
@@ -160,6 +175,7 @@ ReactorKit의 단방향 데이터 흐름(Unidirectional Data Flow)으로 Present
 protocol Coordinator: AnyObject {
     var childCoordinators: [Coordinator] { get set }
     func start()
+...
 }
 ```
 
@@ -189,7 +205,7 @@ EveryTip (App)
 ├── EveryTipDesignSystem    # Color, Font, UIComponent, Extension
 │   └── depends on: (없음 — 독립적 UI 리소스)
 │
-└── EveryTipCore            # Keychain, 공통 유틸리티
+└── EveryTipCore            # keychain, 공통 유틸리티
     └── depends on: (없음)
 ```
 
@@ -238,10 +254,10 @@ Alamofire의 `RequestInterceptor`를 구현해 모든 요청에 Access Token을 
 ```
 요청 전  ──▶  adapt()   : Authorization 헤더에 Access Token 삽입
 401 응답 ──▶  retry()   : Refresh Token으로 새 Access Token 발급
-                          → Keychain 갱신 후 원래 요청 재시도
+                          → keychain 갱신 후 원래 요청 재시도
 ```
 
-토큰은 Keychain에 안전하게 저장되며, 앱 재시작 후에도 로그인 상태가 유지됩니다.
+토큰은 keychain에 안전하게 저장되며, 앱 재시작 후에도 로그인 상태가 유지됩니다.
 
 ### API 구성
 
